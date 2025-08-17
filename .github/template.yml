@@ -1,0 +1,9 @@
+name: Close-to-Shore MCP Project Template
+description: A template for data-driven, test-first development using Close-to-Shore MCP methodology
+labels:
+  - mcp
+  - test-driven-development
+  - data-driven
+  - template
+
+#EOF
