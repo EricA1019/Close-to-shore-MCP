@@ -1,10 +1,49 @@
-; Godot project file stub
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
 [application]
+
 config/name="Godot MCP Template"
 config/version="4.5"
+run/main_scene="res://addons/maaacks_game_template/examples/scenes/opening/opening_with_logo.tscn"
+config/features=PackedStringArray("4.5")
 
-[rendering]
-quality/driver/driver_name="Vulkan"
+[autoload]
+
+AppConfig="*res://addons/maaacks_game_template/base/scenes/autoloads/app_config.tscn"
+SceneLoader="*res://addons/maaacks_game_template/base/scenes/autoloads/scene_loader.tscn"
+ProjectMusicController="*res://addons/maaacks_game_template/base/scenes/autoloads/project_music_controller.tscn"
+ProjectUISoundController="*res://addons/maaacks_game_template/base/scenes/autoloads/project_ui_sound_controller.tscn"
 
 [editor]
+
 main_scene="res://scenes/maaack_scenes/game_scene.tscn"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/maaacks_game_template/plugin.cfg")
+
+[gui]
+
+theme/custom="res://addons/maaacks_game_template/examples/resources/themes/lab.tres"
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://addons/maaacks_game_template/base/translations/menus_translations.en.translation", "res://addons/maaacks_game_template/base/translations/menus_translations.fr.translation")
+
+[maaacks_game_template]
+
+disable_install_audio_busses=true
+disable_update_check=false
+disable_install_wizard=true
+
+[rendering]
+
+quality/driver/driver_name="Vulkan"
