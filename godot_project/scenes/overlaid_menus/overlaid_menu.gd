@@ -1,1 +1,2 @@
-// ...existing code from maaack_scenes/overlaid_menus/overlaid_menu.gd...
+@tool
+extends OverlaidMenu

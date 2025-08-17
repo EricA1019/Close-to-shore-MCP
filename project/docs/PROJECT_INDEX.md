@@ -3,7 +3,26 @@
 Living index of systems, scenes, data, and tests. Keep this updated as the project evolves.
 
 ## Overview
-[Brief description of the project's architecture and main components]
+
+# Broken Divinity: New Babylon — Project Index
+
+## System Overview
+
+This project uses a five-panel, data-driven UI for all gameplay and management interactions:
+- Main Panel: Top-down ASCII game view
+- Output Panel: Game log, feedback, narrative
+- Action Panel: Contextual actions, controls
+- Debug Panel: Developer/debug info
+- Status Panel: In-game time, player status, location
+
+Core systems include:
+- AsciiPanel (CP437-style, Unicode, color-coded)
+- SaveSystem (3 slots, JSON)
+- TurnEngine (initiative, actions/turn)
+- CombatManager (damage types, status effects)
+- Inventory, character creation, NPC/faction mechanics
+
+See README.md and ROADMAP.md for goals and development plan.
 
 ## Core Systems
 

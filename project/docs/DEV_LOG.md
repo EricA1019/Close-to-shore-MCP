@@ -4,17 +4,21 @@ Chronological log of decisions, issues, and resolutions.
 
 ## Format
 Each entry should include:
-- **Date**: When the decision/issue occurred
-- **Context**: What prompted this entry
-- **Decision/Resolution**: What was decided or how issue was resolved
-- **Rationale**: Why this approach was chosen
-- **Impact**: How this affects the project going forward
 
----
 
-## 2025-08-16
 
-### Project Setup
+# Broken Divinity: New Babylon — Dev Log
+
+Log of major decisions, issues, and resolutions.
+
+## Key Decisions
+- Project renamed to Broken Divinity: New Babylon
+- UI expanded to five panels: Main, Output, Action, Debug, Status
+- Roadmap and workflow updated for flexible, test-driven development
+- Scene flow and goals documented in README and roadmap
+
+## Issues & Resolutions
+- [Add entries as development progresses]
 **Context**: Starting new Close-to-Shore MCP project
 **Decision**: Adopted Close-to-Shore MCP methodology with separated MCP/ and project/ folders
 **Rationale**: Enables reuse of MCP methodology across multiple projects while keeping project-specific concerns separate
