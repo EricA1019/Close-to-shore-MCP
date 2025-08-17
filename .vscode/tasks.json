@@ -1,0 +1,62 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Godot Project",
+      "type": "shell",
+      "command": "godot4",
+      "args": ["-e"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run GUT Tests",
+      "type": "shell",
+      "command": "godot4",
+      "args": ["--script", "addons/gut/gut_cmdln.gd", "--run-tests"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Start MCP Flask Server",
+      "type": "shell",
+      "command": "/bin/python3.11",
+      "args": ["MCP/TOOLS/mcp_server.py"],
+      "group": "test",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Update Plugins",
+      "type": "shell",
+      "command": "python3",
+      "args": ["MCP/GODOT_TOOLS/plugin_manager.py", "--update"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Update Docs",
+      "type": "shell",
+      "command": "python3",
+      "args": ["MCP/GODOT_TOOLS/doc_sync.py", "--update"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Update All Docs",
+      "type": "shell",
+      "command": "python3",
+      "args": ["MCP/GODOT_TOOLS/doc_sync.py", "--update-all"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Log Hop Feedback",
+      "type": "shell",
+      "command": "python3",
+      "args": ["MCP/GODOT_TOOLS/change_logger.py"],
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}
