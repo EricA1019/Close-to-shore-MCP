@@ -2,6 +2,16 @@
 
 Author: Eric — Date: 2025-08-18
 
+## Hop 1: Boot, Menu, and UI Restoration
+
+- Main scene: opening_with_logo.tscn (routes to animated main menu)
+- Main menu: all buttons (New Game, Options, Credits, Exit) now fully wired
+- New Game launches five-panel Main UI (main_ui.tscn)
+- Options menu restored (tabs: Controls, Audio, Video)
+- Credits and Exit function as expected
+- All broken/empty scenes/scripts restored from template
+- Headless and editor boot confirmed
+
 This document specifies the prototype/demo flow and required systems. It aligns with the Close-to-Shore MCP workflow and will be referenced by hops and tests.
 
 ## Style & Presentation
@@ -37,13 +47,6 @@ This document specifies the prototype/demo flow and required systems. It aligns 
 - Angel/demon reaction flavor text and basic behavior flags
 - Base gear: Model 10 (.38), Rosary (blessing), .357 Magnum (+affix)
 - Procgen: small set of room/corridor templates sufficient for traversal
-
-## Hop 1 (Locked)
-- Restored all base menu and options scenes/scripts
-- Wired main menu buttons (New Game, Options, Credits, Exit) to correct scenes
-- Opening scene routes to animated main menu, which launches main UI
-- Updated documentation to clarify exclusion of large research docs (Godot, GUT, etc.)
-- All tests pass headless
 
 ## Tests to Cover (by Hop)
 - Smoke: project boots; UI panels exist

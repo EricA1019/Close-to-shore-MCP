@@ -14,7 +14,6 @@ For each completed hop:
 
 ---
 
-
 ## Completed Hops
 
 ### Hop 0: Project Setup
@@ -27,18 +26,6 @@ For each completed hop:
 **Tests**: No functional tests yet - setup hop only
 **Duration**: [Fill in when completing]
 **Lessons**: [Fill in when completing]
-
-### Hop 1: Bootable Main Menu & Scene Restoration (Locked)
-**Goal**: Restore Maaack template menus, wire all main menu buttons, and ensure project boots to main UI. Exclude large research docs from git.
-**Changes**:
-- Restored all base menu and options scenes/scripts
-- Wired main menu buttons (New Game, Options, Credits, Exit) to correct scenes
-- Opening scene routes to animated main menu, which launches main UI
-- Updated documentation to clarify exclusion of large research docs (Godot, GUT, etc.)
-**Outcome**: Main menu boots, all buttons work, all scenes/scripts restored, and documentation policy enforced. All tests pass headless.
-**Tests**: Smoke (boot, menu loads, buttons respond), integration (UI panel bindings), parse (no errors)
-**Duration**: [Fill in when completing]
-**Lessons**: Always restore scene/script wrappers before wiring; keep large docs local to avoid repo bloat
 
 ---
 

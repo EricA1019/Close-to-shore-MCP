@@ -26,16 +26,37 @@ Each entry should include:
 **Rationale**: Ensures project maintainability and knowledge transfer
 **Impact**: All hops must update relevant documentation before completion
 
----
-
 
 ## 2025-08-19
 
-### Hop 1: Main Menu Restoration & Documentation Policy
-**Context**: Main menu loaded but buttons were not wired; base scenes/scripts were empty; large research docs present locally
-**Decision/Resolution**: Restored all base menu and options scenes/scripts, wired all main menu buttons to correct scenes, and updated documentation to clarify exclusion of large research docs (Godot, GUT, etc.) from git
-**Rationale**: Ensures project boots, all menu flows work, and repo remains lean and focused on code/assets
-**Impact**: Main menu now boots and all buttons work; documentation policy enforced; all tests pass headless
+### Hop 1: Demo Boot & UI Restoration
+**Context**: Initial demo boot was broken due to empty scenes/scripts and menu parse errors. Needed a working flow for UI, menus, and tests.
+**Decision/Resolution**: Restored all broken/empty scenes/scripts from template. Wired main menu buttons (New Game, Options, Credits, Exit) to correct targets. Opening scene now routes to animated main menu, which launches the five-panel Main UI. All tests pass headless and in editor.
+**Rationale**: Ensures a stable, testable foundation for future hops and feature work. Menu and UI logic now match spec and allow for iterative expansion.
+**Impact**: Project is now bootable and testable. Documentation updated. Ready for next hop.
+
+---
+
+## Template Entries (Remove after first real entry)
+
+### [Date] - [Topic]
+**Context**: [What situation prompted this decision/issue]
+**Decision/Resolution**: [What was decided or how the issue was resolved]
+**Rationale**: [Why this approach was chosen over alternatives]
+**Impact**: [How this affects current and future development]
+
+### [Date] - [Technical Decision]
+**Context**: [Technical challenge or choice point]
+**Decision/Resolution**: [Technical approach chosen]
+**Rationale**: [Technical and business reasons for the choice]
+**Impact**: [Effects on architecture, performance, maintainability]
+
+---
+
+*Keep entries concise but complete. Future developers (including yourself) should understand the context and reasoning behind decisions.*
+
+#EOF
+## Template Entries (Remove after first real entry)
 
 ### [Date] - [Topic]
 **Context**: [What situation prompted this decision/issue]

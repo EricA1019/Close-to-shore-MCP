@@ -8,7 +8,6 @@ A slick, modern, Door-in-the-Woods-inspired ASCII roguelite with a four-panel UI
 ## Current Status
 - [x] Project setup complete (Maaack template imported; main scene unchanged)
 - [x] Documentation structure established (MCP docs + project docs)
-- [x] Hop 1: Bootable main menu, all buttons wired, base scenes/scripts restored, large research docs excluded from git
 - [ ] Basic four-panel UI scaffold
 - [ ] ASCII rendering baseline (CP437-like mono font)
 - [ ] Data layer (SQLite content + JSON save slots)

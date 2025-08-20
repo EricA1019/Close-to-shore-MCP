@@ -1,12 +1,8 @@
 # [Project Name]
 
-Broken Divinity: New Babylon is a Godot 4.5-based ASCII roguelite prototype using the Maaack template, featuring a five-panel UI, data-driven content, and a bootable main menu. All menu buttons are wired to correct scenes. Large research documentation (Godot, GUT, etc.) is excluded from git and kept local only.
+[Brief description of what this project does and why it exists]
 
 ## Quick Start
-
-### Documentation Policy
-- All project documentation (specs, logs, roadmap, index, hop summaries) is versioned in git.
-- Large research docs (Godot, GUT, plugin docs, etc.) are **never** committed or pushed; keep these local only.
 
 ### Prerequisites
 - [List required software, versions, etc.]
@@ -15,8 +11,8 @@ Broken Divinity: New Babylon is a Godot 4.5-based ASCII roguelite prototype usin
 ### Setup
 ```bash
 # Clone the repository
-git clone https://github.com/EricA1019/Broken-Divinity-Demo.git
-cd Broken-Divinity-Demo
+git clone [repository-url]
+cd [project-directory]
 
 # Install dependencies
 [installation commands]
@@ -32,35 +28,40 @@ cd Broken-Divinity-Demo
 
 ```
 project/
-├── docs/           # Project documentation
+# Broken Divinity: New Babylon — Demo
+
+Godot 4.5-based prototype using Maaack template, ASCII grid rendering, and a five-panel UI. This demo showcases the boot flow, restored menus, and data-driven UI. All scenes and scripts are now functional and pass headless/editor tests.
 ├── data/           # Game data, configurations, schemas
 ├── tests/          # Test suites (unit, integration, smoke, game-flow)
 ├── src/            # Source code
 └── [other folders]
-
-MCP/                # Close-to-Shore methodology (reusable)
+ 
+- Godot Engine 4.5 beta 5 (Linux, Windows, Mac)
+- Python 3.10+ (for test runner)
 ├── CLOSE_TO_SHORE.md
 ├── STYLE_GUIDE.md
 ├── TEST_POLICY.md
 └── TOOLS/
-```
+git clone https://github.com/EricA1019/Broken-Divinity-Demo.git
 
+cd Broken-Divinity-Demo/godot_project
 ## Development Workflow
 
 This project follows the **Close-to-Shore MCP** methodology:
 - Short hops with always-green tests
 - Test-first development (TDD)
-- Data-driven architecture
+# Run tests (headless)
+GODOT_BIN=/path/to/Godot_v4.5-beta5_linux.x86_64
+$GODOT_BIN --headless --path . --quit --verbose
 - Comprehensive documentation
 
-### Before Starting Work:
+# Start the application (editor)
+$GODOT_BIN --editor --path .
 1. Read `project/docs/ROADMAP.md` for current priorities
 2. Check `project/docs/DEV_LOG.md` for recent decisions
 3. Review `project/docs/PROJECT_INDEX.md` for system overview
-
-### Development Process:
-1. Plan hop using `MCP/CLOSE_TO_SHORE.md` guidelines
-2. Write failing tests first
+ 
+See `project/docs/PROJECT_INDEX.md` for system overview and `project/docs/DEMO_SPEC.md` for UI/flow details.
 3. Implement minimal changes to pass tests
 4. Update documentation
 5. Validate with `MCP/TOOLS/hop_validator.py`
@@ -82,8 +83,6 @@ This project follows the **Close-to-Shore MCP** methodology:
 ```
 
 ## Documentation
-
-See `project/docs/PROJECT_INDEX.md` for system overview and hop status.
 
 - **ROADMAP.md**: High-level project plan and milestones
 - **DEV_LOG.md**: Development decisions and issue resolutions

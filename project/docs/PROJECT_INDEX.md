@@ -2,19 +2,19 @@
 
 Living index of systems, scenes, data, and tests. Keep this updated as the project evolves.
 
-## Hop 1 (Locked)
-**Goal:** Bootable Godot 4.5 project with restored Maaack template menus, five-panel UI, and all menu buttons wired to correct scenes.
-**Outcome:** Main menu boots, all buttons (New Game, Options, Credits, Exit) work, and all base scenes/scripts restored. Opening scene routes to animated main menu, which launches the main UI. All tests pass headless. Large research docs (Godot, GUT, etc.) are excluded from git.
-
-**Test Coverage:**
-- Smoke: Project boots, main menu loads, all buttons respond
-- Integration: UI panel bindings, provider autoloads
-- Parse: No errors in restored scenes/scripts
-
-**Next Hop:** Four-panel UI scaffold and ASCII grid baseline
-
 ## Overview
 Godot 4.5-based prototype using Maaack template, ASCII grid rendering, and a four-panel UI. Content is centralized in SQLite, with JSON saves (3 slots).
+
+## Hop 1: Demo Boot & UI Restoration
+
+- Main scene: opening_with_logo.tscn (routes to animated main menu)
+- Main menu: all buttons (New Game, Options, Credits, Exit) now fully wired
+- New Game launches five-panel Main UI (main_ui.tscn)
+- Options menu restored (tabs: Controls, Audio, Video)
+- Credits and Exit function as expected
+- All broken/empty scenes/scripts restored from template
+- Headless and editor boot confirmed
+- See DEMO_SPEC.md for UI and flow details
 
 ## Core Systems
 
