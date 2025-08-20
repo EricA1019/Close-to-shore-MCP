@@ -1,0 +1,78 @@
+[gd_scene load_steps=5 format=3 uid="uid://q63mkvw3ye3d"]
+
+[ext_resource type="Script" uid="uid://ckqvrrxdo475v" path="res://scripts/ui/top_status.gd" id="1"]
+[ext_resource type="Script" uid="uid://bxnyqkdue43s" path="res://scripts/ui/main_ui.gd" id="2"]
+[ext_resource type="Script" uid="uid://1h2wgaffjtog" path="res://scripts/ui/action_panel.gd" id="3"]
+[ext_resource type="Script" uid="uid://cdbhub5ih72ac" path="res://scripts/ui/output_panel.gd" id="4"]
+
+[node name="MainUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2")
+
+[node name="TopStatus" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_right = 1.0
+offset_bottom = 48.0
+script = ExtResource("1")
+
+[node name="StatusLabel" type="Label" parent="TopStatus"]
+layout_mode = 2
+text = "Status: --"
+
+[node name="TimeLabel" type="Label" parent="TopStatus"]
+layout_mode = 2
+text = "Time: --"
+
+[node name="LocationLabel" type="Label" parent="TopStatus"]
+layout_mode = 2
+text = "Loc: --"
+
+[node name="HealthLabel" type="Label" parent="TopStatus"]
+layout_mode = 2
+text = "HP: --/--"
+
+[node name="Body" type="HSplitContainer" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 48.0
+
+[node name="LeftColumn" type="VBoxContainer" parent="Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MainPanel" type="ColorRect" parent="Body/LeftColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.1, 0.1, 0.7, 1)
+
+[node name="ActionPanel" type="ColorRect" parent="Body/LeftColumn"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+color = Color(0.9, 0.9, 0.2, 1)
+script = ExtResource("3")
+
+[node name="RightColumn" type="VBoxContainer" parent="Body"]
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 2
+
+[node name="OutputPanel" type="ColorRect" parent="Body/RightColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.2, 0.8, 0.2, 1)
+script = ExtResource("4")
+
+[node name="DebugPanel" type="ColorRect" parent="Body/RightColumn"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 2

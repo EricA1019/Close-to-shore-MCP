@@ -1,143 +1,189 @@
-# Project Index
+# Project Index — Broken Divinity: New Babylon
 
 Living index of systems, scenes, data, and tests. Keep this updated as the project evolves.
 
 ## Overview
+Godot 4.5-based prototype using Maaack template, ASCII grid rendering, and a four-panel UI. Content is centralized in SQLite, with JSON saves (3 slots).
 
-# Broken Divinity: New Babylon — Project Index
+## Hop 1: Demo Boot & UI Restoration
 
-## System Overview
-
-This project uses a five-panel, data-driven UI for all gameplay and management interactions:
-- Main Panel: Top-down ASCII game view
-- Output Panel: Game log, feedback, narrative
-- Action Panel: Contextual actions, controls
-- Debug Panel: Developer/debug info
-- Status Panel: In-game time, player status, location
-
-Core systems include:
-- AsciiPanel (CP437-style, Unicode, color-coded)
-- SaveSystem (3 slots, JSON)
-- TurnEngine (initiative, actions/turn)
-- CombatManager (damage types, status effects)
-- Inventory, character creation, NPC/faction mechanics
-
-See README.md and ROADMAP.md for goals and development plan.
+- Main scene: opening_with_logo.tscn (routes to animated main menu)
+- Main menu: all buttons (New Game, Options, Credits, Exit) now fully wired
+- New Game launches five-panel Main UI (main_ui.tscn)
+- Options menu restored (tabs: Controls, Audio, Video)
+- Credits and Exit function as expected
+- All broken/empty scenes/scripts restored from template
+- Headless and editor boot confirmed
+- See DEMO_SPEC.md for UI and flow details
 
 ## Core Systems
 
-### [System Name 1]
-- **Location**: `src/systems/[system_name]/`
-- **Purpose**: [What this system does]
-- **Key Classes**: [Main classes/components]
-- **Dependencies**: [What it depends on]
-- **Tests**: `tests/unit/test_[system_name].py`
-- **Data**: [Related data files]
+### UI Panels
+- **Location**: `godot_project/scenes/` (TopBar, StatusPanel, LogPanel, ActionBar, CentralPanel host)
+- **Purpose**: Four-panel layout reused across exploration, combat, and colony management
+- **Key Classes**: TBD (`TopBar.gd`, `StatusPanel.gd`, `LogPanel.gd`, `ActionBar.gd`)
+- **Dependencies**: InputMap, Themes, Font assets
+- **Tests**: `godot_project/tests/smoke/test_ui_panels.gd` (planned)
 
-### [System Name 2]
-- **Location**: `src/systems/[system_name]/`
-- **Purpose**: [What this system does]
-- **Key Classes**: [Main classes/components]
-- **Dependencies**: [What it depends on]
-- **Tests**: `tests/integration/test_[system_name]_integration.py`
-- **Data**: [Related data files]
+### AsciiPanel (Grid Renderer)
+- **Location**: `godot_project/addons/Godot-4-ASCII-Grid/`
+- **Purpose**: Monospaced Unicode grid (target 80×36 @ 1280×720), CP437-like rendering
+- **Key Classes**: Plugin-provided; wrapper scene `AsciiPanelHost.tscn`
+- **Dependencies**: Mono font assets (CP437-like baseline + faction variants)
+- **Tests**: Smoke test to instantiate and draw glyphs
+
+### TurnEngine
+- **Location**: `godot_project/scripts/systems/turn_engine.gd`
+- **Purpose**: Round-based initiative; 2 actions per turn; movement/attack interchangeable
+- **Key Classes**: `TurnEngine`, `InitiativeTracker`
+- **Dependencies**: Entity stats, RNG
+- **Tests**: Unit tests for initiative ordering and action budget
+
+### CombatManager
+- **Location**: `godot_project/scripts/systems/combat_manager.gd`
+- **Purpose**: Damage typing (ballistic/infernal/holy), blessing status converting outgoing damage → holy for N rounds
+- **Key Classes**: `CombatManager`, `Damage`, `StatusEffect`
+- **Dependencies**: TurnEngine, Entities, RNG
+- **Tests**: Unit test verifying holy conversion increases damage vs demons
+
+### SaveSystem
+- **Location**: `godot_project/scripts/systems/save_system.gd`
+- **Purpose**: 3 JSON save slots, metadata (slot, name, timestamp)
+- **Key Classes**: `SaveSystem`
+- **Dependencies**: FileAccess, user://
+- **Tests**: Integration tests for round-trip save/load
+
+### Data Layer (SQLite)
+- **Location**: `godot_project/scripts/systems/data_layer.gd` + `res://data/seed.db`
+- **Purpose**: Centralize text/ASCII art, suffix tables; copy res:// DB to user:// on first run
+- **Key Classes**: `ContentDB`
+- **Dependencies**: SQLite plugin
+- **Tests**: Read-only query tests; migration smoke test
 
 ## Scenes/UI Components
 
-### [Scene/Component Name]
-- **Location**: `src/scenes/[scene_name]/`
-- **Purpose**: [What this scene/component does]
-- **Controllers**: [Associated controller scripts]
-- **Dependencies**: [Systems it uses]
-- **Tests**: `tests/game_flow/test_[scene_name]_flow.py`
+### Apartment Scene
+- **Location**: `godot_project/scenes/game_scene/apartment/`
+- **Purpose**: Initial exploration room; mirror triggers character creation
+- **Controllers**: `ApartmentController.gd`
+- **Dependencies**: AsciiPanel, UI Panels, Data Layer
+- **Tests**: Game-flow test for mirror interaction (planned)
+
+### Character Creation Scene
+- **Location**: `godot_project/scenes/opening/character_creation/`
+- **Purpose**: Name, background, personal traits
+- **Controllers**: `CharacterCreation.gd`
+- **Dependencies**: SaveSystem, Data Layer
+- **Tests**: UI flow test
+
+### Alley Combat Scene
+- **Location**: `godot_project/scenes/game_scene/alley/`
+- **Purpose**: First combat vs imps; Dona blessing
+- **Controllers**: `CombatController.gd`
+- **Dependencies**: TurnEngine, CombatManager, AsciiPanel
+- **Tests**: Deterministic combat test
+
+### Settlement (New Babylon)
+- **Location**: `godot_project/scenes/game_scene/settlement/`
+- **Purpose**: Production loop, recruit militia
+- **Controllers**: `SettlementController.gd`
+- **Dependencies**: Data Layer, SaveSystem
+- **Tests**: Resource tick test
+
+### Ruin (Dungeon)
+- **Location**: `godot_project/scenes/game_scene/ruin/`
+- **Purpose**: Procgen dungeon; loot; travel
+- **Controllers**: `DungeonController.gd`
+- **Dependencies**: AsciiPanel, TurnEngine
+- **Tests**: Generation invariants
 
 ## Data Architecture
 
 ### Configuration
-- **Location**: `data/config/`
-- **Format**: [JSON/YAML/etc.]
-- **Purpose**: [Application settings and parameters]
+- **Location**: `godot_project/data/config/`
+- **Format**: JSON
+- **Purpose**: Settings, input mappings, UI config
 
 ### Game Data
-- **Location**: `data/game/`
-- **Format**: [JSON/Resources/etc.]
-- **Purpose**: [Game content and rules]
+- **Location**: `godot_project/data/game/`
+- **Format**: SQLite (seed.db), JSON (saves)
+- **Purpose**: Suffixes, text, ASCII art, loot tables
 
 ### Schemas
-- **Location**: `data/schemas/`
-- **Purpose**: [Data validation and structure definitions]
+- **Location**: `godot_project/data/schemas/`
+- **Purpose**: JSON schemas for saves and config
 
 ## Test Organization
 
 ### Unit Tests
-- **Location**: `tests/unit/`
-- **Coverage**: [What systems have unit tests]
-- **Runner**: [How to run unit tests]
+- **Location**: `godot_project/tests/unit/`
+- **Coverage**: TurnEngine, CombatManager, SaveSystem utilities
+- **Runner**: GUT headless
 
 ### Integration Tests
-- **Location**: `tests/integration/`
-- **Coverage**: [What system interactions are tested]
-- **Runner**: [How to run integration tests]
+- **Location**: `godot_project/tests/integration/`
+- **Coverage**: Scene composition, SQLite queries, save round-trips
+- **Runner**: GUT headless
 
 ### Smoke Tests
-- **Location**: `tests/smoke/`
-- **Coverage**: [Critical paths and boot sequences]
-- **Runner**: [How to run smoke tests]
+- **Location**: `godot_project/tests/smoke/`
+- **Coverage**: Project boot, main scenes load
+- **Runner**: GUT headless
 
 ### Game Flow Tests
-- **Location**: `tests/game_flow/`
-- **Coverage**: [End-to-end user scenarios]
-- **Runner**: [How to run game flow tests]
+- **Location**: `godot_project/tests/game_flow/`
+- **Coverage**: Apartment → Mirror → Alley → Angel → Settlement → Ruin → Credits
+- **Runner**: GUT headless
 
 ## External Dependencies
 
 ### Core Libraries
-- [Library name]: [Version] - [Purpose]
-- [Library name]: [Version] - [Purpose]
+- Maaack Game Template: structure and automation
+- GUT: testing framework
+- Godot-4-ASCII-Grid: ASCII rendering
+- SQLite Godot plugin: data access
 
 ### Development Tools
-- [Tool name]: [Version] - [Purpose]
-- [Tool name]: [Version] - [Purpose]
+- VS Code tasks.json for running editor and tests
 
 ## Build and Deployment
 
 ### Build Process
-- **Command**: [Build command]
-- **Output**: [Where build artifacts go]
-- **Dependencies**: [Build-time requirements]
+- **Command**: Godot export presets (TBD)
+- **Output**: `build/` (TBD)
+- **Dependencies**: Godot 4.5
 
 ### Deployment
-- **Target**: [Where the application deploys]
-- **Process**: [How deployment works]
-- **Configuration**: [Environment-specific settings]
+- **Target**: Desktop (Linux initially)
+- **Process**: Use export preset; verify smoke tests in build
+- **Configuration**: Environment flags for debug/release
 
 ## Key Files and Locations
 
 ### Configuration Files
-- `[config_file]`: [Purpose]
-- `[config_file]`: [Purpose]
+- `godot_project/project.godot`: Engine/project settings
+- `.vscode/tasks.json`: Tasks for editor/tests/tools
 
 ### Entry Points
-- `[main_file]`: [Application entry point]
-- `[test_file]`: [Test runner entry point]
+- `res://addons/maaacks_game_template/examples/scenes/opening/opening_with_logo.tscn`: Current main scene (keep)
+- `addons/gut/gut_cmdln.gd`: Test runner entry
 
 ### Documentation
-- All project docs in `project/docs/`
+- Project docs in `project/docs/`
 - MCP methodology in `MCP/`
 
 ## Development Notes
 
 ### Current Focus
-[What area of development is currently active]
+Phase A: Foundation (Boot, UI scaffold, Save/DB)
 
 ### Technical Debt
-[Known areas that need refactoring or improvement]
+TBD as systems are implemented
 
 ### Performance Considerations
-[Any known performance bottlenecks or optimizations]
+ASCII grid draw cost at 80×36; consider batching and font atlas; keep logs efficient
 
 ---
-
-*Update this index whenever you add new systems, refactor existing ones, or change the project structure.*
+Update this index whenever you add new systems, refactor existing ones, or change the project structure.
 
 #EOF

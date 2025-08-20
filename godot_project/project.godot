@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Godot MCP Template"
+config/name="Broken Divinity: New Babylon"
 config/version="4.5"
 run/main_scene="res://addons/maaacks_game_template/examples/scenes/opening/opening_with_logo.tscn"
 config/features=PackedStringArray("4.5")
@@ -21,6 +21,12 @@ AppConfig="*res://addons/maaacks_game_template/base/scenes/autoloads/app_config.
 SceneLoader="*res://addons/maaacks_game_template/base/scenes/autoloads/scene_loader.tscn"
 ProjectMusicController="*res://addons/maaacks_game_template/base/scenes/autoloads/project_music_controller.tscn"
 ProjectUISoundController="*res://addons/maaacks_game_template/base/scenes/autoloads/project_ui_sound_controller.tscn"
+GameClock="*res://scripts/autoload/game_clock.gd"
+PlayerState="*res://scripts/autoload/player_state.gd"
+LocationState="*res://scripts/autoload/location_state.gd"
+LogBus="*res://scripts/autoload/log_bus.gd"
+InputHints="*res://scripts/autoload/input_hints.gd"
+InputHelper="*res://addons/maaacks_game_template/base/scripts/input_helper.gd"
 
 [editor]
 
@@ -33,6 +39,20 @@ enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/maaacks_g
 [gui]
 
 theme/custom="res://addons/maaacks_game_template/examples/resources/themes/lab.tres"
+
+[input]
+
+ui_debug_toggle={
+"deadzone": 0.5,
+"events": [{
+"echo": false,
+"keycode": 0,
+"physical_keycode": 65472,
+"pressed": false,
+"type": "key",
+"unicode": 0
+}]
+}
 
 [internationalization]
 

@@ -16,35 +16,28 @@ For each completed hop:
 
 ## Completed Hops
 
-### Hop 1: Five-Panel UI Setup
-**Goal**: Establish main scene with five panels (Main, Output, Action, Debug, Status)
+### Hop 0: Project Setup
+**Goal**: Establish Close-to-Shore MCP project structure and documentation
 **Changes**: 
-- Added placeholder text for each panel
-- Basic wiring and tests for panel presence
-**Outcome**: [To be filled after implementation]
-**Tests**: [To be filled after implementation]
+- Created MCP/ folder with methodology documentation
+- Created project/ folder with documentation stubs
+- Set up basic folder structure for tests, data, and source
+**Outcome**: Project ready for development with clear methodology and documentation structure
+**Tests**: No functional tests yet - setup hop only
 **Duration**: [Fill in when completing]
 **Lessons**: [Fill in when completing]
 
-### Hop 2: Opening Scene Integration
-**Goal**: Wire five-panel UI to opening apartment scene
-**Changes**: 
-- Scene flow matches prototype
-- Tests for transitions and UI state
-**Outcome**: [To be filled after implementation]
-**Tests**: [To be filled after implementation]
-**Duration**: [Fill in when completing]
-**Lessons**: [Fill in when completing]
+---
 
-### Hop 3: ASCII Grid Integration
-**Goal**: Integrate ASCII grid for main panel rendering
+## Template Entry (Remove after first real hop)
+
+### Hop X: [Brief Title]
+**Goal**: [What this hop aimed to achieve]
 **Changes**: 
-- Display simple ASCII room in main panel
-- Font/color setup
-**Outcome**: [To be filled after implementation]
-**Tests**: [To be filled after implementation]
-**Duration**: [Fill in when completing]
-**Lessons**: [Fill in when completing]
+- [Key change 1]
+- [Key change 2]
+- [Key change 3]
+**Outcome**: [What was actually delivered - may differ from goal due to discoveries]
 **Tests**: [Test coverage added: unit, integration, smoke, game-flow]
 **Duration**: [Actual time spent: planning, implementation, testing, documentation]
 **Lessons**: [Key insights, what would be done differently, what to remember for next hops]

@@ -2,9 +2,25 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Godot 4.5b5 - Editor",
+      "type": "shell",
+      "command": "${workspaceFolder}/.tools/godot/bin/godot4.5b5",
+      "args": ["-e"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Godot 4.5b5 - Editor (Desktop Path)",
+      "type": "shell",
+      "command": "/home/eric/Desktop/Godot_v4.5-beta5_linux.x86_64",
+      "args": ["-e"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
       "label": "Run Godot Project",
       "type": "shell",
-      "command": "godot4",
+      "command": "${workspaceFolder}/.tools/godot/bin/godot || godot4",
       "args": ["-e"],
       "group": "build",
       "problemMatcher": []
@@ -12,8 +28,16 @@
     {
       "label": "Run GUT Tests",
       "type": "shell",
-      "command": "godot4",
+      "command": "${workspaceFolder}/.tools/godot/bin/godot || godot4",
       "args": ["--script", "addons/gut/gut_cmdln.gd", "--run-tests"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run GUT Tests (4.5b5 Desktop Path)",
+      "type": "shell",
+      "command": "/home/eric/Desktop/Godot_v4.5-beta5_linux.x86_64",
+      "args": ["--headless", "-s", "res://addons/gut/gut_cmdln.gd", "-gdir=res://tests", "-ginclude_subdirs", "-gprefix=test_", "-gexit"],
       "group": "test",
       "problemMatcher": []
     },
@@ -26,6 +50,18 @@
       "isBackground": true,
       "problemMatcher": []
     },
+    {
+      "label": "MCP: Ensure Local Godot 4.5b5",
+      "type": "shell",
+      "command": "python3",
+      "args": [
+        "MCP/GODOT_TOOLS/engine_manager.py",
+        "--ensure",
+        "4.5-beta5"
+      ],
+      "group": "build",
+      "problemMatcher": []
+  },
     {
       "label": "Update Plugins",
       "type": "shell",

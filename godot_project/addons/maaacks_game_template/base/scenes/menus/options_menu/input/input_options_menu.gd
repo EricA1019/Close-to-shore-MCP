@@ -32,6 +32,9 @@ func _horizontally_align_popup_labels() -> void:
 func _ready() -> void:
 	remapping_mode = remapping_mode
 	if Engine.is_editor_hint(): return
+	# Ensure the dialog has its behavior script at runtime (scene reference removed for parse robustness)
+	if not $KeyAssignmentDialog.get_script():
+		$KeyAssignmentDialog.set_script(load("res://addons/maaacks_game_template/base/scenes/menus/options_menu/input/key_assignment_dialog.gd"))
 	_horizontally_align_popup_labels()
 
 func _add_action_event() -> void:

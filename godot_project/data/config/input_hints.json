@@ -1,0 +1,6 @@
+{
+  "default": "[E] Interact · [WASD] Move",
+  "exploration": "[E] Interact · [WASD] Move · [I] Inventory",
+  "combat": "[1-4] Abilities · [R] Reload · [G] Guard",
+  "colony": "[B] Build · [Tab] Cycle · [Esc] Menu"
+}

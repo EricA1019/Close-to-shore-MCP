@@ -1,1 +1,7 @@
-// ...existing code from maaack_scenes/menus/options_menu/mini_options_menu.tscn...
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/options_menu/mini_options_menu.gd" id="1"]
+
+[node name="MiniOptionsMenu" type="Control"]
+script = ExtResource("1")
+

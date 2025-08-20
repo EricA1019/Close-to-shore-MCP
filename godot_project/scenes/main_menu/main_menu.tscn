@@ -1,1 +1,7 @@
-// ...existing code from maaack_scenes/menus/main_menu/main_menu.tscn...
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/main_menu/main_menu.gd" id="1"]
+
+[node name="MainMenu" type="Control"]
+script = ExtResource("1")
+

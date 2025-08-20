@@ -1,1 +1,7 @@
-// ...existing code from maaack_scenes/overlaid_menus/pause_menu.tscn...
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/overlaid_menus/pause_menu.gd" id="1"]
+
+[node name="PauseMenu" type="Control"]
+script = ExtResource("1")
+

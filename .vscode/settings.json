@@ -1,5 +1,6 @@
 {
     "python-envs.defaultEnvManager": "ms-python.python:system",
     "python-envs.pythonProjects": [],
-    "godotTools.editorPath.godot3": "/home/eric/Desktop/Godot_v4.5-beta5_linux.x86_64"
+    "godotTools.editorPath.godot3": "/home/eric/Desktop/Godot_v4.5-beta5_linux.x86_64",
+    "godotTools.editorPath.godot4": "/home/eric/Desktop/Godot_v4.5-beta5_linux.x86_64"
 }
