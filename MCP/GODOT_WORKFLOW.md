@@ -57,3 +57,24 @@ When upgrading to a new beta or stable:
 - The RUN_ID is provided by the test runner; you can override by exporting `RUN_ID` before launching Godot.
 - Use the task “MCP: Log Summary” for a quick tail/summary of the latest run.
 
+### Tail logs (Linux)
+
+Runner log (repo):
+
+```bash
+tail -n 100 -f "$(ls -t logs/run-*-testrunner.out | head -n1)"
+```
+
+Godot runtime log (user://):
+
+```bash
+tail -n 100 -f "$(ls -t ~/.local/share/godot/app_userdata/*/logs/run-*.log | head -n1)"
+```
+
+If you know the RUN_ID:
+
+```bash
+tail -n 100 -f "logs/run-<RUN_ID>-testrunner.out"
+tail -n 100 -f "~/.local/share/godot/app_userdata/*/logs/run-<RUN_ID>.log"
+```
+
