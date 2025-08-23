@@ -102,6 +102,10 @@ tests/
 - Pre-commit hooks run test suite
 - Fast feedback on test failures
 
+MCP runner usage:
+- Preferred: `./MCP/TOOLS/test_runner.sh all` (assigns RUN_ID and writes repo/user logs)
+- VS Code tasks: “Test: All (Runner)” and “Test: Integration (Runner)” depend on the context bundler
+
 ### CI/CD Integration:
 - All tests run on pull requests
 - No merge if tests fail

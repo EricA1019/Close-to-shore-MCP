@@ -46,6 +46,13 @@ Every project must have:
 - Use the "MCP: Build Context Bundle" task before tests; it generates `.mcp_context/context_bundle.md` to ensure the agent has all prompts/protocols.
 - Test runs export RUN_ID; Godot logs to `user://logs/run-<RUN_ID>.log` with level-tagged lines. The test runner also tees to `logs/run-<RUN_ID>-testrunner.out` in the repo.
 
+Quick checklist per hop:
+- [ ] Generate context bundle
+- [ ] Run tests via runner (All or Integration)
+- [ ] Inspect logs (repo tail + Godot user log)
+- [ ] Update docs (README/CHANGELOG/HOP_SUMMARIES)
+- [ ] Commit + tag
+
 Living document — refine as habits evolve.
 
 #EOF

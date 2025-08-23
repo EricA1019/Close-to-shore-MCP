@@ -70,7 +70,7 @@ See `project/docs/PROJECT_INDEX.md` for system overview and `project/docs/DEMO_S
 
 ```bash
 # Run all tests
-[full test command]
+./MCP/TOOLS/test_runner.sh all
 
 # Run specific test suites
 [unit test command]
@@ -79,7 +79,7 @@ See `project/docs/PROJECT_INDEX.md` for system overview and `project/docs/DEMO_S
 [game-flow test command]
 
 # Use provided test runner
-./MCP/TOOLS/test_runner.sh
+./MCP/TOOLS/test_runner.sh integration
 ```
 
 ## Documentation
@@ -88,6 +88,7 @@ See `project/docs/PROJECT_INDEX.md` for system overview and `project/docs/DEMO_S
 - **DEV_LOG.md**: Development decisions and issue resolutions
 - **HOP_SUMMARIES.md**: Completed development hop summaries
 - **PROJECT_INDEX.md**: Current systems and architecture overview
+- MCP: Use the VS Code task “MCP: Build Context Bundle” to generate `.mcp_context/context_bundle.md` before running tests. Logs are written to `logs/run-<RUN_ID>-testrunner.out` (repo) and `user://logs/run-<RUN_ID>.log` (Godot).
 
 ## Contributing
 

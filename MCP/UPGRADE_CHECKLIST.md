@@ -46,6 +46,6 @@ This checklist tracks the full upgrade discussed: context bundling, dual-channel
 - [x] Update `MCP/CLOSE_TO_SHORE.md` to mention the bundler and RUN_ID logging
 - [x] Update `README.md` with new tasks and how to read logs
 - [x] Update `CHANGELOG.md` with this upgrade
-- [ ] Commit + tag after tests are green
+- [x] Commit + tag after tests are green
 
 #EOF
