@@ -42,6 +42,10 @@ Every project must have:
 4) Document every hop in project/docs/HOP_SUMMARIES.md
 5) Update project/docs/DEV_LOG.md with decisions and issues
 
+## Implementation Notes (Tools)
+- Use the "MCP: Build Context Bundle" task before tests; it generates `.mcp_context/context_bundle.md` to ensure the agent has all prompts/protocols.
+- Test runs export RUN_ID; Godot logs to `user://logs/run-<RUN_ID>.log` with level-tagged lines. The test runner also tees to `logs/run-<RUN_ID>-testrunner.out` in the repo.
+
 Living document — refine as habits evolve.
 
 #EOF

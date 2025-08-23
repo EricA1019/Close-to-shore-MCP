@@ -1,14 +1,23 @@
 extends ColorRect
 
 @onready var _label: Label = Label.new()
+var _last_description: String = ""
 
 func _ready() -> void:
+	print("[OutputPanel] _ready")
 	_label.autowrap_mode = TextServer.AUTOWRAP_WORD
 	add_child(_label)
+	_label.name = "Label"
 	_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	set_process(true)
 	_try_connect_logbus()
 	get_tree().node_added.connect(Callable(self, "_on_node_added"))
+
+func _input(event: InputEvent) -> void:
+	print("[OutputPanel] _input: ", event)
+
+func _unhandled_input(event: InputEvent) -> void:
+	print("[OutputPanel] _unhandled_input: ", event)
 
 func _process(_delta: float) -> void:
 	# Hook up if LogBus appears later (tests add it dynamically)
@@ -19,6 +28,7 @@ func _try_connect_logbus() -> void:
 	var lb: Node = root.find_child("LogBus", true, false)
 	if lb and lb.has_signal("message"):
 		if not lb.is_connected("message", Callable(self, "_on_log_message")):
+			print("[OutputPanel] Connecting to LogBus")
 			lb.connect("message", Callable(self, "_on_log_message"))
 			_refresh_from_existing()
 
@@ -45,3 +55,12 @@ func _on_node_added(node: Node) -> void:
 # Public helper for tests
 func refresh_now() -> void:
 	_try_connect_logbus()
+
+# Public API: show a description (e.g., POI details)
+func show_description(text: String) -> void:
+	print("[OutputPanel] show_description:", text)
+	_last_description = text
+	_label.text = text
+
+func get_last_description() -> String:
+	return _last_description

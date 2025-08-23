@@ -1,6 +1,6 @@
 # Broken Divinity CP437 Index (Draft)
 
-This defines how Broken Divinity uses the CP437 tileset. We inherit the community’s well‑trodden defaults for common items (walls, beds, doors, stockpiles, stairs) and introduce a focused set of overrides for our religious‑horror colony and roguelike elements.
+This defines how Broken Divinity uses the CP437 tileset. We inherit the community’s well‑trodden defaults for common items (walls, beds, doors, stockpiles, stairs) across the whole project and introduce a focused set of overrides for our religious‑horror colony and roguelike elements.
 
 Credits
 - CP437 conventions and documentation from the Dwarf Fortress community (Bay 12 Games + modders). Thank you for decades of iteration and guidance.
@@ -16,17 +16,17 @@ Inherit unchanged (community defaults)
 - Furniture: beds, tables, chairs, containers, mechanisms — use standard CP437 glyphs and colors as documented.
 - Items/markers: coins ($), rope (ƒ), levers (ò/ó), bins (X), floodgates (X¢), traffic indicators (H/R), etc.
 
-Broken Divinity override areas (proposed)
+Broken Divinity overrides (locked in)
 - Factions and beings
-  - Angels: bright gold/yellow on A or Ä (142) for key figures; lighter highlights for blessed status.
-  - Demons: red on & (38); deeper reds/browns for infernal elites.
-  - Mortals (player/recruits): @ (64) primary; rim color indicates allegiance/status.
+  - Angels: Ä (142), color gold/yellow.
+  - Demons: & (38), color red/orange family.
+  - Mortals: @ (64) reserved for player only (important NPCs use other letters with faction tints).
 - Status effects
-  - Blessing: ☼ (15) aura or gold overlay; optional invert for “active.”
+  - Blessing: ☼ (15) aura overlay in gold; allow invert style for “active.”
   - Curse/Corruption: ~ (126) effect glyph with purple tint overlay.
 - Holy vs. Infernal interactions
-  - Holy effects/projectiles: * (42) gold/white.
-  - Infernal effects/projectiles: * (42) red/orange.
+  - Holy effects/projectiles: * (42) gold/white (glyph shared).
+  - Infernal effects/projectiles: * (42) red/orange (glyph shared).
 - Colony affordances
   - Altars/Shrines: É (144) for altar; simple + and | compositions for shrines (gold/white).
   - Relics: § (21) or ¶ (20) for notable items; color by faction.
@@ -41,37 +41,47 @@ Initial color palette guidance
 - Status: healing/holy (gold/white), poison/curse (plum/purple), fire (orange), cold (ice‑blue).
 
 Mapping notes (examples)
-- Angels: Ä (142) or A with gold tint; add ☼ (15) aura for blessed.
+- Angels: Ä (142) in gold; add ☼ (15) aura for blessed.
 - Demons: & (38) in strong reds; elites use deeper/bolder variants.
 - Blessing: aura/overlay ☼ (15) or subtle color pulse.
 - Holy projectile: * (42) gold; Infernal projectile: * (42) red.
 - Altar: É (144) gold; Makeshift shrine: + with white/yellow.
 - Brave militia: B (66) with subtle teal rim to stand out.
 
+Materials & colors (expanded)
+- Wood: brown (e.g., apartment wood floor uses . (46) with wood‑brown fg)
+- Stone: neutral grays (walls/floors follow community glyphs, colored per material)
+- Metal: steel/silver; Copper/Bronze richer oranges; Gold bright gold
+- Water: blue; Foliage: green; Sand/Earth: tan; Blood: deep red; Ice: pale/icy blue
+
 File/asset placement
 - Font bitmap: `godot_project/assets/project/cp437_16x16.png` (added).
 - Font license: `godot_project/assets/project/LICENSE_cp437_font.txt` (add in this hop or next; include MIT text from source).
-- Optional config next hop: `godot_project/data/config/cp437_index.json` mapping entity keys → {codepoint, fg, bg, style}.
+- Config (CSV preferred): `godot_project/data/config/cp437_index.csv` is the maintained source (easier to edit/scan). Loader prefers CSV and falls back to JSON at `godot_project/data/config/cp437_index.json`. Both map keys → {codepoint, fg, bg, style} with optional `fg_from_material` and `rules`.
+
+CSV schema header:
+category,key,codepoint,fg,bg,style,fg_from_material,value,notes
+Notes: `style` is pipe‑separated (e.g., overlay|active_invert_allowed). For rules, use `value` for booleans and `codepoint` for reserved entries (e.g., rules,reserved.player,64,...).
 
 Implementation sketch (next hop)
 - Registry (JSON or GDScript dictionary) mapping identities → {codepoint, fg, bg, style}.
 - Adapter in the grid renderer to resolve game entities to CP437 tiles + colors at draw time.
 - Fallback rule: if key missing, render with community default.
 
-Open questions (answer Y/N)
-1) Keep community defaults for walls/doors/furniture entirely for the next hop? (Y keeps them unchanged; N propose remaps.)
-2) Use Ä (142) for Angels by default? (Y=Ä; N=plain ‘A’ with gold.)
-3) Use & (38) for Demons? (Y=&; N=alternate glyph.)
-4) Represent Blessing with a ☼ (15) aura overlay? (Y=☼ overlay; N=color‑only.)
-5) Represent Curse/Corruption with purple‑tinted ~ (126) effects? (Y=~ purple; N=other.)
-6) Distinguish holy/infernal projectiles via color on * (42) only? (Y=color‑only; N=different glyphs.)
-7) Reserve @ (64) for player/important mortals, with faction rim‑color? (Y=@; N=alternate.)
-8) Use É (144) for Altars and + compositions for shrines? (Y=É/+; N=alternate.)
-9) Allow inverse style for “active” states (e.g., active blessing)? (Y=invert OK; N=avoid inversion.)
-10) Add the font’s MIT license file to assets in this hop? (Y=add now; N=defer.)
-11) Store mappings in JSON (`data/config/cp437_index.json`) in this hop? (Y=JSON now; N=doc‑only this hop.)
-12) Limit palette to the four theme groups above initially? (Y=limit; N=expand now.)
+Decisions locked (from Y/N):
+- Keep community defaults for walls/doors/furniture for the whole project.
+- Angels: Ä (142) in gold; Demons: & (38) in red.
+- Blessing: ☼ (15) aura overlay; allow invert for “active.”
+- Curse/Corruption: purple‑tinted ~ (126) effects.
+- Projectiles: * (42) shared glyph; color gold vs. red.
+- @ (64) reserved for player only.
+- Altars/Shrines: É (144) and + compositions.
+- Add font MIT license file now; store mappings in JSON now.
+- Expand palette beyond 4 groups to include general materials (wood, stone, metals, etc.).
 
-Once confirmed, we’ll lock this index and wire a small registry loader for the grid renderer.
+Next steps
+1) Fill `data/config/cp437_index.json` with initial entities and a material color palette (done in this hop).
+2) Add a small loader/helper to resolve keys → {codepoint, fg, bg, style} at draw time (scoped for next hop integration into the grid renderer).
+3) Keep a fallback to community defaults for any unmapped keys.
 
 #EOF

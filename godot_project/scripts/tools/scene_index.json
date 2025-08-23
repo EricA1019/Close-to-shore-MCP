@@ -1,0 +1,13 @@
+{
+  "scenes": [
+  "res://addons/maaacks_game_template/examples/scenes/opening/opening_with_logo.tscn",
+  "res://addons/maaacks_game_template/examples/scenes/menus/main_menu/main_menu_with_animations.tscn",
+  "res://scenes/game_scene/game_root.tscn",
+    "res://scenes/ui/main_ui.tscn",
+    "res://scenes/locations/apartment/apartment.tscn",
+    "res://scenes/options_menu/master_options_menu_with_tabs.tscn",
+  "res://addons/maaacks_game_template/base/scenes/credits/scrolling_credits.tscn",
+  "res://addons/maaacks_game_template/base/scenes/credits/scrollable_credits.tscn",
+  "res://addons/maaacks_game_template/base/scenes/loading_screen/loading_screen.tscn"
+  ]
+}

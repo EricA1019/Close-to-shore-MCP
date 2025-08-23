@@ -18,6 +18,7 @@ This document specifies the prototype/demo flow and required systems. It aligns 
 - Door-in-the-Woods inspired, top-down ASCII rendered via AsciiPanel
 - Four-panel layout: TopBar (date/time/currency), StatusPanel (player/follower stats), LogPanel (narration/combat log), ActionBar (contextual actions)
 - Monospaced CP437-like baseline font; faction-styled variants (Angels: flowing gold; Demons: angular red)
+ - CP437 mapping is CSV-first at `godot_project/data/config/cp437_index.csv`; runtime loader prefers CSV with JSON fallback; editor plugin provides Validate/Export/Scratch.
 
 ## Data & Persistence
 - SQLite database for content: suffix tables, large text assets, ASCII art

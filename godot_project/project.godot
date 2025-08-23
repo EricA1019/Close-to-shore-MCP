@@ -34,11 +34,20 @@ main_scene="res://scenes/maaack_scenes/game_scene.tscn"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/maaacks_game_template/plugin.cfg")
+enabled=PackedStringArray("res://addons/Godot-4-ASCII-Grid/addons/ascii_grid/plugin.cfg", "res://addons/cp437_tools/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/maaacks_game_template/plugin.cfg")
+
+[file_customization]
+
+folder_colors={
+"res://data/": "gray",
+"res://docs/": "orange",
+"res://scenes/": "blue",
+"res://scripts/": "yellow"
+}
 
 [gui]
 
-theme/custom="res://addons/maaacks_game_template/examples/resources/themes/lab.tres"
+theme/custom="res://themes/broken_divinity_theme.tres"
 
 [input]
 

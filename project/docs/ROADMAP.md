@@ -9,6 +9,7 @@ A slick, modern, Door-in-the-Woods-inspired ASCII roguelite with a four-panel UI
 - [x] Project setup complete (Maaack template imported; main scene unchanged)
 - [x] Documentation structure established (MCP docs + project docs)
 - [ ] Basic four-panel UI scaffold
+- [x] CP437 mapping workflow (CSV + loader + editor tools)
 - [ ] ASCII rendering baseline (CP437-like mono font)
 - [ ] Data layer (SQLite content + JSON save slots)
 - [ ] Core gameplay loop prototype implemented
@@ -22,9 +23,9 @@ Note: Hops should usually stay under ~200 LOC and include tests, with exceptions
 - [ ] Hop 1: Boot check + ASCII grid skeleton
   - Goal: Verify Godot project boots headless and in-editor; create minimal AsciiPanel grid (80×36 @ 1280×720) scene and a smoke test that instantiates it.
   - Success: Smoke test passes; project boots; scene loads without errors.
-- [ ] Hop 2: Four-panel layout scaffold
-  - Goal: Implement TopBar, StatusPanel, LogPanel, ActionBar containers and a placeholder CentralPanel (AsciiPanel host). Keyboard focus model in place.
-  - Success: Scene tree structure stable; smoke test asserts nodes exist.
+- [x] Hop 2: CP437 CSV + Loader + Editor Tools
+  - Goal: CSV-first mapping for DF-style CP437 with validation/export and runtime loader
+  - Success: CSV maintained; plugin validates/exports; loader resolves sample keys
 - [ ] Hop 3: SaveSystem (3 JSON slots)
   - Goal: Implement JSON save/load with metadata (slot, name, timestamp). Use user:// path. Basic tests for create, overwrite, read.
   - Success: Unit/integration tests pass; save round-trip verified.

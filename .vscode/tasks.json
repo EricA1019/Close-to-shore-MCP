@@ -1,98 +1,307 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "Godot 4.5b5 - Editor",
-      "type": "shell",
-      "command": "${workspaceFolder}/.tools/godot/bin/godot4.5b5",
-      "args": ["-e"],
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Godot 4.5b5 - Editor (Desktop Path)",
-      "type": "shell",
-      "command": "/home/eric/Desktop/Godot_v4.5-beta5_linux.x86_64",
-      "args": ["-e"],
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Run Godot Project",
-      "type": "shell",
-      "command": "${workspaceFolder}/.tools/godot/bin/godot || godot4",
-      "args": ["-e"],
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Run GUT Tests",
-      "type": "shell",
-      "command": "${workspaceFolder}/.tools/godot/bin/godot || godot4",
-      "args": ["--script", "addons/gut/gut_cmdln.gd", "--run-tests"],
-      "group": "test",
-      "problemMatcher": []
-    },
-    {
-      "label": "Run GUT Tests (4.5b5 Desktop Path)",
-      "type": "shell",
-      "command": "/home/eric/Desktop/Godot_v4.5-beta5_linux.x86_64",
-      "args": ["--headless", "-s", "res://addons/gut/gut_cmdln.gd", "-gdir=res://tests", "-ginclude_subdirs", "-gprefix=test_", "-gexit"],
-      "group": "test",
-      "problemMatcher": []
-    },
-    {
-      "label": "Start MCP Flask Server",
-      "type": "shell",
-      "command": "/bin/python3.11",
-      "args": ["MCP/TOOLS/mcp_server.py"],
-      "group": "test",
-      "isBackground": true,
-      "problemMatcher": []
-    },
-    {
-      "label": "MCP: Ensure Local Godot 4.5b5",
-      "type": "shell",
-      "command": "python3",
-      "args": [
-        "MCP/GODOT_TOOLS/engine_manager.py",
-        "--ensure",
-        "4.5-beta5"
-      ],
-      "group": "build",
-      "problemMatcher": []
-  },
-    {
-      "label": "Update Plugins",
-      "type": "shell",
-      "command": "python3",
-      "args": ["MCP/GODOT_TOOLS/plugin_manager.py", "--update"],
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Update Docs",
-      "type": "shell",
-      "command": "python3",
-      "args": ["MCP/GODOT_TOOLS/doc_sync.py", "--update"],
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Update All Docs",
-      "type": "shell",
-      "command": "python3",
-      "args": ["MCP/GODOT_TOOLS/doc_sync.py", "--update-all"],
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Log Hop Feedback",
-      "type": "shell",
-      "command": "python3",
-      "args": ["MCP/GODOT_TOOLS/change_logger.py"],
-      "group": "test",
-      "problemMatcher": []
-    }
-  ]
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "MCP: Build Context Bundle",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/TOOLS/context_bundler.py"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+			{
+				"label": "MCP: Log Summary",
+				"type": "shell",
+				"command": "python3",
+				"args": ["MCP/GODOT_TOOLS/log_summary.py"],
+				"group": "test",
+				"problemMatcher": []
+			},
+			{
+				"label": "MCP: Scene Lint",
+				"type": "shell",
+				"command": "python3",
+				"args": ["MCP/GODOT_TOOLS/scene_lint.py"],
+				"group": "build",
+				"problemMatcher": []
+			},
+			{
+				"label": "MCP: Release Helper",
+				"type": "shell",
+				"command": "python3",
+				"args": ["MCP/GODOT_TOOLS/release_helper.py", "v0.0.0"],
+				"group": "build",
+				"problemMatcher": []
+			},
+		{
+			"label": "Godot 4.5b5 - Editor",
+			"type": "shell",
+			"command": "${workspaceFolder}/.tools/godot/bin/godot4.5b5",
+			"args": [
+				"-e"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "Godot 4.5b5 - Editor (Desktop Path)",
+			"type": "shell",
+			"command": "/home/eric/Desktop/Godot_v4.5-beta5_linux.x86_64",
+			"args": [
+				"-e"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "Run Godot Project",
+			"type": "shell",
+			"command": "${workspaceFolder}/.tools/godot/bin/godot || godot4",
+			"args": [
+				"-e"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "Run GUT Tests",
+			"type": "shell",
+			"command": "${workspaceFolder}/.tools/godot/bin/godot || godot4",
+			"args": [
+				"--script",
+				"addons/gut/gut_cmdln.gd",
+				"--run-tests"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "Run GUT Tests (4.5b5 Desktop Path)",
+			"type": "shell",
+			"command": "/home/eric/Desktop/Godot_v4.5-beta5_linux.x86_64",
+			"args": [
+				"--headless",
+				"-s",
+				"res://addons/gut/gut_cmdln.gd",
+				"-gdir=res://tests",
+				"-ginclude_subdirs",
+				"-gprefix=test_",
+				"-gexit"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "Start MCP Flask Server",
+			"type": "shell",
+			"command": "/bin/python3.11",
+			"args": [
+				"MCP/TOOLS/mcp_server.py"
+			],
+			"group": "test",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "MCP: Ensure Local Godot 4.5b5",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/GODOT_TOOLS/engine_manager.py",
+				"--ensure",
+				"4.5-beta5"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "Update Plugins",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/GODOT_TOOLS/plugin_manager.py",
+				"--update"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "Update Docs",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/GODOT_TOOLS/doc_sync.py",
+				"--update"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "Update All Docs",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/GODOT_TOOLS/doc_sync.py",
+				"--update-all"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "Log Hop Feedback",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/GODOT_TOOLS/change_logger.py"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "Test: GUT (All)",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://addons/gut/gut_cmdln.gd",
+				"-gdir=res://tests",
+				"-gexit"
+			],
+			"isBackground": false,
+			"dependsOn": ["MCP: Build Context Bundle"],
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Test: GUT (UI)",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://addons/gut/gut_cmdln.gd",
+				"-gdir=res://tests/ui",
+				"-gexit"
+			],
+			"isBackground": false,
+			"dependsOn": ["MCP: Build Context Bundle"],
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Test: GUT (Integration)",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://addons/gut/gut_cmdln.gd",
+				"-gdir=res://tests/integration",
+				"-gexit"
+			],
+			"isBackground": false,
+			"dependsOn": ["MCP: Build Context Bundle"],
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Test: All (Runner)",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"MCP/TOOLS/test_runner.sh",
+				"all"
+			],
+			"group": "test",
+			"dependsOn": ["MCP: Build Context Bundle"],
+			"problemMatcher": []
+		},
+		{
+			"label": "Test: Integration (Runner)",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"MCP/TOOLS/test_runner.sh",
+				"integration"
+			],
+			"group": "test",
+			"dependsOn": ["MCP: Build Context Bundle"],
+			"problemMatcher": []
+		},
+		{
+			"label": "Smoke: Scenes from Index",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://scripts/tools/scene_smoke_runner.gd",
+				"--",
+				"--index",
+				"res://scripts/tools/scene_index.json"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Smoke: Scenes (Filter)",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://scripts/tools/scene_smoke_runner.gd",
+				"--",
+				"--index",
+				"res://scripts/tools/scene_index.json",
+				"--filter",
+				"${input:sceneFilter}"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Smoke: Scenes CI",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://scripts/tools/scene_smoke_runner.gd",
+				"--",
+				"--index",
+				"res://scripts/tools/scene_index.json",
+				"--out",
+				"user://smoke_summary.json"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		}
+	],
+	"inputs": [
+		{
+			"id": "sceneFilter",
+			"type": "promptString",
+			"description": "Filter scenes by substring (e.g., apartment, main_ui). Leave blank to run all.",
+			"default": ""
+		}
+	]
 }

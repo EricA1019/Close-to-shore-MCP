@@ -55,6 +55,14 @@ Each entry should include:
 
 *Keep entries concise but complete. Future developers (including yourself) should understand the context and reasoning behind decisions.*
 
+## 2025-08-20
+
+### Hop 2: CP437 Mapping + Editor Tools
+**Context**: Adopt DF-style CP437 with maintainable mappings and quick iteration. JSON-only was cumbersome for non-engineers.
+**Decision/Resolution**: Added CSV source (`data/config/cp437_index.csv`), updated runtime loader to prefer CSV with JSON fallback, and built an editor plugin (CP437 Tools) with Validate, Export, and Scratch Test. Imported conservative DF-standard tiles (walls/doors/stairs/ramps/tracks/grates/coffins/stockpiles/workshop frames; furniture like bed/statue/table/chair; fixtures like anvil/cage/restraint/levers; barrel/bin/hatch/floodgate).
+**Rationale**: CSV is easier to edit/diff. Editor tools reduce errors and help debug. Using common DF glyphs preserves player familiarity.
+**Impact**: Designers can tune tiles/colors without code. Loader provides runtime parity. Future integration into the renderer is straightforward.
+
 #EOF
 ## Template Entries (Remove after first real entry)
 

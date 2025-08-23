@@ -8,8 +8,16 @@ extends Control
 const TOGGLE_DEBUG_KEY := "ui_debug_toggle"
 
 func _ready() -> void:
-	pass
+	print("[MainUI] _ready: UI initialized")
 
 func _unhandled_input(event: InputEvent) -> void:
+	print("[MainUI] _unhandled_input: ", event)
 	if event.is_action_pressed(TOGGLE_DEBUG_KEY):
+		print("[MainUI] Debug toggle pressed")
 		debug_panel.visible = not debug_panel.visible
+
+func _input(event: InputEvent) -> void:
+	print("[MainUI] _input: ", event)
+
+func _gui_input(event: InputEvent) -> void:
+	print("[MainUI] _gui_input: ", event)

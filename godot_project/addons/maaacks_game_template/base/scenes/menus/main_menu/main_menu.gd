@@ -62,6 +62,7 @@ func _event_is_mouse_button_released(event : InputEvent) -> bool:
 	return event is InputEventMouseButton and not event.is_pressed()
 
 func _input(event : InputEvent) -> void:
+	print("[MainMenu] _input: ", event)
 	if event.is_action_released("ui_cancel"):
 		if sub_menu:
 			_close_sub_menu()
@@ -69,6 +70,9 @@ func _input(event : InputEvent) -> void:
 			exit_game()
 	if event.is_action_released("ui_accept") and get_viewport().gui_get_focus_owner() == null:
 		%MenuButtonsBoxContainer.focus_first()
+
+func _unhandled_input(event : InputEvent) -> void:
+	print("[MainMenu] _unhandled_input: ", event)
 
 func _hide_exit_for_web() -> void:
 	if OS.has_feature("web"):

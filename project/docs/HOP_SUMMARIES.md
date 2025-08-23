@@ -29,6 +29,17 @@ For each completed hop:
 
 ---
 
+### Hop 2: CP437 CSV + Loader + Tools
+**Goal**: Establish a maintainable CP437 mapping workflow aligned with DF conventions.
+**Changes**:
+- Added CSV source for CP437 mappings (`cp437_index.csv`) and updated loader to prefer CSV with JSON fallback
+- Added Godot editor plugin (Validate, Export JSON, Scratch Test) under `addons/cp437_tools`
+- Imported conservative DF-standard tiles for structures and furniture/fixtures
+**Outcome**: CSV-first mapping workflow with validation and runtime parity; docs updated.
+**Tests**: Editor Scratch Test validates CSV and calls runtime `resolve_tile` for representative keys.
+**Duration**: 1 hop
+**Lessons**: CSV is friendlier for designers; small editor tools pay off quickly.
+
 ## Template Entry (Remove after first real hop)
 
 ### Hop X: [Brief Title]

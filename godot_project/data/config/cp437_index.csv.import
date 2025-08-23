@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://behhbhy6tdycn"
+
+[deps]
+
+files=["res://data/config/cp437_index.key.translation", "res://data/config/cp437_index.codepoint.translation", "res://data/config/cp437_index.fg.translation", "res://data/config/cp437_index.bg.translation", "res://data/config/cp437_index.style.translation", "res://data/config/cp437_index.fg.translation", "res://data/config/cp437_index.value.translation", "res://data/config/cp437_index.notes.translation"]
+
+source_file="res://data/config/cp437_index.csv"
+dest_files=["res://data/config/cp437_index.key.translation", "res://data/config/cp437_index.codepoint.translation", "res://data/config/cp437_index.fg.translation", "res://data/config/cp437_index.bg.translation", "res://data/config/cp437_index.style.translation", "res://data/config/cp437_index.fg.translation", "res://data/config/cp437_index.value.translation", "res://data/config/cp437_index.notes.translation"]
+
+[params]
+
+compress=true
+delimiter=0

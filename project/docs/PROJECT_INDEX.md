@@ -16,6 +16,14 @@ Godot 4.5-based prototype using Maaack template, ASCII grid rendering, and a fou
 - Headless and editor boot confirmed
 - See DEMO_SPEC.md for UI and flow details
 
+## Hop 2: CP437 Mapping + Editor Tools
+
+- CSV-based CP437 mapping at `godot_project/data/config/cp437_index.csv` (maintained source)
+- Runtime loader prefers CSV and falls back to JSON at `godot_project/data/config/cp437_index.json`
+- Editor plugin `addons/cp437_tools` provides Validate, Export, and Scratch Test (exercises loader)
+- Added conservative DF-standard tiles: walls/doors/stairs/ramps/tracks/grates/coffins/stockpiles/workshop frames; furniture (bed/statue/table/chair/cabinet/chest/weapon rack/armor stand); fixtures (anvil/cage/restraint/lever states/hatch/floodgate); barrel/bin
+- Mapping decisions and palette guidance in `project/docs/CP437_INDEX_BROKEN_DIVINITY.md` and `project/docs/TILE_INDEX.md`
+
 ## Core Systems
 
 ### UI Panels
@@ -129,6 +137,14 @@ Godot 4.5-based prototype using Maaack template, ASCII grid rendering, and a fou
 - **Location**: `godot_project/tests/smoke/`
 - **Coverage**: Project boot, main scenes load
 - **Runner**: GUT headless
+
+### Scene Smoke Tests
+- Index: `godot_project/scripts/tools/scene_index.json` (list scenes to quickly validate instancing)
+- Runner: `godot_project/scripts/tools/scene_smoke_runner.gd` (headless; loads each scene for one frame)
+- VS Code Tasks:
+	- "Smoke: Scenes from Index" — run all listed scenes
+	- "Smoke: Scenes (Filter)" — prompt for substring (e.g., `apartment`)
+	- Maintainers: add new scene paths to the JSON; no new tasks required
 
 ### Game Flow Tests
 - **Location**: `godot_project/tests/game_flow/`

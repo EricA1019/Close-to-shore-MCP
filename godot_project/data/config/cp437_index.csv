@@ -1,0 +1,100 @@
+category,key,codepoint,fg,bg,style,fg_from_material,value,notes
+entities,angel,142,#FFD66B,,,,,Angel represented by Ä (codepoint 142) in CP437
+entities,demon,38,#B33A3A,,,,,Demon represented by & (codepoint 38)
+entities,player,64,#FFFFFF,,,,,Player represented by @ (codepoint 64)
+entities,status.blessed,15,#FFE68A,,overlay|active_invert_allowed,,,Blessing aura (☼) overlay
+entities,status.cursed,126,#7B4D9D,,effect,,,Curse (~) effect
+entities,projectile.holy,42,#FFE68A,,,,,Projectiles use * with color only
+entities,projectile.infernal,42,#E1512D,,,,,Infernal projectile *
+entities,altar,144,#FFD66B,,,,,Altar É (codepoint 144)
+entities,shrine.simple,43,#FFF2B0,,,,,Shrine + (codepoint 43)
+materials,wood,,#8B5A2B,,,,,Material color for wood
+materials,stone,,#A0A0A0,,,,,Material color for stone
+materials,steel,,#B0BEC5,,,,,Material color for steel
+materials,copper,,#B87333,,,,,Material color for copper
+materials,bronze,,#CD7F32,,,,,Material color for bronze
+materials,gold,,#FFD66B,,,,,Material color for gold
+materials,water,,#4DA3FF,,,,,Material color for water
+materials,foliage,,#6DBF4E,,,,,Material color for foliage
+materials,sand,,#C2B280,,,,,Material color for sand
+materials,earth,,#A68A64,,,,,Material color for earth
+materials,blood,,#8A1C1C,,,,,Material color for blood
+materials,ice,,#AEE1F9,,,,,Material color for ice
+terrain,floor.wood,46,,,,wood,,Floor uses '.' with wood color
+terrain,floor.stone,46,,,,stone,,Floor uses '.' with stone color
+rules,fallback_to_defaults,,,,,,true,Whether to fall back when key not found
+rules,reserved.player,64,,,,,,,Reserve @ for player only
+# --- DF standard terrain/structures (conservative set) ---
+materials,iron,,#B0B0B0,,,,,Material color for iron
+materials,silver,,#C0C0C0,,,,,Material color for silver
+
+# Walls (shaded variants), color from material
+terrain,wall.solid,219,,,,stone,,Solid wall (█) default stone
+terrain,wall.medium,178,,,,stone,,Medium wall shading (▓)
+terrain,wall.light,177,,,,stone,,Light wall shading (▒)
+
+# Doors (closed uses ╬; open uses +), typically wood
+terrain,door.closed,206,,,,wood,,Closed door (╬)
+terrain,door.open,43,,,,wood,,Open door (+)
+
+# Stairs
+terrain,stairs.up,60,,,,stone,,Up stair (<)
+terrain,stairs.down,62,,,,stone,,Down stair (>)
+
+# Ramps
+terrain,ramp.up,30,,,,stone,,Ramp up (▲)
+terrain,ramp.down,31,,,,stone,,Ramp down (▼)
+
+# Channels
+terrain,channel.edge,94,,,,stone,,Channel edge (^)
+terrain,channel.floor,95,,,,stone,,Channel floor (_)
+
+# Tracks (rails)
+terrain,track.vert,186,,,,steel,,Vertical track (║)
+terrain,track.horiz,205,,,,steel,,Horizontal track (═)
+terrain,track.cross,206,,,,steel,,Track intersection (╬)
+
+# Grates, Coffins, Stockpiles, Workshop frames
+terrain,grate,35,,,,steel,,Grate (#)
+terrain,coffin,48,,,,stone,,Coffin (0)
+terrain,stockpile,61,,#A0A0A0,,,,Stockpile (=)
+terrain,workshop.frame.bracket,91,,,,steel,,Workshop frame ([)
+terrain,workshop.frame.slash,47,,,,steel,,Workshop frame (/)
+
+# --- Placeholders to fill later (kept commented until confirmed) ---
+# entities,bed,,,,#8B5A2B,,,TODO: confirm canonical glyph for bed
+# entities,statue,,,,,,,,TODO: confirm canonical glyph for statue
+
+# --- DF standard furniture/items (from TILE_INDEX.md) ---
+# Beds, Statues
+terrain,bed,233,,,,wood,,Bed (Θ) default wood
+terrain,statue,234,,,,stone,,Statue (Ω) default stone
+
+# Tables and Chairs
+terrain,table,209,,,,wood,,Table (╤) default wood
+terrain,chair,210,,,,wood,,Chair (╥) default wood
+
+# Storage and furnishings
+terrain,cabinet,227,,,,wood,,Cabinet (π) default wood
+terrain,chest,146,,,,wood,,Chest (Æ) default wood
+terrain,weapon_rack,251,,,,wood,,Weapon rack (√) default wood
+terrain,armor_stand,14,,,,wood,,Armor stand (♫) default wood
+
+# Workshop/metal fixtures
+terrain,anvil,229,,,,steel,,Anvil (σ) default steel
+
+# Restraints and cages
+terrain,restraint,21,,,,steel,,Restraint (§)
+terrain,cage,19,,,,steel,,Cage (‼)
+
+# Barrels and bins (general)
+terrain,barrel,246,,,,wood,,Barrel (÷) default wood
+terrain,bin,88,,,,wood,,Bin (X) default wood
+
+# Hatch cover and floodgate
+terrain,hatch_cover,155,,,,wood,,Hatch cover (¢) default wood
+terrain,floodgate,215,,,,wood,,Floodgate (╫) default wood
+
+# Levers (stateful)
+terrain,lever.inactive,149,,,,stone,,Lever inactive (ò)
+terrain,lever.active,162,,,,stone,,Lever active (ó)

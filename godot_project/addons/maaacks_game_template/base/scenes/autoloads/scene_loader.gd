@@ -91,9 +91,11 @@ func load_scene(scene_path : String, in_background : bool = false) -> void:
 	if scene_path == null or scene_path.is_empty():
 		push_error("no path given to load")
 		return
+	print("[SceneLoader] load_scene: ", scene_path, " in_background=", in_background)
 	_scene_path = scene_path
 	_background_loading = in_background
 	if ResourceLoader.has_cached(_scene_path):
+		print("[SceneLoader] cached resource, emitting scene_loaded")
 		call_deferred("emit_signal", "scene_loaded")
 		if not _background_loading:
 			change_scene_to_resource()
@@ -115,8 +117,10 @@ func _process(_delta) -> void:
 	var status = get_status()
 	match(status):
 		ResourceLoader.THREAD_LOAD_INVALID_RESOURCE, ResourceLoader.THREAD_LOAD_FAILED:
+			print("[SceneLoader] load failed or invalid: ", _scene_path)
 			set_process(false)
 		ResourceLoader.THREAD_LOAD_LOADED:
+			print("[SceneLoader] THREAD_LOAD_LOADED: ", _scene_path)
 			emit_signal("scene_loaded")
 			set_process(false)
 			if not _background_loading:

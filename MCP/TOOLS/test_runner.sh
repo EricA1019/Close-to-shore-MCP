@@ -1,73 +1,59 @@
-#!/bin/sh
-# Cross-platform test runner for Close-to-Shore projects
-# Customize this script for your specific project's test setup
+#!/usr/bin/env bash
+# Close-to-Shore unified test runner
+set -euo pipefail
 
-echo "[TestRunner] Starting Close-to-Shore test suite..."
+MODE=${1:-all}
+ROOT_DIR=$(cd "$(dirname "$0")/../.." && pwd)
+LOG_DIR="$ROOT_DIR/logs"
+mkdir -p "$LOG_DIR"
 
-# Set error handling
-set -e
+RUN_ID=${RUN_ID:-$(date -u +"%Y%m%dT%H%M%SZ")}
+OUT_FILE="$LOG_DIR/run-${RUN_ID}-testrunner.out"
 
-# Function to run tests with proper error handling
-run_test_suite() {
-    local test_type=$1
-    local test_command=$2
-    
-    echo "[TestRunner] Running $test_type tests..."
-    
-    if eval "$test_command"; then
-        echo "[TestRunner] ✓ $test_type tests PASSED"
+echo "[TestRunner] RUN_ID=$RUN_ID" | tee -a "$OUT_FILE"
+export RUN_ID
+
+godot_cmd() {
+    godot4 --headless --path "$ROOT_DIR/godot_project" "$@"
+}
+
+run_suite() {
+    local name="$1"; shift
+    echo "[TestRunner] Running $name..." | tee -a "$OUT_FILE"
+    if "$@" 2>&1 | tee -a "$OUT_FILE"; then
+        echo "[TestRunner] ✓ $name PASSED" | tee -a "$OUT_FILE"
         return 0
     else
-        echo "[TestRunner] ✗ $test_type tests FAILED"
+        echo "[TestRunner] ✗ $name FAILED" | tee -a "$OUT_FILE"
         return 1
     fi
 }
 
-# Track overall success
 overall_success=true
 
-# Unit Tests
-if ! run_test_suite "Unit" "echo 'Add your unit test command here'"; then
-    overall_success=false
-fi
+case "$MODE" in
+    all)
+        run_suite "GUT: All" godot_cmd -s res://addons/gut/gut_cmdln.gd -gdir=res://tests -gexit || overall_success=false
+        ;;
+    integration)
+        run_suite "GUT: Integration" godot_cmd -s res://addons/gut/gut_cmdln.gd -gdir=res://tests/integration -gexit || overall_success=false
+        ;;
+    ui)
+        run_suite "GUT: UI" godot_cmd -s res://addons/gut/gut_cmdln.gd -gdir=res://tests/ui -gexit || overall_success=false
+        ;;
+    smoke)
+        run_suite "Smoke: Scenes from Index" godot_cmd -s res://scripts/tools/scene_smoke_runner.gd -- --index res://scripts/tools/scene_index.json || overall_success=false
+        ;;
+    *)
+        echo "[TestRunner] Unknown MODE: $MODE" | tee -a "$OUT_FILE"
+        exit 2
+        ;;
+esac
 
-# Integration Tests  
-if ! run_test_suite "Integration" "echo 'Add your integration test command here'"; then
-    overall_success=false
-fi
-
-# Smoke Tests
-if ! run_test_suite "Smoke" "echo 'Add your smoke test command here'"; then
-    overall_success=false
-fi
-
-# Game Flow Tests
-if ! run_test_suite "Game-Flow" "echo 'Add your game-flow test command here'"; then
-    overall_success=false
-fi
-
-# Final result
 if [ "$overall_success" = true ]; then
-    echo "[TestRunner] 🎉 ALL TESTS PASSED - Ready for next hop!"
+    echo "[TestRunner] 🎉 ALL TESTS PASSED - Ready for next hop!" | tee -a "$OUT_FILE"
     exit 0
 else
-    echo "[TestRunner] ❌ SOME TESTS FAILED - Fix before proceeding"
+    echo "[TestRunner] ❌ SOME TESTS FAILED - Fix before proceeding" | tee -a "$OUT_FILE"
     exit 1
 fi
-
-# Example customizations for different frameworks:
-#
-# For Python/pytest:
-# run_test_suite "Unit" "python -m pytest tests/unit/ -v"
-# run_test_suite "Integration" "python -m pytest tests/integration/ -v"
-#
-# For Godot:
-# run_test_suite "Unit" "godot --headless --script addons/gut/gut_cmdln.gd -gdir=res://tests/unit"
-#
-# For Node.js/Jest:
-# run_test_suite "Unit" "npm test -- --testPathPattern=tests/unit"
-#
-# For Java/Maven:
-# run_test_suite "Unit" "mvn test -Dtest=**/*UnitTest"
-
-#EOF

@@ -1,0 +1,35 @@
+{
+  "entities": {
+    "angel": { "codepoint": 142, "fg": "#FFD66B", "bg": null, "style": [] },
+    "demon": { "codepoint": 38,  "fg": "#B33A3A", "bg": null, "style": [] },
+    "player": { "codepoint": 64,  "fg": "#FFFFFF", "bg": null, "style": [] },
+    "status.blessed": { "codepoint": 15,  "fg": "#FFE68A", "bg": null, "style": ["overlay", "active_invert_allowed"] },
+    "status.cursed":  { "codepoint": 126, "fg": "#7B4D9D", "bg": null, "style": ["effect"] },
+    "projectile.holy":     { "codepoint": 42, "fg": "#FFE68A", "bg": null, "style": [] },
+    "projectile.infernal": { "codepoint": 42, "fg": "#E1512D", "bg": null, "style": [] },
+    "altar": { "codepoint": 144, "fg": "#FFD66B", "bg": null, "style": [] },
+    "shrine.simple": { "codepoint": 43, "fg": "#FFF2B0", "bg": null, "style": [] }
+  },
+  "materials": {
+    "wood":   { "fg": "#8B5A2B" },
+    "stone":  { "fg": "#A0A0A0" },
+    "steel":  { "fg": "#B0BEC5" },
+    "copper": { "fg": "#B87333" },
+    "bronze": { "fg": "#CD7F32" },
+    "gold":   { "fg": "#FFD66B" },
+    "water":  { "fg": "#4DA3FF" },
+    "foliage": { "fg": "#6DBF4E" },
+    "sand":   { "fg": "#C2B280" },
+    "earth":  { "fg": "#A68A64" },
+    "blood":  { "fg": "#8A1C1C" },
+    "ice":    { "fg": "#AEE1F9" }
+  },
+  "terrain": {
+    "floor.wood":  { "codepoint": 46, "fg_from_material": "wood" },
+    "floor.stone": { "codepoint": 46, "fg_from_material": "stone" }
+  },
+  "rules": {
+    "fallback_to_defaults": true,
+    "reserved": { "player": 64 }
+  }
+}
