@@ -1,3 +1,10 @@
+## 2025-08-23 — ASCII Addon + Headless
+
+- Godot headless (4.3) can fail to resolve `class_name` types across addons before the class cache is ready during test boot.
+- Prefer path-based `extends` and explicit `preload()` for cross-file types inside addons.
+- Avoid strict type annotations on cross-referenced addon types in headless until CI is stable.
+- UI controls in tests need non-zero size — give containers a `custom_minimum_size` to avoid zero-sized images.
+
 # Hard-Learned Lessons for Godot MCP Template
 
 This document collects practical lessons and workflow tips for using Godot effectively, integrated into this template:

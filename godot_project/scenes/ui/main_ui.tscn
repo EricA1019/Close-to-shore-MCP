@@ -1,9 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://q63mkvw3ye3d"]
+[gd_scene load_steps=10 format=3 uid="uid://q63mkvw3ye3d"]
 
 [ext_resource type="Script" uid="uid://ckqvrrxdo475v" path="res://scripts/ui/top_status.gd" id="1"]
 [ext_resource type="Script" uid="uid://bxnyqkdue43s" path="res://scripts/ui/main_ui.gd" id="2"]
 [ext_resource type="Script" uid="uid://1h2wgaffjtog" path="res://scripts/ui/action_panel.gd" id="3"]
 [ext_resource type="Script" uid="uid://cdbhub5ih72ac" path="res://scripts/ui/output_panel.gd" id="4"]
+[ext_resource type="Script" path="res://addons/Godot-4-ASCII-Grid/addons/ascii_grid/term_rect.gd" id="5_po8y3"]
+[ext_resource type="Texture2D" uid="uid://bwf1emvvwlhkr" path="res://assets/fonts/cp437_16x16.png" id="6_9b8yu"]
+[ext_resource type="Script" path="res://addons/Godot-4-ASCII-Grid/addons/ascii_grid/term_container_vbox.gd" id="7_8t6w5"]
+[ext_resource type="Script" path="res://addons/Godot-4-ASCII-Grid/addons/ascii_grid/term_label.gd" id="8_c0d0y"]
+[ext_resource type="Script" path="res://scripts/ui/ascii_location_title.gd" id="9_casu0"]
 
 [node name="MainUI" type="Control"]
 layout_mode = 3
@@ -52,13 +57,36 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-color = Color(0.1, 0.1, 0.7, 1)
+color = Color(0, 0, 0, 0)
+custom_minimum_size = Vector2(480, 270)
+
+[node name="TermRect" type="ColorRect" parent="Body/LeftColumn/MainPanel" node_paths=PackedStringArray("term_root")]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_po8y3")
+font = ExtResource("6_9b8yu")
+characters_per_line = 16
+automatic_redraw = true
+term_root = NodePath("../TermRoot")
+
+[node name="TermRoot" type="Node" parent="Body/LeftColumn/MainPanel"]
+script = ExtResource("7_8t6w5")
+
+[node name="Title" type="Node" parent="Body/LeftColumn/MainPanel/TermRoot"]
+script = ExtResource("8_c0d0y")
+text = ""
+
+[node name="AsciiLocationBinder" type="Node" parent="Body/LeftColumn/MainPanel/TermRoot"]
+script = ExtResource("9_casu0")
 
 [node name="ActionPanel" type="ColorRect" parent="Body/LeftColumn"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 140)
 layout_mode = 2
-color = Color(0.9, 0.9, 0.2, 1)
+color = Color(0, 0, 0, 0)
 script = ExtResource("3")
 
 [node name="RightColumn" type="VBoxContainer" parent="Body"]
@@ -69,10 +97,11 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-color = Color(0.2, 0.8, 0.2, 1)
+color = Color(0, 0, 0, 0)
 script = ExtResource("4")
 
 [node name="DebugPanel" type="ColorRect" parent="Body/RightColumn"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 180)
 layout_mode = 2
+color = Color(0, 0, 0, 0)
