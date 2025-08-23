@@ -3,3 +3,4 @@ res://scripts/autoload/location_state.gd
 res://scripts/ui/ascii_location_title.gd
 res://tests/integration/test_ascii_in_main_panel.gd
 res://tests/integration/test_ascii_location_binding.gd
+res://scripts/autoload/log_bus.gd

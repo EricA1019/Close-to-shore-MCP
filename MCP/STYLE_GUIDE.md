@@ -44,6 +44,12 @@ static func log_tagged(tag: String, message: String, args: Array = []):
 - Leak hygiene where applicable; assert no new orphans
 - Integration smoke tests for vertical slices
 
+## API Visibility Rules
+- Don’t look at privates: never read or write members prefixed with `_` outside their class.
+- Prefer signals for updates. Views subscribe; Controllers write via public methods on Stores.
+- Direct reads are allowed only for initial sync after connecting to signals and for explicit one-off queries.
+- If you need data regularly, add a public getter or a signal, do not access internal state.
+
 ## Code Style Quick List
 - End files with #EOF comment
 - Functions ≤ ~40 lines; split when growing

@@ -35,6 +35,14 @@
 				"group": "build",
 				"problemMatcher": []
 			},
+			{
+				"label": "MCP: API Guard (No Privates)",
+				"type": "shell",
+				"command": "python3",
+				"args": ["MCP/TOOLS/api_guard.py"],
+				"group": "test",
+				"problemMatcher": []
+			},
 		{
 			"label": "Godot 4.5b5 - Editor",
 			"type": "shell",

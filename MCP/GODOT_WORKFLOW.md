@@ -15,6 +15,9 @@ This document describes the workflow and best practices for using the MCP templa
 	- “Test: Integration (Runner)” — same, limited to `tests/integration`.
 - Direct Godot GUT tasks exist too (All/UI/Integration) and are configured to depend on the bundler.
 
+API hygiene:
+- Run “MCP: API Guard (No Privates)” to scan for external access of private members (names prefixed with `_`). Fix violations by adding proper public getters or signals.
+
 ## Engine Version Management (Local Copy)
 
 To keep development stable and reproducible, this project maintains a local copy of the preferred Godot editor/runner in `.tools/godot/`.
