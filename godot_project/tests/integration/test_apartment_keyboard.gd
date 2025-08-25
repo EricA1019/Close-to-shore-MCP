@@ -39,6 +39,7 @@ func test_keyboard_cycles_pois() -> void:
 	var e := InputEventAction.new()
 	e.action = "ui_right"
 	e.pressed = true
+	# Simulate user input via _input (engine callback)
 	apt._input(e)
 	await get_tree().process_frame
 	# Now selection should change to Door (second POI)
@@ -48,6 +49,7 @@ func test_keyboard_cycles_pois() -> void:
 	var e2 := InputEventAction.new()
 	e2.action = "ui_accept"
 	e2.pressed = true
+	# Simulate user input via _input (engine callback)
 	apt._input(e2)
 	await get_tree().process_frame
 	# No strict assert on side-effects, but ensure no error and ActionPanel populated

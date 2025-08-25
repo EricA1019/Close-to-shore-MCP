@@ -34,6 +34,7 @@ func test_wraps_left_right_and_ignores_echo() -> void:
 		var e := InputEventAction.new()
 		e.action = "ui_right"
 		e.pressed = true
+		# Engine callback _input is an allowed entrypoint in tests to simulate user input
 		apt._input(e)
 		await get_tree().process_frame
 	var d1 := _get_desc(ui)
@@ -44,6 +45,7 @@ func test_wraps_left_right_and_ignores_echo() -> void:
 	key.keycode = KEY_DOWN
 	key.pressed = true
 	key.echo = true
+	# Engine callback _input is allowed in tests
 	apt._input(key)
 	await get_tree().process_frame
 	var after := _get_desc(ui)
@@ -57,6 +59,7 @@ func test_up_down_are_aliases() -> void:
 	var e1 := InputEventAction.new()
 	e1.action = "ui_down"
 	e1.pressed = true
+	# Simulate user input via _input
 	apt._input(e1)
 	await get_tree().process_frame
 	var d1 := _get_desc(ui)
@@ -65,6 +68,7 @@ func test_up_down_are_aliases() -> void:
 	var e2 := InputEventAction.new()
 	e2.action = "ui_up"
 	e2.pressed = true
+	# Simulate user input via _input
 	apt._input(e2)
 	await get_tree().process_frame
 	var d2 := _get_desc(ui)

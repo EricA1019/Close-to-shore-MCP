@@ -27,6 +27,8 @@ LocationState="*res://scripts/autoload/location_state.gd"
 LogBus="*res://scripts/autoload/log_bus.gd"
 InputHints="*res://scripts/autoload/input_hints.gd"
 InputHelper="*res://addons/maaacks_game_template/base/scripts/input_helper.gd"
+ContentDB="*res://scripts/autoload/content_db.gd"
+ImGuiRoot="*res://addons/imgui-godot/data/ImGuiRoot.tscn"
 
 [editor]
 
@@ -34,7 +36,7 @@ main_scene="res://scenes/maaack_scenes/game_scene.tscn"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/Godot-4-ASCII-Grid/addons/ascii_grid/plugin.cfg", "res://addons/cp437_tools/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/maaacks_game_template/plugin.cfg")
+enabled=PackedStringArray("res://addons/cp437_tools/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/imgui-godot/plugin.cfg", "res://addons/maaacks_game_template/plugin.cfg", "res://addons/resource_databases/editor_only/plugin.cfg")
 
 [file_customization]
 

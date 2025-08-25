@@ -285,7 +285,7 @@ tracks/5/keys = {
 "update": 0,
 "values": [Color(1, 1, 1, 1)]
 }
-tracks/6/type = "value"
+tracks/6:type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
 tracks/6/path = NodePath("VersionMargin/VersionContainer:modulate")
@@ -297,7 +297,7 @@ tracks/6/keys = {
 "update": 0,
 "values": [Color(1, 1, 1, 0)]
 }
-tracks/7/type = "value"
+tracks/7:type = "value"
 tracks/7/imported = false
 tracks/7/enabled = true
 tracks/7/path = NodePath("MenuContainer/MenuButtonsMargin/MenuButtonsContainer/MenuButtonsBoxContainer:lock")
@@ -351,9 +351,7 @@ graph_offset = Vector2(-180.277, 49)
 
 [node name="MainMenu" instance=ExtResource("1_rr1rn")]
 script = ExtResource("2_sr523")
-level_select_packed_scene = null
-confirm_new_game = true
-game_scene_path = "res://scenes/game_scene/game_root.tscn"
+game_scene_path = "res://scenes/ui/apartment_main_ui.tscn"
 options_packed_scene = ExtResource("3_ixa71")
 credits_packed_scene = ExtResource("4_rr1rn")
 

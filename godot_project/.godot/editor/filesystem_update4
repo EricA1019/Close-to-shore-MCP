@@ -1,6 +1,8 @@
-res://scenes/ui/main_ui.tscn
-res://scripts/autoload/location_state.gd
-res://scripts/ui/ascii_location_title.gd
-res://tests/integration/test_ascii_in_main_panel.gd
-res://tests/integration/test_ascii_location_binding.gd
-res://scripts/autoload/log_bus.gd
+res://scenes/ascii_min_demo/ascii_min_demo_canvas.tscn
+res://addons/resource_databases/editor_only/ui/database_editor_theme.tres
+res://scripts/ui/interactive_apartment.gd
+res://tests/integration/test_interactive_apartment.gd
+res://scenes/ui/interactive_apartment.tscn
+res://scenes/maaack_scenes/menus/main_menu/main_menu.tscn
+res://scenes/ui/apartment_main_ui.tscn
+res://tests/integration/test_apartment_main_ui.gd

@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=3 uid="uid://b6dkrb8f42g5w"]
+
+[ext_resource type="Script" uid="uid://dnoy4cjcx28iu" path="res://scenes/ascii_min_demo/ascii_min_demo_canvas.gd" id="1_canvas"]
+[ext_resource type="Script" uid="uid://4o68chmbkynk" path="res://addons/ascii_grid/ascii_canvas.gd" id="2_canvas"]
+[ext_resource type="Script" uid="uid://cpv01ldjfjap7" path="res://addons/ascii_grid/term_container_vbox.gd" id="3_vbox"]
+[ext_resource type="Script" uid="uid://d23m22j53hcnl" path="res://addons/ascii_grid/term_label.gd" id="4_label"]
+[ext_resource type="Script" uid="uid://b63fufgf1fr82" path="res://scripts/ui/ascii_basic_room.gd" id="5_room"]
+
+[node name="AsciiMinDemoCanvas" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_canvas")
+
+[node name="AsciiCanvas" type="Control" parent="." node_paths=PackedStringArray("term_root")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_canvas")
+grid_size = Vector2i(32, 20)
+term_root = NodePath("../TermRoot")
+debug_logging = true
+
+[node name="TermRoot" type="Node" parent="."]
+script = ExtResource("3_vbox")
+
+[node name="Title" type="Node" parent="TermRoot"]
+script = ExtResource("4_label")
+fixed_size = Vector2i(0, 1)
+
+[node name="BasicRoom" type="Node" parent="TermRoot"]
+script = ExtResource("5_room")
+
+[connection signal="ready" from="." to="." method="_ready"]

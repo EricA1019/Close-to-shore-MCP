@@ -60,6 +60,8 @@ func _run_scene(path: String) -> bool:
 	var inst := ps.instantiate()
 	get_root().add_child(inst)
 	await process_frame
+	# Optional ASCII diagnostics if scene includes MainUI/TermRect
+	_var_ascii_diagnostics(inst)
 	# Simple ready check: Scene instanced and one frame processed
 	print("[SMOKE] OK: ", path)
 	inst.queue_free()
@@ -68,6 +70,54 @@ func _run_scene(path: String) -> bool:
 		await process_frame
 	_cleanup_new_children(baseline)
 	return true
+
+func _var_ascii_diagnostics(scene_root: Node) -> void:
+	var main_ui := scene_root.get_node_or_null("MainUI")
+	if main_ui == null:
+		main_ui = _find_node_recursive(scene_root, func(n): return String(n.name).to_lower() == "mainui")
+	if main_ui == null:
+		return
+	var main_panel := main_ui.get_node_or_null("%MainPanel")
+	if main_panel == null:
+		main_panel = main_ui.get_node_or_null("Body/LeftColumn/MainPanel")
+	if main_panel == null:
+		return
+	var termrect := main_panel.get_node_or_null("TermRect")
+	if termrect == null:
+		return
+	# Pull shader textures and print a tiny summary
+	var mat: ShaderMaterial = termrect.material
+	if mat == null:
+		printerr("[SMOKE][ASCII] TermRect missing material")
+		return
+	var char_tex: ImageTexture = mat.get_shader_parameter("character_grid")
+	var fg_tex: ImageTexture = mat.get_shader_parameter("fg_color")
+	var bg_tex: ImageTexture = mat.get_shader_parameter("bg_color")
+	if char_tex == null or fg_tex == null or bg_tex == null:
+		printerr("[SMOKE][ASCII] Missing one or more textures: chars=", char_tex != null, ", fg=", fg_tex != null, ", bg=", bg_tex != null)
+		return
+	var img_chars: Image = char_tex.get_image()
+	var w := img_chars.get_width()
+	var h := img_chars.get_height()
+	print("[SMOKE][ASCII] grid:", w, "x", h, " px TermRect:", termrect.size)
+	# Sample the four corners and center red channel for quick sanity
+	var cx := int(floor(float(w) / 2.0))
+	var cy := int(floor(float(h) / 2.0))
+	var points := [Vector2i(0,0), Vector2i(max(0,w-1),0), Vector2i(0,max(0,h-1)), Vector2i(max(0,w-1),max(0,h-1)), Vector2i(max(0,cx), max(0,cy))]
+	var samples := []
+	for p in points:
+		if w > 0 and h > 0:
+			samples.append(img_chars.get_pixel(p.x, p.y).r)
+	print("[SMOKE][ASCII] samples:", samples)
+
+func _find_node_recursive(scene_root: Node, predicate: Callable) -> Node:
+	for c in scene_root.get_children():
+		if predicate.call(c):
+			return c
+		var inner := _find_node_recursive(c, predicate)
+		if inner:
+			return inner
+	return null
 
 func _run_all(paths: Array) -> Dictionary:
 	var ok: int = 0

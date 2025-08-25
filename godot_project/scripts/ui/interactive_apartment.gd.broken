@@ -1,0 +1,347 @@
+extends TermElement
+class_name InteractiveApartment
+
+## Interactfunc _try_move(direction: Vector2i) -> bool:
+	var new_pos = player_pos + direction
+	print("[Debug] Trying to move from ", player_pos, " to ", new_pos)
+	
+	# Check bounds
+	if new_pos.x < 0 or new_pos.x >= APARTMENT_WIDTH or new_pos.y < 0 or new_pos.y >= APARTMENT_HEIGHT:
+		print("[Debug] Move blocked - out of bounds")
+		return false
+	
+	# Check if position is passable
+	if not _is_passable(new_pos):
+		print("[Debug] Move blocked - position not passable")
+		return false
+	
+	# Move is valid
+	player_pos = new_pos
+	print("[Debug] Move successful to ", player_pos)
+	return truetment with WASD movement and POI system
+
+# Apartment dimensions
+const APARTMENT_WIDTH = 28
+const APARTMENT_HEIGHT = 16
+
+# Player data
+var player_pos: Vector2i = Vector2i(5, 2)
+var last_interaction: Dictionary = {}
+
+# Room layout and POIs
+var apartment_grid: Dictionary = {}
+var pois: Array = []
+var nearby_poi = null
+
+# UI references (will be set by main UI)
+var output_panel = null
+var action_panel = null
+
+func _ready() -> void:
+	super()
+	_generate_apartment_layout()
+	_setup_pois()
+	print("[InteractiveApartment] Ready - ", APARTMENT_WIDTH, "x", APARTMENT_HEIGHT)
+
+func get_apartment_size() -> Vector2i:
+	return Vector2i(APARTMENT_WIDTH, APARTMENT_HEIGHT)
+
+func get_player_position() -> Vector2i:
+	return player_pos
+
+func set_player_position(pos: Vector2i) -> void:
+	player_pos = pos
+	_check_nearby_pois()
+	_redraw_required = true
+
+func get_cell(pos: Vector2i):
+	# Return the cell at the given position
+	if pos == player_pos:
+		return AsciiCanvasCell.new("@", Color.WHITE, Color.BLACK)
+	
+	if apartment_grid.has(pos):
+		return apartment_grid[pos]
+	
+	# Default to empty space
+	return AsciiCanvasCell.new(" ", Color.WHITE, Color.BLACK)
+
+func handle_input(action: String) -> bool:
+	match action:
+		"ui_up":
+			return _try_move(Vector2i(0, -1))
+		"ui_down":
+			return _try_move(Vector2i(0, 1))
+		"ui_left":
+			return _try_move(Vector2i(-1, 0))
+		"ui_right":
+			return _try_move(Vector2i(1, 0))
+		"ui_accept":
+			return _try_interact()
+	return false
+
+func _try_move(direction: Vector2i) -> bool:
+	var new_pos = player_position + direction
+	print("[Debug] Trying to move from ", player_position, " to ", new_pos)
+	
+	# Check bounds
+	if new_pos.x < 0 or new_pos.x >= APARTMENT_WIDTH or new_pos.y < 0 or new_pos.y >= APARTMENT_HEIGHT:
+		print("[Debug] Move blocked - out of bounds")
+		return false
+	
+	# Check if position is passable
+	if not _is_passable(new_pos):
+		print("[Debug] Move blocked - position not passable")
+		return false
+	
+	# Move is valid
+	player_position = new_pos
+	print("[Debug] Move successful to ", player_position)
+	return true
+
+func _is_passable(pos: Vector2i) -> bool:
+	var cell = apartment_grid.get(pos)
+	if not cell:
+		return true  # Empty space is passable
+	
+	# Only floor tiles are passable, everything else blocks movement
+	var passable = cell.character == "."
+	# Debug output for testing
+	if not passable:
+		print("[Debug] Blocked movement to ", pos, " - character: '", cell.character, "'")
+	return passable
+
+func _try_interact() -> bool:
+	if nearby_poi:
+		last_interaction = {
+			"poi_name": nearby_poi.name,
+			"timestamp": Time.get_unix_time_from_system()
+		}
+		_interact_with_poi(nearby_poi)
+		return true
+	return false
+
+func get_nearby_poi():
+	return nearby_poi
+
+func get_poi_by_name(poi_name: String):
+	for poi in pois:
+		if poi.name == poi_name:
+			return poi
+	return null
+
+func get_last_interaction() -> Dictionary:
+	return last_interaction
+
+func _check_nearby_pois() -> void:
+	nearby_poi = null
+	
+	# Check adjacent cells for POIs
+	var adjacent_positions = [
+		player_pos + Vector2i(0, -1),  # Up
+		player_pos + Vector2i(0, 1),   # Down
+		player_pos + Vector2i(-1, 0),  # Left
+		player_pos + Vector2i(1, 0)    # Right
+	]
+	
+	# Find the closest POI or prioritize specific ones like drawers
+	for poi in pois:
+		if poi.position in adjacent_positions:
+			# Prioritize drawer over desk when both are nearby
+			if poi.name == "Desk Drawer":
+				nearby_poi = poi
+				break
+			elif nearby_poi == null:
+				nearby_poi = poi
+
+func _interact_with_poi(poi) -> void:
+	if poi:
+		update_output_panel(poi.description)
+		update_action_panel(poi.actions)
+
+func update_output_panel(text: String) -> void:
+	# Find and update output panel
+	if not output_panel:
+		var root = get_tree().get_root()
+		output_panel = root.find_child("OutputPanel", true, false)
+	
+	if output_panel and output_panel.has_method("show_description"):
+		output_panel.show_description(text)
+
+func update_action_panel(actions: Array) -> void:
+	# Find and update action panel  
+	if not action_panel:
+		var root = get_tree().get_root()
+		action_panel = root.find_child("ActionPanel", true, false)
+	
+	if action_panel and action_panel.has_method("set_actions"):
+		action_panel.set_actions(actions)
+
+func _generate_apartment_layout() -> void:
+	apartment_grid.clear()
+	
+	# Generate the apartment layout from our design
+	var layout = [
+		"████████████████████████████",
+		"█..........█.......█.......█",
+		"█..........█..■....█..π....█", 
+		"█..........█..╥....█.......█",
+		"█..........+.......+.......█",
+		"█████████████████████+██████",
+		"█.........█.................█",
+		"█..Θ......█.................█",
+		"█..π......+...╤.............█",
+		"█.........█...Æ.............█",
+		"█.........█.................█",
+		"█████████████████████████████"
+	]
+	
+	# Fill remaining rows with walls if needed
+	while layout.size() < APARTMENT_HEIGHT:
+		if layout.size() == APARTMENT_HEIGHT - 1:
+			layout.append("█████████████████████████████")
+		else:
+			layout.append("█" + ".".repeat(APARTMENT_WIDTH - 2) + "█")
+	
+	# Convert layout to grid
+	for y in range(layout.size()):
+		var row = layout[y]
+		for x in range(min(row.length(), APARTMENT_WIDTH)):
+			var character = row[x]
+			var color = _get_char_color(character)
+			apartment_grid[Vector2i(x, y)] = AsciiCanvasCell.new(character, color, Color.BLACK)
+
+func _get_char_color(character: String) -> Color:
+	# Return appropriate colors for different characters
+	match character:
+		"█": return Color("#A0A0A0")  # Stone walls
+		".": return Color("#8B5A2B")  # Wood floor
+		"+": return Color("#8B5A2B")  # Wood doors
+		"■": return Color("#B0BEC5")  # Steel fridge
+		"╥", "╤", "Æ", "Θ", "π": return Color("#8B5A2B")  # Wood furniture
+		_: return Color.WHITE
+
+func _setup_pois() -> void:
+	pois.clear()
+	
+	# Create POI objects based on furniture positions
+	var poi_definitions = [
+		{
+			"name": "Detective's Desk",
+			"position": Vector2i(19, 8),
+			"description": "A cluttered oak desk covered in case files and coffee stains. The surface is littered with old reports, empty coffee cups, and a few personal mementos from solved cases.",
+			"actions": ["Search surface", "Check computer", "Review files", "Open drawer"]
+		},
+		{
+			"name": "Desk Drawer", 
+			"position": Vector2i(20, 9),
+			"description": "The bottom drawer of your desk, slightly ajar. Inside you can see the glint of metal and some personal items you keep close at hand.",
+			"actions": ["Take service pistol", "Take whiskey bottle", "Take leather jacket", "Close drawer"],
+			"items": _create_drawer_items()
+		},
+		{
+			"name": "Kitchen Refrigerator",
+			"position": Vector2i(13, 2),
+			"description": "A humming white refrigerator that's seen better days. Mostly empty except for takeout containers, expired milk, and a six-pack of beer from last week.",
+			"actions": ["Open fridge", "Take beer", "Check leftovers"]
+		},
+		{
+			"name": "Bedroom Closet",
+			"position": Vector2i(3, 8),
+			"description": "A narrow closet with a few hanging shirts and an old winter coat. Smells faintly of mothballs and forgotten laundry.",
+			"actions": ["Search clothes", "Check coat pockets", "Look for hidden items"]
+		},
+		{
+			"name": "Unmade Bed",
+			"position": Vector2i(3, 7),
+			"description": "Your unmade bed with rumpled sheets and a pillow that still holds the shape of your head. You can still feel the weight of last night's poor decisions.",
+			"actions": ["Rest (restore energy)", "Search under bed", "Make bed"]
+		},
+		{
+			"name": "Kitchen Cupboard",
+			"position": Vector2i(25, 2),
+			"description": "Upper kitchen cabinet with mismatched dishes, a few canned goods, and the remnants of better-stocked days.",
+			"actions": ["Search shelves", "Check supplies", "Look for coffee"]
+		}
+	]
+	
+	# Create POI objects
+	for poi_data in poi_definitions:
+		var poi = ApartmentPOI.new()
+		poi.name = poi_data.name
+		poi.position = poi_data.position
+		poi.description = poi_data.description
+		poi.actions = poi_data.actions
+		if poi_data.has("items"):
+			poi.items = poi_data.items
+		pois.append(poi)
+
+func _create_drawer_items() -> Array:
+	var items = []
+	
+	# Service Pistol
+	var pistol = ApartmentItem.new()
+	pistol.name = "Service Pistol"
+	pistol.full_name = "Old Model 10 Service Pistol (.38 Special)"
+	pistol.description = "Your trusty old Model 10 revolver in .38 Special. The blued steel shows wear from years of service, but it's been meticulously maintained. Six shots, double-action, and reliable as the day you graduated from the academy. The wooden grips are worn smooth from your hands."
+	pistol.type = "weapon"
+	pistol.equippable = true
+	pistol.stats = {"damage": 15, "accuracy": 85, "ammo": 6, "range": "medium"}
+	items.append(pistol)
+	
+	# Whiskey Bottle
+	var whiskey = ApartmentItem.new()
+	whiskey.name = "Whiskey Bottle"
+	whiskey.full_name = "Mostly Empty Bottle of Bourbon"
+	whiskey.description = "A half-empty bottle of cheap bourbon whiskey. The amber liquid sloshes around the bottom - just enough left for a few good swigs. Might help steady your nerves and clear that pounding hangover from last night's bender."
+	whiskey.type = "consumable"
+	whiskey.effects = {"heal": 10, "remove_status": "hungover", "add_status": "steady_nerves"}
+	whiskey.uses = 3
+	items.append(whiskey)
+	
+	# Leather Jacket
+	var jacket = ApartmentItem.new()
+	jacket.name = "Leather Jacket"
+	jacket.full_name = "Brown Leather Jacket"
+	jacket.description = "Your old brown leather jacket, worn soft from years of wear. The leather is scuffed and stained but still sturdy - it's saved you from more than a few scrapes over the years. Has that lived-in smell of cigarettes, coffee, and the streets."
+	jacket.type = "armor"
+	jacket.equippable = true
+	jacket.stats = {"defense": 5, "durability": 80, "style": "detective"}
+	items.append(jacket)
+	
+	return items
+
+# Canvas rendering support
+func _blit_self_under_canvas(buffer) -> void:
+	var rect = _rect
+	
+	# Render apartment grid
+	for pos in apartment_grid.keys():
+		var grid_pos = rect.position + pos
+		if grid_pos.x >= 0 and grid_pos.y >= 0:
+			buffer.set_cell(grid_pos, apartment_grid[pos])
+	
+	# Render player
+	var player_grid_pos = rect.position + player_pos
+	if player_grid_pos.x >= 0 and player_grid_pos.y >= 0:
+		buffer.set_cell(player_grid_pos, AsciiCanvasCell.new("@", Color.WHITE, Color.BLACK))
+
+# Helper classes
+class ApartmentPOI:
+	var name: String
+	var position: Vector2i
+	var description: String
+	var actions: Array = []
+	var items: Array = []
+	
+	func get_items() -> Array:
+		return items
+
+class ApartmentItem:
+	var name: String
+	var full_name: String
+	var description: String
+	var type: String
+	var equippable: bool = false
+	var stats: Dictionary = {}
+	var effects: Dictionary = {}
+	var uses: int = 1

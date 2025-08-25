@@ -35,6 +35,11 @@ func _try_connect_providers() -> void:
 	if ls and not ls.is_connected("location_changed", Callable(self, "_on_location_changed")):
 		print("[TopStatus] Connecting LocationState")
 		ls.connect("location_changed", Callable(self, "_on_location_changed"))
+		# Initialize from current value if available
+		if ls.has_method("get_location"):
+			var cur: String = String(ls.call("get_location"))
+			if typeof(cur) == TYPE_STRING and cur != "":
+				_on_location_changed(cur)
 
 func _on_node_added(node: Node) -> void:
 	if node.name == "GameClock" or node.name == "PlayerState" or node.name == "LocationState":

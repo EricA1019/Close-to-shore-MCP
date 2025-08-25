@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://ascii_min_demo_f1"]
+
+[ext_resource type="Script" path="res://scenes/ascii_min_demo/ascii_min_demo.gd" id="1_p3b8y"]
+[ext_resource type="Script" path="res://addons/ascii_grid/term_rect.gd" id="2_kr3cx"]
+[ext_resource type="Texture2D" path="res://assets/fonts/cp437_16x16.png" id="3_hq8t0"]
+[ext_resource type="Script" path="res://addons/ascii_grid/term_container_vbox.gd" id="4_m0p8r"]
+[ext_resource type="Script" path="res://addons/ascii_grid/term_label.gd" id="5_9p8cl"]
+
+[node name="AsciiMinDemo" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+modulate = Color(1, 1, 1, 1)
+script = ExtResource("1_p3b8y")
+
+[node name="TermRect" type="ColorRect" parent="." node_paths=PackedStringArray("term_root")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("2_kr3cx")
+texture_filter = 3
+color = Color(0, 0, 0, 1)
+characters_per_line = 16
+font = ExtResource("3_hq8t0")
+tile_size = Vector2i(16, 16)
+term_root = NodePath("../TermRoot")
+debug_logging = true
+debug_bring_to_front = true
+
+[node name="TermRoot" type="Node" parent="."]
+script = ExtResource("4_m0p8r")
+
+[node name="Title" type="Node" parent="TermRoot"]
+script = ExtResource("5_9p8cl")
+fixed_size = Vector2i(0, 1)
+
+[connection signal="ready" from="." to="." method="_ready"]

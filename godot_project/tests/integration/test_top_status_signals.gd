@@ -23,8 +23,13 @@ func test_top_status_updates_from_signals() -> void:
 	var top: HBoxContainer = ui.get_node("%TopStatus")
 	if top.has_method("connect_providers"):
 		top.call("connect_providers")
-	# Now emit (directly call handlers to validate UI binding)
-	top.call("_on_time_changed", "Day 1 - 08:00")
+	# Explicitly connect to avoid timing issues
+	gc.connect("time_changed", Callable(top, "_on_time_changed"), CONNECT_DEFERRED | CONNECT_REFERENCE_COUNTED)
+	ps.connect("health_changed", Callable(top, "_on_health_changed"), CONNECT_DEFERRED | CONNECT_REFERENCE_COUNTED)
+	ps.connect("status_changed", Callable(top, "_on_status_changed"), CONNECT_DEFERRED | CONNECT_REFERENCE_COUNTED)
+	loc.connect("location_changed", Callable(top, "_on_location_changed"), CONNECT_DEFERRED | CONNECT_REFERENCE_COUNTED)
+	# Emit signals from providers to validate UI binding
+	gc.emit_signal("time_changed", "Day 1 - 08:00")
 	await get_tree().process_frame
 	var status_label: Label = top.get_node("StatusLabel")
 	var time_label: Label = top.get_node("TimeLabel")
@@ -33,9 +38,9 @@ func test_top_status_updates_from_signals() -> void:
 	assert_eq(time_label.text, "Day 1 - 08:00")
 
 	# Health / status / location
-	top.call("_on_health_changed", 10, 12)
-	top.call("_on_status_changed", "Exploring")
-	top.call("_on_location_changed", "Apartment")
+	ps.emit_signal("health_changed", 10, 12)
+	ps.emit_signal("status_changed", "Exploring")
+	loc.emit_signal("location_changed", "Apartment")
 	await get_tree().process_frame
 	assert_eq(status_label.text, "Exploring")
 	assert_eq(location_label.text, "Apartment")

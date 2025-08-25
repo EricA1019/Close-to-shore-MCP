@@ -1,14 +1,28 @@
 extends ColorRect
 
-@onready var _label: Label = Label.new()
+@onready var _label: Label = Label.new() # Description label
+@onready var _logs_label: Label = Label.new() # Logs feed label
+@onready var _container: VBoxContainer = VBoxContainer.new()
 var _last_description: String = ""
 
 func _ready() -> void:
 	print("[OutputPanel] _ready")
+	# Layout: Description on top, logs below
+	_container.name = "Content"
+	add_child(_container)
+	_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
+
 	_label.autowrap_mode = TextServer.AUTOWRAP_WORD
-	add_child(_label)
+	# Keep legacy name for compatibility with tests and other code
 	_label.name = "Label"
-	_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_label.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	_container.add_child(_label)
+
+	_logs_label.autowrap_mode = TextServer.AUTOWRAP_WORD
+	_logs_label.name = "LogsLabel"
+	_logs_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_logs_label.modulate = Color(0.8, 0.9, 1.0)
+	_container.add_child(_logs_label)
 	set_process(true)
 	_try_connect_logbus()
 	get_tree().node_added.connect(Callable(self, "_on_node_added"))
@@ -33,11 +47,11 @@ func _try_connect_logbus() -> void:
 			_refresh_from_existing()
 
 func _on_log_message(msg: String) -> void:
-	# Prepend newest first
-	if _label.text.is_empty():
-		_label.text = msg
+	# Prepend newest first into logs feed
+	if _logs_label.text.is_empty():
+		_logs_label.text = msg
 	else:
-		_label.text = msg + "\n" + _label.text
+		_logs_label.text = msg + "\n" + _logs_label.text
 
 func _refresh_from_existing() -> void:
 	var root := get_tree().get_root()
@@ -46,7 +60,7 @@ func _refresh_from_existing() -> void:
 		var lines: Array = lb.call("get_recent")
 		lines = lines.duplicate()
 		lines.reverse()
-		_label.text = "\n".join(lines)
+		_logs_label.text = "\n".join(lines)
 
 func _on_node_added(node: Node) -> void:
 	if node.name == "LogBus":

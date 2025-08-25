@@ -15,10 +15,24 @@ func test_log_output_newest_first():
 	var out: ColorRect = inst.get_node("%OutputPanel")
 	if out.has_method("refresh_now"):
 		out.call("refresh_now")
-	# Directly invoke handler to avoid reliance on dynamic connections
-	out.call("_on_log_message", "First")
-	out.call("_on_log_message", "Second")
+	# Explicit connection to ensure deterministic updates in test
+	var label: Label = out.find_child("LogsLabel", true, false)
+	if label == null:
+		# Fallback to first Label descendant
+		for n in out.get_children():
+			if n is Label:
+				label = n
+				break
+			elif n is Container:
+				for c2 in n.get_children():
+					if c2 is Label:
+						label = c2
+						break
+	assert_not_null(label, "Logs label exists")
+	if not lb.is_connected("message", Callable(out, "_on_log_message")):
+		lb.connect("message", Callable(out, "_on_log_message"))
+	# Emit via LogBus to validate signal-driven update
+	lb.call("info", "First")
+	lb.call("info", "Second")
 	await get_tree().process_frame
-	var label := out.get_child(0)
-	assert_true(label is Label)
 	assert_eq((label as Label).text.split("\n")[0], "Second")
