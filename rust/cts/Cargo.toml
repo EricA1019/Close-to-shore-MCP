@@ -1,0 +1,41 @@
+[package]
+name = "cts"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "cts"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+walkdir = { workspace = true }
+regex = { workspace = true }
+glob = "0.3"
+
+cts-core = { path = "../cts-core" }
+cts-web = { path = "../cts-web" }
+
+[features]
+default = []
+# Enable GDScript AST parsing via tree-sitter; falls back to regex when disabled
+gdscript-ast = ["dep:tree-sitter", "dep:tree-sitter-gdscript"]
+
+[dependencies.tree-sitter]
+version = "0.22"
+optional = true
+
+[dependencies.tree-sitter-gdscript]
+version = "*"
+optional = true
+
+[dev-dependencies]
+assert_cmd = "2.0"
+predicates = "3.1"

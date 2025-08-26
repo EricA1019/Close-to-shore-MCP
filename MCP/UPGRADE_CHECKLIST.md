@@ -12,7 +12,7 @@ This checklist tracks the full upgrade discussed: context bundling, dual-channel
   - [x] `MCP/GODOT_WORKFLOW.md`
   - [x] `MCP/PLUGINS.md`
   - [x] `README.md`
-- [x] Add VS Code task: "MCP: Build Context Bundle"
+- [x] Add VS Code task: "CTS: Build Context Bundle" (replaces legacy "MCP: Build Context Bundle")
 - [x] Make test tasks depend on bundler (so the agent always has the latest context)
 
 ## Hop 2 — Dual-Channel Logging (Godot)

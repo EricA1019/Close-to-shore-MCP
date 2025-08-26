@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.1.1-mcp-logging-upgrade] - 2025-08-23
 ### Added
-- MCP Context Bundler: `MCP/TOOLS/context_bundler.py` + VS Code task “MCP: Build Context Bundle”.
+- Context Bundler: now provided by `cts bundle` + VS Code task “CTS: Build Context Bundle” (replaces legacy Python script).
 - Dual-channel logging via `res://scripts/autoload/log_bus.gd` (INFO+ console, DEBUG+ file at `user://logs/run-<RUN_ID>.log`).
 - Test Runner wrapper `MCP/TOOLS/test_runner.sh` that sets RUN_ID and tees output to `logs/run-<RUN_ID>-testrunner.out`.
 - MCP tools stubs and tasks: `log_summary.py`, `scene_lint.py`, `release_helper.py`.

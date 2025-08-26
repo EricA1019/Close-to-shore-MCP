@@ -1,0 +1,995 @@
+{
+  "test_theme_applied": {
+    "file_path": "tests/ui/test_theme_applied.gd",
+    "description": "Test suite for theme applied",
+    "test_count": 2,
+    "tests": [
+      {
+        "name": "test_project_has_custom_theme_setting",
+        "line_number": 6,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_theme_resource_exists_and_loads",
+        "line_number": 11,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_theme_applied.gd",
+    "current_status": "0/2 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_main_ui_canvas": {
+    "file_path": "tests/integration/test_main_ui_canvas.gd",
+    "description": "Test suite for main ui canvas",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_main_ui_canvas_renders",
+        "line_number": 5,
+        "description": "Force render and wait",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "medium"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_main_ui_canvas.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_apartment_wrap_and_echo": {
+    "file_path": "tests/integration/test_apartment_wrap_and_echo.gd",
+    "description": "Test suite for apartment wrap and echo",
+    "test_count": 2,
+    "tests": [
+      {
+        "name": "test_wraps_left_right_and_ignores_echo",
+        "line_number": 25,
+        "description": "default Desk",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_up_down_are_aliases",
+        "line_number": 54,
+        "description": "Move down once (alias of right)",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_apartment_wrap_and_echo.gd",
+    "current_status": "0/2 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_ascii_in_main_panel": {
+    "file_path": "tests/integration/test_ascii_in_main_panel.gd",
+    "description": "Test suite for ascii in main panel",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_main_panel_has_termrect_and_root_visible",
+        "line_number": 5,
+        "description": "Verify term_root is set and grid size computed after layout",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_ascii_in_main_panel.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_ascii_min_debug_dump": {
+    "file_path": "tests/integration/test_ascii_min_debug_dump.gd",
+    "description": "Test suite for ascii min debug dump",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_ascii_min_debug_dump",
+        "line_number": 20,
+        "description": "Turn on debug logging for this instance",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_ascii_min_debug_dump.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_termrect_smoke_buffer": {
+    "file_path": "tests/integration/test_termrect_smoke_buffer.gd",
+    "description": "Test suite for termrect smoke buffer",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_termrect_renders_non_clear_cells",
+        "line_number": 5,
+        "description": "Allow sizing and first render to occur",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_termrect_smoke_buffer.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_game_root_ascii_visible": {
+    "file_path": "tests/integration/test_game_root_ascii_visible.gd",
+    "description": "Test suite for game root ascii visible",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_game_root_ascii_renders_non_clear_cells",
+        "line_number": 29,
+        "description": "Use global TermCell from ascii_grid addon",
+        "category": "game_flow",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_game_root_ascii_visible.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_testroom_ascii_visible": {
+    "file_path": "tests/integration/test_testroom_ascii_visible.gd",
+    "description": "Test suite for testroom ascii visible",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_testroom_ascii_renders_non_clear_cells",
+        "line_number": 27,
+        "description": "Let LocationState flip to \"Test Room\" and ASCII update/render",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_testroom_ascii_visible.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_ascii_location_binding": {
+    "file_path": "tests/integration/test_ascii_location_binding.gd",
+    "description": "Test suite for ascii location binding",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_ascii_title_updates_from_location_state",
+        "line_number": 5,
+        "description": "Find TermLabel under MainUI",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_ascii_location_binding.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_top_status_signals": {
+    "file_path": "tests/integration/test_top_status_signals.gd",
+    "description": "Test suite for top status signals",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_top_status_updates_from_signals",
+        "line_number": 12,
+        "description": "Emulate autoloads first",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_top_status_signals.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_ascii_min_scene_direct": {
+    "file_path": "tests/integration/test_ascii_min_scene_direct.gd",
+    "description": "Test suite for ascii min scene direct",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_ascii_min_scene_direct_instantiate",
+        "line_number": 5,
+        "description": "Just ensure no errors throw and material textures are set",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_ascii_min_scene_direct.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_ascii_apartment_map_content": {
+    "file_path": "tests/integration/test_ascii_apartment_map_content.gd",
+    "description": "Test suite for ascii apartment map content",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_apartment_map_populates_term_cell_map",
+        "line_number": 5,
+        "description": "Derive expected content size from the control's content rect",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_ascii_apartment_map_content.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_basic_room_demo": {
+    "file_path": "tests/integration/test_basic_room_demo.gd",
+    "description": "Test suite for basic room demo",
+    "test_count": 2,
+    "tests": [
+      {
+        "name": "test_basic_room_renders",
+        "line_number": 5,
+        "description": "Force render",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_room_has_correct_size",
+        "line_number": 44,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_basic_room_demo.gd",
+    "current_status": "0/2 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_smoke_location_update": {
+    "file_path": "tests/integration/test_smoke_location_update.gd",
+    "description": "Test suite for smoke location update",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_smoke_boot_and_location_updates_tags",
+        "line_number": 32,
+        "description": "Boot game scene directly (faster than going through menu for a smoke test)",
+        "category": "smoke",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_smoke_location_update.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_main_menu_integration": {
+    "file_path": "tests/integration/test_main_menu_integration.gd",
+    "description": "Test suite for main menu integration",
+    "test_count": 2,
+    "tests": [
+      {
+        "name": "test_main_menu_new_game_shows_basic_room",
+        "line_number": 5,
+        "description": "Load the main menu",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_main_ui_standalone_shows_basic_room",
+        "line_number": 25,
+        "description": "Test loading main_ui.tscn directly (what happens after New Game)",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_main_menu_integration.gd",
+    "current_status": "0/2 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_mainui_location_signal_flow": {
+    "file_path": "tests/integration/test_mainui_location_signal_flow.gd",
+    "description": "Test suite for mainui location signal flow",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_title_updates_when_location_changes",
+        "line_number": 13,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_mainui_location_signal_flow.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_log_output_panel": {
+    "file_path": "tests/integration/test_log_output_panel.gd",
+    "description": "Test suite for log output panel",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_log_output_newest_first",
+        "line_number": 5,
+        "description": "Send messages via LogBus",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_log_output_panel.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_action_panel_hints": {
+    "file_path": "tests/integration/test_action_panel_hints.gd",
+    "description": "Test suite for action panel hints",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_action_hints_render_default",
+        "line_number": 5,
+        "description": "Use InputHints directly",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_action_panel_hints.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_main_panel_not_black": {
+    "file_path": "tests/integration/test_main_panel_not_black.gd",
+    "description": "Test suite for main panel not black",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_main_panel_not_black_with_apartment",
+        "line_number": 29,
+        "description": "Force initial render (UI has a deferred render already, this reinforces it)",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_main_panel_not_black.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_log_file_sink": {
+    "file_path": "tests/integration/test_log_file_sink.gd",
+    "description": "Test suite for log file sink",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_log_file_sink_creates_and_writes",
+        "line_number": 3,
+        "description": "Instantiate LogBus",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_log_file_sink.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_new_game_flow": {
+    "file_path": "tests/integration/test_new_game_flow.gd",
+    "description": "Test suite for new game flow",
+    "test_count": 2,
+    "tests": [
+      {
+        "name": "test_new_game_flow_loads_basic_room",
+        "line_number": 5,
+        "description": "Simulate the New Game flow by directly loading game_root.tscn",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "medium"
+      },
+      {
+        "name": "test_canvas_renders_room_in_game_context",
+        "line_number": 32,
+        "description": "Load the full game scene",
+        "category": "game_flow",
+        "dependencies": [],
+        "expected_duration": "medium"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_new_game_flow.gd",
+    "current_status": "0/2 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_apartment_keyboard": {
+    "file_path": "tests/integration/test_apartment_keyboard.gd",
+    "description": "Test suite for apartment keyboard",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_keyboard_cycles_pois",
+        "line_number": 31,
+        "description": "Initial selection should be Desk (due to auto-select)",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_apartment_keyboard.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_apartment_scene": {
+    "file_path": "tests/integration/test_apartment_scene.gd",
+    "description": "Test suite for apartment scene",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_apartment_sets_location_in_top_status",
+        "line_number": 13,
+        "description": "Ensure UI is present",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_apartment_scene.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_boot_flow_menu_to_game": {
+    "file_path": "tests/integration/test_boot_flow_menu_to_game.gd",
+    "description": "Test suite for boot flow menu to game",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_menu_game_scene_path_and_scene_loader",
+        "line_number": 13,
+        "description": "game_scene_path is on a node of class MainMenu; find it recursively if needed",
+        "category": "game_flow",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_boot_flow_menu_to_game.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_ascii_min_demo": {
+    "file_path": "tests/integration/test_ascii_min_demo.gd",
+    "description": "Test suite for ascii min demo",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_ascii_min_demo_renders_title",
+        "line_number": 27,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_ascii_min_demo.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_boot_flow_opening_to_menu": {
+    "file_path": "tests/integration/test_boot_flow_opening_to_menu.gd",
+    "description": "Test suite for boot flow opening to menu",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_opening_next_scene_is_valid_and_preloads",
+        "line_number": 13,
+        "description": "Opening base script calls SceneLoader.load_scene(next_scene, true) on _ready",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_boot_flow_opening_to_menu.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_poi_interaction": {
+    "file_path": "tests/integration/test_poi_interaction.gd",
+    "description": "Test suite for poi interaction",
+    "test_count": 2,
+    "tests": [
+      {
+        "name": "test_poi_selection_updates_panels",
+        "line_number": 31,
+        "description": "Find a POI named \"Desk\" and select it",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_action_emission",
+        "line_number": 59,
+        "description": "Select Desk to populate actions",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_poi_interaction.gd",
+    "current_status": "0/2 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_interactive_apartment": {
+    "file_path": "tests/integration/test_interactive_apartment.gd",
+    "description": "Test suite for interactive apartment",
+    "test_count": 9,
+    "tests": [
+      {
+        "name": "test_apartment_layout_creation",
+        "line_number": 5,
+        "description": "Test basic apartment layout generation",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_player_starting_position",
+        "line_number": 26,
+        "description": "Test player starts in correct position",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_player_movement_wasd",
+        "line_number": 45,
+        "description": "Test WASD movement controls",
+        "category": "integration",
+        "dependencies": [
+          "test_apartment_layout_creation",
+          "test_player_starting_position"
+        ],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_collision_detection",
+        "line_number": 81,
+        "description": "Test player cannot move through walls/furniture",
+        "category": "integration",
+        "dependencies": [
+          "test_player_movement_wasd"
+        ],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_poi_detection",
+        "line_number": 111,
+        "description": "Test POI detection when player is adjacent",
+        "category": "integration",
+        "dependencies": [
+          "test_collision_detection"
+        ],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_desk_drawer_items",
+        "line_number": 133,
+        "description": "Test desk drawer contains the three key items",
+        "category": "game_flow",
+        "dependencies": [
+          "test_poi_detection"
+        ],
+        "expected_duration": "medium"
+      },
+      {
+        "name": "test_item_interaction",
+        "line_number": 176,
+        "description": "Test taking items from desk drawer",
+        "category": "game_flow",
+        "dependencies": [
+          "test_poi_detection"
+        ],
+        "expected_duration": "medium"
+      },
+      {
+        "name": "test_canvas_rendering",
+        "line_number": 200,
+        "description": "Test apartment renders properly with Canvas system",
+        "category": "integration",
+        "dependencies": [],
+        "expected_duration": "medium"
+      },
+      {
+        "name": "test_ui_panel_integration",
+        "line_number": 229,
+        "description": "Test integration with OutputPanel and ActionPanel",
+        "category": "integration",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_interactive_apartment.gd",
+    "current_status": "0/9 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_main_ui_basic_room": {
+    "file_path": "tests/integration/test_main_ui_basic_room.gd",
+    "description": "Test suite for main ui basic room",
+    "test_count": 3,
+    "tests": [
+      {
+        "name": "test_main_ui_has_basic_room",
+        "line_number": 5,
+        "description": "Load the main UI scene",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_basic_room_renders_in_main_ui",
+        "line_number": 25,
+        "description": "Load the main UI scene",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_location_state_set_correctly",
+        "line_number": 56,
+        "description": "Load the main UI scene",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_main_ui_basic_room.gd",
+    "current_status": "0/3 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_ascii_canvas_demo": {
+    "file_path": "tests/integration/test_ascii_canvas_demo.gd",
+    "description": "Test suite for ascii canvas demo",
+    "test_count": 2,
+    "tests": [
+      {
+        "name": "test_canvas_ascii_renders_text",
+        "line_number": 5,
+        "description": "Force render",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "medium"
+      },
+      {
+        "name": "test_canvas_ascii_visible_size",
+        "line_number": 31,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "medium"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_ascii_canvas_demo.gd",
+    "current_status": "0/2 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_debug_toggle": {
+    "file_path": "tests/integration/test_debug_toggle.gd",
+    "description": "Test suite for debug toggle",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_debug_toggle_visibility",
+        "line_number": 5,
+        "description": "Toggle via input action to exercise the script logic",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_debug_toggle.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_boot": {
+    "file_path": "tests/smoke/test_boot.gd",
+    "description": "Test suite for boot",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_project_main_scene_loads",
+        "line_number": 3,
+        "description": "Clean up",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_boot.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_main_ui_loads": {
+    "file_path": "tests/smoke/test_main_ui_loads.gd",
+    "description": "Test suite for main ui loads",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_scene_loads_and_nodes_exist",
+        "line_number": 5,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_main_ui_loads.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_sanity": {
+    "file_path": "tests/smoke/test_sanity.gd",
+    "description": "Test suite for sanity",
+    "test_count": 2,
+    "tests": [
+      {
+        "name": "test_project_settings_name_is_correct",
+        "line_number": 3,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_engine_major_version_is_4",
+        "line_number": 7,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_sanity.gd",
+    "current_status": "0/2 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_game_root_smoke_ascii": {
+    "file_path": "tests/smoke/test_game_root_smoke_ascii.gd",
+    "description": "Test suite for game root smoke ascii",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_game_root_has_ascii_ready",
+        "line_number": 5,
+        "description": "fallback recursive",
+        "category": "game_flow",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_game_root_smoke_ascii.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_entity_system": {
+    "file_path": "tests/template_tests/test_entity_system.gd",
+    "description": "Test suite for entity system",
+    "test_count": 2,
+    "tests": [
+      {
+        "name": "test_entity_creation",
+        "line_number": 4,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_component_addition",
+        "line_number": 9,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_entity_system.gd",
+    "current_status": "0/2 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_battle_manager": {
+    "file_path": "tests/template_tests/test_battle_manager.gd",
+    "description": "Test suite for battle manager",
+    "test_count": 2,
+    "tests": [
+      {
+        "name": "test_battle_initialization",
+        "line_number": 4,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_battle_flow",
+        "line_number": 9,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_battle_manager.gd",
+    "current_status": "0/2 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_turn_order": {
+    "file_path": "tests/template_tests/test_turn_order.gd",
+    "description": "Test suite for turn order",
+    "test_count": 2,
+    "tests": [
+      {
+        "name": "test_turn_order_initialization",
+        "line_number": 4,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_next_turn",
+        "line_number": 9,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_turn_order.gd",
+    "current_status": "0/2 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_feedback": {
+    "file_path": "tests/template_tests/test_feedback.gd",
+    "description": "Test suite for feedback",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_feedback_logging",
+        "line_number": 4,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_feedback.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_ascii_redraw_debounce": {
+    "file_path": "tests/unit/test_ascii_redraw_debounce.gd",
+    "description": "Test suite for ascii redraw debounce",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_termrect_respects_is_redraw_required",
+        "line_number": 16,
+        "description": "term_root is a typed export; cast via Variant to avoid editor type complaint in test context",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_ascii_redraw_debounce.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_content_db_autoload": {
+    "file_path": "tests/unit/test_content_db_autoload.gd",
+    "description": "Test suite for content db autoload",
+    "test_count": 1,
+    "tests": [
+      {
+        "name": "test_content_db_can_set_and_fetch",
+        "line_number": 13,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_content_db_autoload.gd",
+    "current_status": "0/1 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  },
+  "test_store_noop_guards": {
+    "file_path": "tests/unit/test_store_noop_guards.gd",
+    "description": "Test suite for store noop guards",
+    "test_count": 3,
+    "tests": [
+      {
+        "name": "test_location_state_noop_guard",
+        "line_number": 3,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_player_state_noop_guard",
+        "line_number": 13,
+        "description": "",
+        "category": "unit",
+        "dependencies": [],
+        "expected_duration": "fast"
+      },
+      {
+        "name": "test_game_clock_noop_guard",
+        "line_number": 29,
+        "description": "",
+        "category": "game_flow",
+        "dependencies": [],
+        "expected_duration": "fast"
+      }
+    ],
+    "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_store_noop_guards.gd",
+    "current_status": "0/3 status unknown",
+    "failing_tests": [],
+    "last_updated": "auto-discovered"
+  }
+}

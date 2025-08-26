@@ -1,0 +1,108 @@
+name: CTS CI
+
+on:
+  push:
+    branches: [ Rust-demo ]
+  pull_request:
+    branches: [ Rust-demo ]
+
+jobs:
+  build-and-lint:
+    runs-on: ubuntu-latest
+    env:
+      STRICT_LINT: 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            rust/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Build (release)
+        working-directory: rust
+        run: cargo build --release
+
+      - name: Build GDExt (release)
+        working-directory: rust
+        run: cargo build -p gdext --release
+
+      - name: Copy GDExt → godot_project/bin
+        run: cp -f ./rust/target/release/libgdext.so ./godot_project/bin/libgdext.so
+
+      - name: GDExt headless hello test
+        run: |
+          godot4 --headless --path godot_project \
+            -s res://addons/gut/gut_cmdln.gd \
+            -gdir=res://tests/integration \
+            -gselect=test_gdext_hello.gd \
+            -gexit
+
+      - name: Scene index
+        run: ./rust/target/release/cts scene index --project-root . --godot-project godot_project
+
+      - name: Scene lint
+        run: ./rust/target/release/cts scene lint --project-root . --godot-project godot_project --out logs/scene_lint.json
+
+      - name: Lint API Guard
+        run: ./rust/target/release/cts lint --project-root . api-guard --godot-project godot_project --out logs/api_guard.json
+
+      - name: Lint GDScript
+        run: ./rust/target/release/cts lint --project-root . gdscript --godot-project godot_project --out logs/gdscript_lint.json
+        continue-on-error: true
+
+      - name: Summarize logs
+        run: ./rust/target/release/cts logs summarize --project-root . --out logs/log_summary.json
+
+      - name: Health report
+        run: ./rust/target/release/cts health --project-root . --godot-project godot_project --out logs/health.json
+        env:
+          STRICT_LINT: ${{ env.STRICT_LINT }}
+
+      - name: Enforce health gate (fail on warn or fail)
+        run: |
+          if grep -q '"summary"\s*:\s*"pass"' logs/health.json; then
+            echo "Health summary is PASS; continuing.";
+          else
+            echo "Health summary is not PASS (WARN or FAIL); failing the job.";
+            cat logs/health.json || true;
+            exit 1;
+          fi
+
+      - name: Enforce GDScript lint (strict mode)
+        if: env.STRICT_LINT == 'true'
+        run: |
+          if grep -q '"total_findings": 0' logs/gdscript_lint.json; then
+            echo "GDScript lint clean.";
+          else
+            echo "GDScript lint has findings; failing due to STRICT_LINT.";
+            exit 1;
+          fi
+
+      - name: Upload lint artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cts-lint-reports
+          path: |
+            logs/*.json
+          if-no-files-found: warn
+
+      - name: Bundle context
+        run: ./rust/target/release/cts bundle --project-root . --output .mcp_context/context_bundle.md --skip-missing
+
+      - name: Upload bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-context-bundle
+          path: .mcp_context/context_bundle.md
+          if-no-files-found: error

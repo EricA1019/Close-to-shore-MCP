@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="Database" load_steps=2 format=3 uid="uid://b0kwhx7073mcf"]
+
+[ext_resource type="Script" uid="uid://bfwrxsflgl3ry" path="res://addons/resource_databases/database.gd" id="1_a6f8l"]
+
+[resource]
+script = ExtResource("1_a6f8l")
+metadata/_custom_type_script = "uid://bfwrxsflgl3ry"

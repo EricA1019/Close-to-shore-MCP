@@ -17,10 +17,6 @@ config/features=PackedStringArray("4.5")
 
 [autoload]
 
-AppConfig="*res://addons/maaacks_game_template/base/scenes/autoloads/app_config.tscn"
-SceneLoader="*res://addons/maaacks_game_template/base/scenes/autoloads/scene_loader.tscn"
-ProjectMusicController="*res://addons/maaacks_game_template/base/scenes/autoloads/project_music_controller.tscn"
-ProjectUISoundController="*res://addons/maaacks_game_template/base/scenes/autoloads/project_ui_sound_controller.tscn"
 GameClock="*res://scripts/autoload/game_clock.gd"
 PlayerState="*res://scripts/autoload/player_state.gd"
 LocationState="*res://scripts/autoload/location_state.gd"
@@ -29,6 +25,10 @@ InputHints="*res://scripts/autoload/input_hints.gd"
 InputHelper="*res://addons/maaacks_game_template/base/scripts/input_helper.gd"
 ContentDB="*res://scripts/autoload/content_db.gd"
 ImGuiRoot="*res://addons/imgui-godot/data/ImGuiRoot.tscn"
+AppConfig="*res://addons/maaacks_game_template/base/scenes/autoloads/app_config.tscn"
+SceneLoader="*res://addons/maaacks_game_template/base/scenes/autoloads/scene_loader.tscn"
+ProjectMusicController="*res://addons/maaacks_game_template/base/scenes/autoloads/project_music_controller.tscn"
+ProjectUISoundController="*res://addons/maaacks_game_template/base/scenes/autoloads/project_ui_sound_controller.tscn"
 
 [editor]
 

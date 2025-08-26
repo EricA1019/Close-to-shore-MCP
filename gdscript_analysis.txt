@@ -1,0 +1,208 @@
+GDScript Analysis Report
+==================================================
+
+ERRORS (26):
+  ui/top_status.gd:14 - Node access without validation - consider using is_instance_valid()
+  ui/ascii_apartment_map.gd:56 - Node access without validation - consider using is_instance_valid()
+  ui/ascii_apartment_map.gd:64 - Node access without validation - consider using is_instance_valid()
+  ui/action_panel.gd:46 - Node access without validation - consider using is_instance_valid()
+  ui/ascii_test_pattern.gd:19 - Node access without validation - consider using is_instance_valid()
+  ui/ascii_test_pattern.gd:21 - Node access without validation - consider using is_instance_valid()
+  ui/ascii_test_pattern.gd:22 - Node access without validation - consider using is_instance_valid()
+  ui/ascii_test_pattern.gd:23 - Node access without validation - consider using is_instance_valid()
+  ui/ascii_test_pattern.gd:24 - Node access without validation - consider using is_instance_valid()
+  ui/ascii_test_pattern.gd:25 - Node access without validation - consider using is_instance_valid()
+  ui/ascii_test_pattern.gd:26 - Node access without validation - consider using is_instance_valid()
+  ui/output_panel.gd:28 - Node access without validation - consider using is_instance_valid()
+  ui/output_panel.gd:51 - Node access without validation - consider using is_instance_valid()
+  ui/interactive_apartment.gd:126 - Node access without validation - consider using is_instance_valid()
+  ui/interactive_apartment.gd:138 - Node access without validation - consider using is_instance_valid()
+  ui/interactive_apartment.gd:174 - Node access without validation - consider using is_instance_valid()
+  ui/interactive_apartment.gd:178 - Node access without validation - consider using is_instance_valid()
+  ui/interactive_apartment.gd:181 - Node access without validation - consider using is_instance_valid()
+  ui/interactive_apartment.gd:182 - Node access without validation - consider using is_instance_valid()
+  ui/interactive_apartment.gd:185 - Node access without validation - consider using is_instance_valid()
+  ui/interactive_apartment.gd:186 - Node access without validation - consider using is_instance_valid()
+  ui/interactive_apartment.gd:242 - Node access without validation - consider using is_instance_valid()
+  ui/interactive_apartment.gd:251 - Node access without validation - consider using is_instance_valid()
+  ui/interactive_apartment.gd:260 - Node access without validation - consider using is_instance_valid()
+  tools/scene_inspector.gd:51 - Node access without validation - consider using is_instance_valid()
+  tools/scene_inspector.gd:114 - Node access without validation - consider using is_instance_valid()
+
+WARNINGS (83):
+  ui/action_panel.gd:27 - Variable declaration without type hint
+  ui/ascii_basic_room.gd:33 - Variable declaration without type hint
+  ui/ascii_basic_room.gd:38 - Variable declaration without type hint
+  ui/ascii_basic_room.gd:39 - Variable declaration without type hint
+  ui/ascii_basic_room.gd:56 - Variable declaration without type hint
+  ui/ascii_basic_room.gd:62 - Variable declaration without type hint
+  ui/main_ui.gd:15 - Variable declaration without type hint
+  ui/interactive_apartment.gd:17 - Variable declaration without type hint
+  ui/interactive_apartment.gd:20 - Variable declaration without type hint
+  ui/interactive_apartment.gd:21 - Variable declaration without type hint
+  ui/interactive_apartment.gd:45 - Variable declaration without type hint
+  ui/interactive_apartment.gd:46 - Variable declaration without type hint
+  ui/interactive_apartment.gd:58 - Variable declaration without type hint
+  ui/interactive_apartment.gd:79 - Variable declaration without type hint
+  ui/interactive_apartment.gd:102 - Variable declaration without type hint
+  ui/interactive_apartment.gd:108 - Variable declaration without type hint
+  ui/interactive_apartment.gd:115 - Variable declaration without type hint
+  ui/interactive_apartment.gd:119 - Variable declaration without type hint
+  ui/interactive_apartment.gd:126 - Variable declaration without type hint
+  ui/interactive_apartment.gd:127 - Variable declaration without type hint
+  ui/interactive_apartment.gd:135 - Variable declaration without type hint
+  ui/interactive_apartment.gd:172 - Variable declaration without type hint
+  ui/interactive_apartment.gd:194 - Variable declaration without type hint
+  ui/interactive_apartment.gd:200 - Variable declaration without type hint
+  ui/interactive_apartment.gd:220 - Variable declaration without type hint
+  ui/interactive_apartment.gd:228 - Variable declaration without type hint
+  ui/interactive_apartment.gd:235 - Variable declaration without type hint
+  ui/interactive_apartment.gd:244 - Variable declaration without type hint
+  ui/interactive_apartment.gd:253 - Variable declaration without type hint
+  ui/interactive_apartment.gd:265 - Variable declaration without type hint
+  ui/interactive_apartment.gd:273 - Variable declaration without type hint
+  ui/interactive_apartment.gd:281 - Variable declaration without type hint
+  ui/interactive_apartment.gd:289 - Variable declaration without type hint
+  ui/interactive_apartment.gd:297 - Variable declaration without type hint
+  ui/interactive_apartment.gd:308 - Variable declaration without type hint
+  ui/interactive_apartment.gd:312 - Variable declaration without type hint
+  ui/interactive_apartment.gd:313 - Variable declaration without type hint
+  ui/interactive_apartment.gd:321 - Variable declaration without type hint
+  ui/interactive_apartment.gd:327 - Variable declaration without type hint
+  ui/interactive_apartment.gd:347 - Variable declaration without type hint
+  ui/interactive_apartment.gd:380 - Variable declaration without type hint
+  ui/interactive_apartment.gd:382 - Variable declaration without type hint
+  ui/interactive_apartment.gd:387 - Variable declaration without type hint
+  ui/interactive_apartment.gd:391 - Variable declaration without type hint
+  ui/interactive_apartment.gd:415 - Function declaration without return type
+  ui/interactive_apartment.gd:429 - Function declaration without return type
+  autoload/location_state.gd:13 - Variable declaration without type hint
+  tools/debug_http_server.gd:27 - Variable declaration without type hint
+  tools/debug_http_server.gd:57 - Variable declaration without type hint
+  tools/debug_http_server.gd:63 - Variable declaration without type hint
+  tools/debug_http_server.gd:73 - Variable declaration without type hint
+  tools/debug_http_server.gd:74 - Variable declaration without type hint
+  tools/debug_http_server.gd:79 - Variable declaration without type hint
+  tools/debug_http_server.gd:80 - Variable declaration without type hint
+  tools/debug_http_server.gd:85 - Variable declaration without type hint
+  tools/debug_http_server.gd:86 - Variable declaration without type hint
+  tools/debug_http_server.gd:90 - Variable declaration without type hint
+  tools/debug_http_server.gd:91 - Variable declaration without type hint
+  tools/debug_http_server.gd:100 - Variable declaration without type hint
+  tools/debug_http_server.gd:102 - Variable declaration without type hint
+  tools/debug_http_server.gd:117 - Variable declaration without type hint
+  tools/debug_http_server.gd:126 - Variable declaration without type hint
+  tools/debug_http_server.gd:134 - Variable declaration without type hint
+  tools/debug_http_server.gd:140 - Variable declaration without type hint
+  tools/debug_http_server.gd:143 - Variable declaration without type hint
+  tools/debug_http_server.gd:144 - Variable declaration without type hint
+  tools/debug_http_server.gd:145 - Variable declaration without type hint
+  tools/debug_http_server.gd:154 - Variable declaration without type hint
+  tools/debug_http_server.gd:155 - Variable declaration without type hint
+  tools/debug_http_server.gd:167 - Variable declaration without type hint
+  tools/debug_http_server.gd:168 - Variable declaration without type hint
+  tools/debug_http_server.gd:171 - Variable declaration without type hint
+  tools/debug_http_server.gd:179 - Variable declaration without type hint
+  tools/debug_http_server.gd:180 - Variable declaration without type hint
+  tools/debug_http_server.gd:182 - Variable declaration without type hint
+  tools/scene_inspector.gd:24 - Variable declaration without type hint
+  tools/scene_inspector.gd:32 - Variable declaration without type hint
+  tools/scene_inspector.gd:63 - Variable declaration without type hint
+  tools/scene_inspector.gd:64 - Variable declaration without type hint
+  tools/scene_inspector.gd:78 - Variable declaration without type hint
+  tools/scene_inspector.gd:84 - Variable declaration without type hint
+  tools/scene_inspector.gd:87 - Variable declaration without type hint
+  tools/scene_inspector.gd:90 - Variable declaration without type hint
+
+INFOS (89):
+  ui/ascii_apartment_map.gd:74 - Magic number '20' should be a named constant
+  ui/ascii_apartment_map.gd:74 - Magic number '12' should be a named constant
+  ui/ascii_apartment_map.gd:76 - Magic number '2.0' should be a named constant
+  ui/ascii_apartment_map.gd:80 - Magic number '2.0' should be a named constant
+  ui/ascii_apartment_map.gd:81 - Magic number '2.0' should be a named constant
+  ui/ascii_apartment_map.gd:94 - Magic number '2.0' should be a named constant
+  ui/ascii_apartment_map.gd:95 - Magic number '2.0' should be a named constant
+  ui/ascii_apartment_map.gd:96 - Magic number '2.0' should be a named constant
+  ui/ascii_apartment_map.gd:97 - Magic number '2.0' should be a named constant
+  ui/ascii_apartment_map.gd:98 - Magic number '3.0' should be a named constant
+  ui/ascii_basic_room.gd:5 - Magic number '20' should be a named constant
+  ui/ascii_basic_room.gd:6 - Magic number '12' should be a named constant
+  ui/ascii_basic_room.gd:47 - Magic number '3' should be a named constant
+  ui/ascii_basic_room.gd:50 - Magic number '3' should be a named constant
+  ui/ascii_test_pattern.gd:23 - Magic number '2.0' should be a named constant
+  ui/ascii_test_pattern.gd:24 - Magic number '2.0' should be a named constant
+  ui/ascii_test_pattern.gd:28 - Magic number '0.1' should be a named constant
+  ui/ascii_test_pattern.gd:28 - Magic number '0.1' should be a named constant
+  ui/ascii_test_pattern.gd:28 - Magic number '0.1' should be a named constant
+  ui/ascii_test_pattern.gd:29 - Magic number '0.85' should be a named constant
+  ui/ascii_test_pattern.gd:29 - Magic number '0.2' should be a named constant
+  ui/ascii_test_pattern.gd:34 - Magic number '0.6' should be a named constant
+  ui/output_panel.gd:24 - Magic number '0.8' should be a named constant
+  ui/output_panel.gd:24 - Magic number '0.9' should be a named constant
+  ui/interactive_apartment.gd:7 - Magic number '28' should be a named constant
+  ui/interactive_apartment.gd:8 - Magic number '16' should be a named constant
+  ui/interactive_apartment.gd:11 - Magic number '5' should be a named constant
+  ui/interactive_apartment.gd:115 - Magic number '999.0' should be a named constant
+  ui/interactive_apartment.gd:120 - Magic number '1.5' should be a named constant
+  ui/interactive_apartment.gd:176 - Magic number '3' should be a named constant
+  ui/interactive_apartment.gd:177 - Magic number '4' should be a named constant
+  ui/interactive_apartment.gd:178 - Magic number '5' should be a named constant
+  ui/interactive_apartment.gd:179 - Magic number '6' should be a named constant
+  ui/interactive_apartment.gd:180 - Magic number '7' should be a named constant
+  ui/interactive_apartment.gd:181 - Magic number '8' should be a named constant
+  ui/interactive_apartment.gd:182 - Magic number '9' should be a named constant
+  ui/interactive_apartment.gd:184 - Magic number '11' should be a named constant
+  ui/interactive_apartment.gd:185 - Magic number '12' should be a named constant
+  ui/interactive_apartment.gd:186 - Magic number '13' should be a named constant
+  ui/interactive_apartment.gd:187 - Magic number '14' should be a named constant
+  ui/interactive_apartment.gd:188 - Magic number '15' should be a named constant
+  ui/interactive_apartment.gd:197 - Magic number '19' should be a named constant
+  ui/interactive_apartment.gd:197 - Magic number '8' should be a named constant
+  ui/interactive_apartment.gd:198 - Magic number '19' should be a named constant
+  ui/interactive_apartment.gd:198 - Magic number '8' should be a named constant
+  ui/interactive_apartment.gd:222 - Magic number '14' should be a named constant
+  ui/interactive_apartment.gd:222 - Magic number '8' should be a named constant
+  ui/interactive_apartment.gd:230 - Magic number '14' should be a named constant
+  ui/interactive_apartment.gd:230 - Magic number '9' should be a named constant
+  ui/interactive_apartment.gd:236 - Magic number '38' should be a named constant
+  ui/interactive_apartment.gd:237 - Magic number '38' should be a named constant
+  ui/interactive_apartment.gd:239 - Magic number '15' should be a named constant
+  ui/interactive_apartment.gd:239 - Magic number '80' should be a named constant
+  ui/interactive_apartment.gd:248 - Magic number '5' should be a named constant
+  ui/interactive_apartment.gd:257 - Magic number '3' should be a named constant
+  ui/interactive_apartment.gd:267 - Magic number '25' should be a named constant
+  ui/interactive_apartment.gd:267 - Magic number '9' should be a named constant
+  ui/interactive_apartment.gd:275 - Magic number '22' should be a named constant
+  ui/interactive_apartment.gd:275 - Magic number '12' should be a named constant
+  ui/interactive_apartment.gd:283 - Magic number '22' should be a named constant
+  ui/interactive_apartment.gd:283 - Magic number '13' should be a named constant
+  ui/interactive_apartment.gd:291 - Magic number '21' should be a named constant
+  ui/interactive_apartment.gd:291 - Magic number '5' should be a named constant
+  ui/interactive_apartment.gd:299 - Magic number '6' should be a named constant
+  autoload/log_bus.gd:6 - Magic number '200' should be a named constant
+  systems/cp437_index_loader.gd:61 - Magic number '3' should be a named constant
+  systems/cp437_index_loader.gd:62 - Magic number '3' should be a named constant
+  systems/cp437_index_loader.gd:64 - Magic number '4' should be a named constant
+  systems/cp437_index_loader.gd:65 - Magic number '4' should be a named constant
+  systems/cp437_index_loader.gd:67 - Magic number '5' should be a named constant
+  systems/cp437_index_loader.gd:68 - Magic number '5' should be a named constant
+  systems/cp437_index_loader.gd:70 - Magic number '6' should be a named constant
+  systems/cp437_index_loader.gd:71 - Magic number '6' should be a named constant
+  systems/cp437_index_loader.gd:73 - Magic number '7' should be a named constant
+  systems/cp437_index_loader.gd:74 - Magic number '7' should be a named constant
+  tools/scene_smoke_runner.gd:69 - Magic number '3' should be a named constant
+  tools/scene_smoke_runner.gd:104 - Magic number '2.0' should be a named constant
+  tools/scene_smoke_runner.gd:105 - Magic number '2.0' should be a named constant
+  tools/debug_http_server.gd:10 - Magic number '8080' should be a named constant
+  tools/debug_http_server.gd:18 - Magic number '8080' should be a named constant
+  tools/debug_http_server.gd:91 - Magic number '200' should be a named constant
+  tools/debug_http_server.gd:110 - Magic number '404' should be a named constant
+  tools/debug_http_server.gd:177 - Magic number '200' should be a named constant
+  tools/debug_http_server.gd:182 - Magic number '1.1' should be a named constant
+  tools/e2e_scene_switch_runner.gd:28 - Magic number '7' should be a named constant
+  tools/e2e_scene_switch_runner.gd:38 - Magic number '3' should be a named constant
+  tools/e2e_scene_switch_runner.gd:47 - Magic number '4' should be a named constant
+  tools/e2e_scene_switch_runner.gd:54 - Magic number '5' should be a named constant
+  tools/e2e_scene_switch_runner.gd:59 - Magic number '6' should be a named constant
+
+Total issues: 198

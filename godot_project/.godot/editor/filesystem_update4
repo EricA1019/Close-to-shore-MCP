@@ -1,8 +1,3 @@
 res://scenes/ascii_min_demo/ascii_min_demo_canvas.tscn
 res://addons/resource_databases/editor_only/ui/database_editor_theme.tres
-res://scripts/ui/interactive_apartment.gd
-res://tests/integration/test_interactive_apartment.gd
-res://scenes/ui/interactive_apartment.tscn
-res://scenes/maaack_scenes/menus/main_menu/main_menu.tscn
-res://scenes/ui/apartment_main_ui.tscn
-res://tests/integration/test_apartment_main_ui.gd
+res://tests/integration/test_gdext_hello.gd

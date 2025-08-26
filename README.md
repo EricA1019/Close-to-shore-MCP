@@ -1,5 +1,74 @@
 # Broken Divinity — Demo (Godot 4)
 
+A small Godot 4 demo that boots through an Opening scene into a custom Main UI, built on top of the Maaacks Game Template. Features **Canvas-based ASCII rendering** for reliable cross-platform text display, plus a CSV‑first CP437 tile index with an editor plugin.
+
+**This project follows the [Close-to-Shore MCP methodology](MCP/CLOSE_TO_SHORE.md)** for stable, test-driven development with heavy tooling investment for long-term reliability.
+
+## Development Philosophy
+
+This is a **learning project** focused on:
+- **Stability over speed**: Choosing robust foundations even when they require more upfront work
+- **Tool investment**: Building reliable automation that pays dividends over time
+- **Comprehensive testing**: Unit, integration, smoke, and end-to-end validation
+- **Documentation-driven development**: Every decision captured and explained
+- **Cross-platform reliability**: Single-binary tools that work consistently everywhere
+
+See [MCP/CLOSE_TO_SHORE.md](MCP/CLOSE_TO_SHORE.md) for our complete development methodology and [MCP/TOOLING_PHILOSOPHY.md](MCP/TOOLING_PHILOSOPHY.md) for our approach to tool selection and development.
+
+## Tooling
+
+This project is Rust-first for tooling:
+- **Rust** ([`rust/cts`](rust/)) for reliable, fast tooling (tests, docs, engine/scene tools, lints, health, release)
+- **GDScript** for game logic and Godot integration
+
+Key CTS commands:
+- `cts test` — unified test runner (GUT, UI, smoke)
+- `cts bundle` — MCP context bundler
+- `cts engine` — ensure/link Godot binaries
+- `cts scene` — index and lint scenes
+- `cts lint` — api-guard and gdscript linter
+- `cts docs` — fetch/search/sync docs
+- `cts logs summarize` — aggregate run logs
+- `cts health` — project health gate (PASS/WARN/FAIL)
+- `cts release` — release preparation
+
+### Native Extension (Rust)
+
+- A minimal GDExtension (Rust) provides `HelloNode` with a `say_hello(name)` method.
+- See `godot_project/docs/GDEXTENSION_SETUP.md` for build/copy and trust/allow steps.
+
+## What's here
+
+- Opening ➜ Main Menu ➜ Main UI flow restored (Opening is the main scene)
+- **ASCII Canvas System**: Reliable cross-platform text rendering using Godot's Control._draw()
+  - Working demos: `scenes/ascii_min_demo/ascii_min_demo_canvas.tscn`
+  - Room examples with walls, floors, furniture (245+ rendered elements)
+  - Migration from problematic shader approach to stable Canvas drawing
+- Maaacks Template menus: main menu, options, credits, loading (wired and working)
+- CP437 mapping workflow:
+  - Source of truth: `res://data/config/cp437_index.csv`
+  - JSON fallback: `res://data/config/cp437_index.json`
+  - Loader: `res://scripts/systems/cp437_index_loader.gd` (prefers CSV, falls back to JSON)
+  - Editor plugin: `CP437 Tools` (Validate CSV, Export JSON, Scratch Test)
+- DF‑standard tiles (conservative subset) pre‑filled in the CSV
+
+## ASCII Rendering Status: ✅ WORKING
+
+- **Canvas Approach**: AsciiCanvas renders correctly in editor and runtime
+- **Editor Visibility**: No more black screen issues
+- **Cross-Platform**: Uses standard Godot APIs (Control._draw())
+- **Performance**: Dirty region optimization for large scenes
+- **Test Coverage**: 2/2 integration tests passing with content validation
+
+### Quick Start: ASCII Demo
+
+```bash
+# Run working ASCII room demo
+godot4 --path godot_project scenes/ascii_min_demo/ascii_min_demo_canvas.tscn
+```
+
+View ASCII room with walls (█), floor (.), furniture (T/C/B/=/□), and door (+)ity — Demo (Godot 4)
+
 A small Godot 4 demo that boots through an Opening scene into a custom Main UI, built on top of the Maaacks Game Template. It also ships a CSV‑first CP437 tile index with an editor plugin to validate and export the mapping used by the game.
 
 ## What’s here
@@ -12,6 +81,13 @@ A small Godot 4 demo that boots through an Opening scene into a custom Main UI, 
   - Loader: `res://scripts/systems/cp437_index_loader.gd` (prefers CSV, falls back to JSON)
   - Editor plugin: `CP437 Tools` (Validate CSV, Export JSON, Scratch Test)
 - DF‑standard tiles (conservative subset) pre‑filled in the CSV
+
+## Quick Links
+
+- **ASCII Rendering**: [docs/ASCII_RENDERING.md](godot_project/docs/ASCII_RENDERING.md) - Canvas system overview
+- **Migration Guide**: [docs/CANVAS_MIGRATION_GUIDE.md](godot_project/docs/CANVAS_MIGRATION_GUIDE.md) - Shader to Canvas migration
+- **Working Demo**: `godot_project/scenes/ascii_min_demo/ascii_min_demo_canvas.tscn`
+- **Basic Room**: Enhanced demo with walls, floor, furniture (245 elements)
 
 ## Requirements
 
@@ -43,20 +119,16 @@ Enable via: Project > Project Settings > Plugins > CP437 Tools (Enable)
 
 CSV is the single source of truth. Edit CSV, then Validate and Export.
 
-## MCP + Tasks
+## Tasks (VS Code)
 
-- VS Code tasks wire up testing, smoke runs, and MCP helpers.
-  - Test: All (Runner) — wraps GUT with a RUN_ID and tees output to `logs/run-<RUN_ID>-testrunner.out`
-  - Test: Integration (Runner) — same as above but only runs `tests/integration`
-  - Test: GUT (All/UI/Integration) — direct Godot calls (also available)
-  - Smoke: Scenes from Index — runs all scenes in `scripts/tools/scene_index.json`
-  - Smoke: Scenes (Filter) — prompts for a substring (e.g., `apartment`)
-  - MCP: Build Context Bundle — builds `.mcp_context/context_bundle.md` from core docs
-  - MCP: Log Summary — prints a quick summary of the latest test runner output
-  - MCP: Scene Lint — basic validation of the scene index
-  - MCP: Release Helper — prints suggested tag/push commands
+- CTS: Build Release, Build Context Bundle
+- CTS: Engine Ensure/Link; Godot 4.5 managed run/editor
+- CTS: Scene Index/Lint; Smoke: Scenes (and filter)
+- CTS: Lint API Guard/GDScript (AST optional)
+- CTS: Logs Summarize; CTS: Health Check
+- CTS: Release Prep (dry-run)
 
-Tip: The GUT tasks depend on the context bundler so the agent always has up-to-date docs.
+Tip: Health is enforced in CI (fails on summary=fail). STRICT_LINT can be toggled to hard-fail GDScript findings.
 
 ## Logging and RUN_ID
 
@@ -65,7 +137,7 @@ Tip: The GUT tasks depend on the context bundler so the agent always has up-to-d
 - The test runner also tees its terminal output to `logs/run-<RUN_ID>-testrunner.out` in the repo for quick inspection.
 - RUN_ID is auto-generated by the runner, or you can set it manually with `RUN_ID=...` in your environment before launching Godot.
 
-Agent Context: Run the “MCP: Build Context Bundle” task to generate `.mcp_context/context_bundle.md` that aggregates key docs (README, MCP docs, prompt templates).
+Agent Context: Run the “CTS: Build Context Bundle” task to generate `.mcp_context/context_bundle.md` that aggregates key docs (README, MCP docs, prompt templates).
 
 ## File map (key bits)
 

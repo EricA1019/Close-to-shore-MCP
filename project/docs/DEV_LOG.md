@@ -35,6 +35,55 @@ Each entry should include:
 **Rationale**: Ensures a stable, testable foundation for future hops and feature work. Menu and UI logic now match spec and allow for iterative expansion.
 **Impact**: Project is now bootable and testable. Documentation updated. Ready for next hop.
 
+## 2025-08-24
+
+### Hop 2: ASCII Rendering Migration to Canvas
+**Context**: Shader-based ASCII rendering (TermRect) caused black screen in editor despite passing headless tests. Driver/OpenGL compatibility issues prevented reliable development.
+**Decision/Resolution**: Migrated to Canvas-based rendering using Control._draw() with AsciiCanvas, AsciiCanvasBuffer, and AsciiCanvasCell classes. Maintained API compatibility with existing TermElement hierarchy.
+**Rationale**: Canvas drawing uses standard Godot APIs for better cross-platform reliability. Dirty region optimization maintains performance. Dual-mode compatibility allows gradual migration.
+**Impact**: 
+- ✅ Editor visibility solved - ASCII content renders correctly in editor and runtime
+- ✅ Working demos created: `ascii_min_demo_canvas.tscn` with 245-element room
+- ✅ Test coverage: 2/2 integration tests passing with content validation
+- ✅ Scalable architecture proven for both hand-made and procedural content
+- 📖 All documentation updated to reflect Canvas approach
+- 🔧 VS Code tasks added for Canvas testing and demo scenes
+
+## 2025-08-25
+
+### Debugging Tools Suite Implementation
+**Context**: Need for improved AI agent workflow and debugging visibility in Godot development. Existing tooling insufficient for complex scene debugging and code quality assurance.
+**Decision/Resolution**: Implemented comprehensive debugging tools suite with 6 major components:
+1. **Scene Inspector** (`scripts/tools/scene_inspector.gd`) - Runtime scene tree export to JSON
+2. **Debug HTTP Server** (`scripts/tools/debug_http_server.gd`) - REST API for external debugging access  
+3. **GDScript Linter** (`MCP/TOOLS/gdscript_linter.py`) - Static code analysis with 198 issues found
+4. **Test Runner** (`MCP/TOOLS/godot_test_runner.py`) - Automated GUT test execution and reporting
+5. **Documentation Generator** (`MCP/TOOLS/godot_doc_generator.py`) - Auto-generate docs from source code
+6. **Tool Suite Runner** (`MCP/TOOLS/godot_tool_suite.py`) - Orchestrates all tools with comprehensive reporting
+**Rationale**: 
+- "Scene Vision" system gives AI agents unprecedented visibility into game state via JSON exports
+- External HTTP API allows debugging without modifying game code  
+- Automated analysis catches issues early in development cycle
+- Integrated workflow reduces manual validation steps
+**Impact**:
+- ✅ **Critical Issues Identified**: 26 unvalidated node access errors, 83 missing type hints, 89 magic numbers
+- ✅ **AI Agent Workflow Enhanced**: Real-time scene inspection via HTTP endpoints
+- ✅ **Quality Assurance Automated**: Single command runs full project analysis
+- ✅ **Documentation Sync**: Auto-generated docs keep AI context current
+- 🎯 **Next Actions**: Address input handling issues and code quality improvements identified by linter
+
+### Interactive Apartment Implementation  
+**Context**: Need for multi-room apartment exploration with WASD controls and interactive POIs for detective game mechanics.
+**Decision/Resolution**: Built complete InteractiveApartment class extending TermElement with 28x16 grid, POI system, detective items (.38 service pistol, bourbon whiskey, brown leather jacket). Achieved 14/15 tests passing with apartment successfully integrated into main UI.
+**Rationale**: Test-driven approach ensures robust foundation. Canvas compatibility provides editor visibility. POI system creates framework for interactive narrative elements.
+**Impact**:
+- ✅ **Major Milestone**: Apartment renders in main UI, accessible via New Game button
+- ✅ **Test Coverage**: 14/15 tests passing validates core functionality  
+- ✅ **Architecture Proven**: TermElement Canvas integration working correctly
+- ⚠️ **Known Issues**: Player input not responding to WASD (unvalidated node access patterns identified by linter)
+- 🔧 **Layout Needs Work**: Magic numbers throughout positioning code need constants
+- 🚀 Foundation ready for ASCII game development
+
 ---
 
 ## Template Entries (Remove after first real entry)

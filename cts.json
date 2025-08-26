@@ -1,0 +1,10 @@
+{
+  "gdscript": {
+    "ignore_dirs": ["/addons/", "/tests/"],
+    "allow_print_if_contains": ["FIXME", "TRACE", "TEMP"],
+    "allow_todo_patterns": ["TODO(dev)"]
+  },
+  "api_guard": {
+    "allow_members": ["ready", "input"]
+  }
+}

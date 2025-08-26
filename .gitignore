@@ -5,3 +5,11 @@ godot_project/docs/GODOT_ENGINE_DOCS/godot-docs-html-master.zip
 
 # Local logs from test runner and tools
 logs/
+
+# Build artifacts (Rust / Godot)
+rust/target/
+godot_project/bin/
+
+# Python caches
+**/__pycache__/
+*.pyc

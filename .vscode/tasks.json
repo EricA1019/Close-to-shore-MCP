@@ -2,66 +2,79 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "MCP: Build Context Bundle",
+			"label": "CTS: Engine Ensure (4.5b6)",
 			"type": "shell",
-			"command": "python3",
+			"command": "./rust/target/release/cts",
 			"args": [
-				"MCP/TOOLS/context_bundler.py"
-			],
-			"group": "build",
-			"problemMatcher": []
-		},
-			{
-				"label": "MCP: Log Summary",
-				"type": "shell",
-				"command": "python3",
-				"args": ["MCP/GODOT_TOOLS/log_summary.py"],
-				"group": "test",
-				"problemMatcher": []
-			},
-			{
-				"label": "MCP: Scene Lint",
-				"type": "shell",
-				"command": "python3",
-				"args": ["MCP/GODOT_TOOLS/scene_lint.py"],
-				"group": "build",
-				"problemMatcher": []
-			},
-			{
-				"label": "MCP: Release Helper",
-				"type": "shell",
-				"command": "python3",
-				"args": ["MCP/GODOT_TOOLS/release_helper.py", "v0.0.0"],
-				"group": "build",
-				"problemMatcher": []
-			},
-			{
-				"label": "MCP: API Guard (No Privates)",
-				"type": "shell",
-				"command": "python3",
-				"args": ["MCP/TOOLS/api_guard.py"],
-				"group": "test",
-				"problemMatcher": []
-			},
-		{
-			"label": "Godot 4.5b5 - Editor",
-			"type": "shell",
-			"command": "${workspaceFolder}/.tools/godot/bin/godot4.5b5",
-			"args": [
-				"-e"
+				"engine",
+				"ensure",
+				"--version",
+				"4.5-beta6"
 			],
 			"group": "build",
 			"problemMatcher": []
 		},
 		{
-			"label": "Godot 4.5b5 - Editor (Desktop Path)",
+			"label": "CTS: Engine Link (Desktop 4.5b6)",
 			"type": "shell",
-			"command": "/home/eric/Desktop/Godot_v4.5-beta5_linux.x86_64",
+			"command": "./rust/target/release/cts",
 			"args": [
-				"-e"
+				"engine",
+				"link",
+				"--path",
+				"/home/eric/Desktop/Godot_v4.5-beta6_linux.x86_64",
+				"--as",
+				"4.5-beta6"
 			],
 			"group": "build",
 			"problemMatcher": []
+		},
+		{
+			"label": "CTS: Engine Link (Desktop 4.5 stable)",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"engine",
+				"link",
+				"--path",
+				"${input:godot45Path}",
+				"--as",
+				"4.5"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "Godot 4.5 - Editor (Managed)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.tools/godot/bin/godot-4.5",
+			"args": [
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-e"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Engine Link (Desktop 4.5 stable)"
+			]
+		},
+		{
+			"label": "Run Project (4.5 Managed)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.tools/godot/bin/godot-4.5",
+			"args": [
+				"--path",
+				"${workspaceFolder}/godot_project"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Engine Link (Desktop 4.5 stable)"
+			]
 		},
 		{
 			"label": "Run Godot Project",
@@ -85,11 +98,67 @@
 			"group": "test",
 			"problemMatcher": []
 		},
+		// Removed old MCP engine ensure task (replaced by CTS)
+		// Removed old MCP engine link task (replaced by CTS)
 		{
-			"label": "Run GUT Tests (4.5b5 Desktop Path)",
+			"label": "Godot 4.5b6 - Editor (Managed)",
 			"type": "shell",
-			"command": "/home/eric/Desktop/Godot_v4.5-beta5_linux.x86_64",
+			"command": "${workspaceFolder}/.tools/godot/bin/godot-4.5-beta6",
 			"args": [
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-e"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Engine Ensure (4.5b6)"
+			]
+		},
+		{
+			"label": "Godot 4.5b6 - Editor (Desktop Path)",
+			"type": "shell",
+			"command": "/home/eric/Desktop/Godot_v4.5-beta6_linux.x86_64",
+			"args": [
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-e"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "Run Project (4.5b6 Managed)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.tools/godot/bin/godot-4.5-beta6",
+			"args": [
+				"--path",
+				"${workspaceFolder}/godot_project"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Engine Ensure (4.5b6)"
+			]
+		},
+		{
+			"label": "Run Project (4.5b6 Desktop Path)",
+			"type": "shell",
+			"command": "/home/eric/Desktop/Godot_v4.5-beta6_linux.x86_64",
+			"args": [
+				"--path",
+				"${workspaceFolder}/godot_project"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "Run GUT Tests (4.5b6 Managed)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.tools/godot/bin/godot-4.5-beta6",
+			"args": [
+				"--path",
+				"${workspaceFolder}/godot_project",
 				"--headless",
 				"-s",
 				"res://addons/gut/gut_cmdln.gd",
@@ -99,70 +168,23 @@
 				"-gexit"
 			],
 			"group": "test",
-			"problemMatcher": []
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Engine Ensure (4.5b6)"
+			]
 		},
 		{
-			"label": "Start MCP Flask Server",
+			"label": "Run GUT Tests (4.5b6 Desktop Path)",
 			"type": "shell",
-			"command": "/bin/python3.11",
+			"command": "/home/eric/Desktop/Godot_v4.5-beta6_linux.x86_64",
 			"args": [
-				"MCP/TOOLS/mcp_server.py"
-			],
-			"group": "test",
-			"isBackground": true,
-			"problemMatcher": []
-		},
-		{
-			"label": "MCP: Ensure Local Godot 4.5b5",
-			"type": "shell",
-			"command": "python3",
-			"args": [
-				"MCP/GODOT_TOOLS/engine_manager.py",
-				"--ensure",
-				"4.5-beta5"
-			],
-			"group": "build",
-			"problemMatcher": []
-		},
-		{
-			"label": "Update Plugins",
-			"type": "shell",
-			"command": "python3",
-			"args": [
-				"MCP/GODOT_TOOLS/plugin_manager.py",
-				"--update"
-			],
-			"group": "build",
-			"problemMatcher": []
-		},
-		{
-			"label": "Update Docs",
-			"type": "shell",
-			"command": "python3",
-			"args": [
-				"MCP/GODOT_TOOLS/doc_sync.py",
-				"--update"
-			],
-			"group": "build",
-			"problemMatcher": []
-		},
-		{
-			"label": "Update All Docs",
-			"type": "shell",
-			"command": "python3",
-			"args": [
-				"MCP/GODOT_TOOLS/doc_sync.py",
-				"--update-all"
-			],
-			"group": "build",
-			"problemMatcher": []
-		},
-		{
-			"label": "Log Hop Feedback",
-			"type": "shell",
-			"command": "python3",
-			"args": [
-				"MCP/GODOT_TOOLS/change_logger.py"
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"--headless",
+				"-s",
+				"res://addons/gut/gut_cmdln.gd",
+				"-gdir=res://tests/integration",
+				"-gexit"
 			],
 			"group": "test",
 			"problemMatcher": []
@@ -181,7 +203,48 @@
 				"-gexit"
 			],
 			"isBackground": false,
-			"dependsOn": ["MCP: Build Context Bundle"],
+			"dependsOn": [
+				"CTS: Build Context Bundle"
+			],
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run GUT Integration (4.5b6 Managed)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.tools/godot/bin/godot-4.5-beta6",
+			"args": [
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"--headless",
+				"-s",
+				"res://addons/gut/gut_cmdln.gd",
+				"-gdir=res://tests/integration",
+				"-gexit"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Engine Ensure (4.5b6)"
+			]
+		},
+		{
+			"label": "Test: GUT (All)",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://addons/gut/gut_cmdln.gd",
+				"-gdir=res://tests",
+				"-gexit"
+			],
+			"isBackground": false,
+			"dependsOn": [
+				"CTS: Build Context Bundle"
+			],
 			"problemMatcher": [],
 			"group": "test"
 		},
@@ -199,7 +262,9 @@
 				"-gexit"
 			],
 			"isBackground": false,
-			"dependsOn": ["MCP: Build Context Bundle"],
+			"dependsOn": [
+				"CTS: Build Context Bundle"
+			],
 			"problemMatcher": [],
 			"group": "test"
 		},
@@ -217,38 +282,16 @@
 				"-gexit"
 			],
 			"isBackground": false,
-			"dependsOn": ["MCP: Build Context Bundle"],
+			"dependsOn": [
+				"CTS: Build Context Bundle"
+			],
 			"problemMatcher": [],
 			"group": "test"
 		},
 		{
-			"label": "Test: All (Runner)",
+			"label": "Smoke: Scenes from Index (4.5b6 Managed)",
 			"type": "shell",
-			"command": "bash",
-			"args": [
-				"MCP/TOOLS/test_runner.sh",
-				"all"
-			],
-			"group": "test",
-			"dependsOn": ["MCP: Build Context Bundle"],
-			"problemMatcher": []
-		},
-		{
-			"label": "Test: Integration (Runner)",
-			"type": "shell",
-			"command": "bash",
-			"args": [
-				"MCP/TOOLS/test_runner.sh",
-				"integration"
-			],
-			"group": "test",
-			"dependsOn": ["MCP: Build Context Bundle"],
-			"problemMatcher": []
-		},
-		{
-			"label": "Smoke: Scenes from Index",
-			"type": "shell",
-			"command": "godot4",
+			"command": "${workspaceFolder}/.tools/godot/bin/godot-4.5-beta6",
 			"args": [
 				"--headless",
 				"--path",
@@ -261,7 +304,10 @@
 			],
 			"isBackground": false,
 			"problemMatcher": [],
-			"group": "test"
+			"group": "test",
+			"dependsOn": [
+				"CTS: Engine Ensure (4.5b6)"
+			]
 		},
 		{
 			"label": "Smoke: Scenes (Filter)",
@@ -284,6 +330,88 @@
 			"group": "test"
 		},
 		{
+			"label": "Smoke: Scenes from Index",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://scripts/tools/scene_smoke_runner.gd",
+				"--",
+				"--index",
+				"res://scripts/tools/scene_index.json"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Smoke: Scenes from Index (4.5b6 Managed)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.tools/godot/bin/godot-4.5-beta6",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://scripts/tools/scene_smoke_runner.gd",
+				"--",
+				"--index",
+				"res://scripts/tools/scene_index.json"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test",
+			"dependsOn": [
+				"CTS: Engine Ensure (4.5b6)"
+			]
+		},
+		{
+			"label": "Smoke: Scenes (Filter)",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://scripts/tools/scene_smoke_runner.gd",
+				"--",
+				"--index",
+				"res://scripts/tools/scene_index.json",
+				"--filter",
+				"${input:sceneFilter}"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Smoke: Scenes (Filter) (4.5b6 Managed)",
+			"type": "shell",
+			"command": "${workspaceFolder}/.tools/godot/bin/godot-4.5-beta6",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://scripts/tools/scene_smoke_runner.gd",
+				"--",
+				"--index",
+				"res://scripts/tools/scene_index.json",
+				"--filter",
+				"${input:sceneFilter}"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test",
+			"dependsOn": [
+				"CTS: Engine Ensure (4.5b6)"
+			]
+		},
+		{
 			"label": "Smoke: Scenes CI",
 			"type": "shell",
 			"command": "godot4",
@@ -302,6 +430,447 @@
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
+		},
+		{
+			"label": "Test: GUT (Integration quick)",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://addons/gut/gut_cmdln.gd",
+				"-gdir=res://tests/integration",
+				"-gexit"
+			],
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Test: ASCII Canvas Demo",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://addons/gut/gut_cmdln.gd",
+				"-gdir=res://tests/integration",
+				"-gselect=test_ascii_canvas_demo.gd",
+				"-gexit"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Context Bundle"
+			]
+		},
+		{
+			"label": "Demo: ASCII Canvas Scene",
+			"type": "shell",
+			"command": "timeout",
+			"args": [
+				"8s",
+				"godot4",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"scenes/ascii_min_demo/ascii_min_demo_canvas.tscn"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "GDExt: Build (debug)",
+			"type": "shell",
+			"command": "cargo",
+			"args": ["build", "-p", "gdext"],
+			"options": {"cwd": "${workspaceFolder}/rust"},
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "GDExt: Build (release)",
+			"type": "shell",
+			"command": "cargo",
+			"args": ["build", "-p", "gdext", "--release"],
+			"options": {"cwd": "${workspaceFolder}/rust"},
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "GDExt: Copy → bin (release)",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"cp -f ${workspaceFolder}/rust/target/release/libgdext.so ${workspaceFolder}/godot_project/bin/libgdext.so"
+			],
+			"group": "build",
+			"dependsOn": ["GDExt: Build (release)"],
+			"problemMatcher": []
+		},
+		{
+			"label": "GDExt: Build+Copy (release)",
+			"type": "shell",
+			"command": "bash",
+			"args": ["-lc", "true"],
+			"group": "build",
+			"dependsOn": ["GDExt: Copy → bin (release)"],
+			"problemMatcher": []
+		},
+		{
+			"label": "GDExt: Hello headless test",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://addons/gut/gut_cmdln.gd",
+				"-gdir=res://tests/integration",
+				"-gselect=test_gdext_hello.gd",
+				"-gexit"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": ["GDExt: Build+Copy (release)"]
+		},
+		{
+			"label": "CTS: Logs Summarize",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"logs",
+				"summarize",
+				"--project-root",
+				"${workspaceFolder}",
+				"--out",
+				"logs/log_summary.json"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Health Check",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"health",
+				"--project-root",
+				"${workspaceFolder}",
+				"--godot-project",
+				"godot_project",
+				"--out",
+				"logs/health.json",
+				"--strict-lint",
+				"false"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Release Prep (dry-run)",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"release",
+				"--project-root",
+				"${workspaceFolder}",
+				"--version",
+				"auto",
+				"--out",
+				"RELEASE_NOTES.md",
+				"--dry-run",
+				"true"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Release (apply)",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"release",
+				"--project-root",
+				"${workspaceFolder}",
+				"--version",
+				"${input:releaseVersion}",
+				"--out",
+				"RELEASE_NOTES.md"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Build Release",
+			"type": "shell",
+			"command": "cargo",
+			"args": [
+				"build",
+				"--release"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/rust"
+			},
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "CTS: Build Release (gdscript-ast)",
+			"type": "shell",
+			"command": "cargo",
+			"args": [
+				"build",
+				"--release",
+				"--features",
+				"gdscript-ast"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/rust"
+			},
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "CTS: Build Context Bundle",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"bundle",
+				"--skip-missing"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Docs Fetch",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"docs",
+				"fetch"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Docs Search",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"docs",
+				"search",
+				"${input:docsSearchQuery}"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Docs Gen Manifest",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"docs",
+				"gen",
+				"--project-root",
+				"${workspaceFolder}",
+				"--output",
+				"docs/manifest.json"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Docs Sync",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"docs",
+				"sync",
+				"--project-root",
+				"${workspaceFolder}",
+				"--sources",
+				"docs/docs_sources.json"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Scene Index",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"scene",
+				"index"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Scene Lint",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"scene",
+				"lint"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Test All",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"test",
+				"all"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Test Integration",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"test",
+				"integration"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Test UI",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"test",
+				"ui"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Test Smoke",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"test",
+				"smoke"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		}
+		,
+		{
+			"label": "CTS: Lint API Guard",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"lint",
+				"--project-root",
+				"${workspaceFolder}",
+				"api-guard",
+				"--godot-project",
+				"godot_project",
+				"--out",
+				"logs/api_guard.json"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: Lint GDScript",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"lint",
+				"--project-root",
+				"${workspaceFolder}",
+				"gdscript",
+				"--godot-project",
+				"godot_project",
+				"--out",
+				"logs/gdscript_lint.json"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		}
+		,
+		{
+			"label": "CTS: Lint GDScript (AST)",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"lint",
+				"--project-root",
+				"${workspaceFolder}",
+				"gdscript",
+				"--godot-project",
+				"godot_project",
+				"--out",
+				"logs/gdscript_lint.json"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release (gdscript-ast)"
+			]
 		}
 	],
 	"inputs": [
@@ -310,6 +879,26 @@
 			"type": "promptString",
 			"description": "Filter scenes by substring (e.g., apartment, main_ui). Leave blank to run all.",
 			"default": ""
+		}
+		,
+		{
+			"id": "docsSearchQuery",
+			"type": "promptString",
+			"description": "Search local reference docs (Rust Book, GDext, GUT, Resource DB)",
+			"default": "gdextension"
+		},
+		{
+			"id": "godot45Path",
+			"type": "promptString",
+			"description": "Absolute path to your Godot 4.5 stable binary (e.g., /home/eric/Desktop/Godot_v4.5-stable_linux.x86_64)",
+			"default": "/home/eric/Desktop/Godot_v4.5-stable_linux.x86_64"
+		}
+		,
+		{
+			"id": "releaseVersion",
+			"type": "promptString",
+			"description": "Release version (e.g., v0.2.0 or 'auto')",
+			"default": "auto"
 		}
 	]
 }

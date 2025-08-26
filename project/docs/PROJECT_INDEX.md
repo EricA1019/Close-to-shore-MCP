@@ -3,7 +3,7 @@
 Living index of systems, scenes, data, and tests. Keep this updated as the project evolves.
 
 ## Overview
-Godot 4.5-based prototype using Maaack template, ASCII grid rendering, and a four-panel UI. Content is centralized in SQLite, with JSON saves (3 slots).
+Godot 4.5-based prototype using Maaack template, ASCII grid rendering, and a four-panel UI. Content is centralized in Resource Databases, with JSON saves (3 slots).
 
 ## Hop 1: Demo Boot & UI Restoration
 
@@ -33,12 +33,13 @@ Godot 4.5-based prototype using Maaack template, ASCII grid rendering, and a fou
 - **Dependencies**: InputMap, Themes, Font assets
 - **Tests**: `godot_project/tests/smoke/test_ui_panels.gd` (planned)
 
-### AsciiPanel (Grid Renderer)
-- **Location**: `godot_project/addons/Godot-4-ASCII-Grid/`
-- **Purpose**: Monospaced Unicode grid (target 80×36 @ 1280×720), CP437-like rendering
-- **Key Classes**: Plugin-provided; wrapper scene `AsciiPanelHost.tscn`
-- **Dependencies**: Mono font assets (CP437-like baseline + faction variants)
-- **Tests**: Smoke test to instantiate and draw glyphs
+### ASCII Grid (Renderer)
+- **Location**: `godot_project/addons/ascii_grid/`
+- **Purpose**: CP437-style ASCII grid (target ~80×36 @ 1280×720)
+- **Key Classes**: `TermRect`, `TermElement`, `TermContainerVBox`, `TermLabel`
+- **Usage in UI**: `MainPanel/TermRect` renders `TermRoot` children (Title, ApartmentMap, TestPattern)
+- **Docs**: `godot_project/docs/ASCII_RENDERING.md`
+- **Tests**: Integration tests validate non-clear shader textures; smoke runner prints diagnostics
 
 ### TurnEngine
 - **Location**: `godot_project/scripts/systems/turn_engine.gd`
@@ -61,12 +62,15 @@ Godot 4.5-based prototype using Maaack template, ASCII grid rendering, and a fou
 - **Dependencies**: FileAccess, user://
 - **Tests**: Integration tests for round-trip save/load
 
-### Data Layer (SQLite)
-- **Location**: `godot_project/scripts/systems/data_layer.gd` + `res://data/seed.db`
-- **Purpose**: Centralize text/ASCII art, suffix tables; copy res:// DB to user:// on first run
-- **Key Classes**: `ContentDB`
-- **Dependencies**: SQLite plugin
-- **Tests**: Read-only query tests; migration smoke test
+### Data Layer (Resource Databases)
+- **Location**: `res://addons/resource_databases/` (editor) + `res://data/content_database.tres` (db file)
+- **Purpose**: Centralize text/ASCII art, suffix tables; edited in-editor via plugin UI
+- **Runtime Access**: `ContentDB` autoload (`scripts/autoload/content_db.gd`):
+	- `ContentDB.get_entry("collection/id")` → Resource
+	- `ContentDB.fetch("collection", "id")` → Resource
+	- `ContentDB.fetch_collection("collection")` → Dictionary[int_id: Resource]
+	- `ContentDB.fetch_category("collection", "tag")` → Dictionary[int_id: Resource]
+- **Tests**: Unit test `test_content_db_autoload.gd`
 
 ## Scenes/UI Components
 
@@ -114,7 +118,7 @@ Godot 4.5-based prototype using Maaack template, ASCII grid rendering, and a fou
 
 ### Game Data
 - **Location**: `godot_project/data/game/`
-- **Format**: SQLite (seed.db), JSON (saves)
+- **Format**: Resource Databases (`.tres`), JSON (saves)
 - **Purpose**: Suffixes, text, ASCII art, loot tables
 
 ### Schemas
@@ -130,7 +134,7 @@ Godot 4.5-based prototype using Maaack template, ASCII grid rendering, and a fou
 
 ### Integration Tests
 - **Location**: `godot_project/tests/integration/`
-- **Coverage**: Scene composition, SQLite queries, save round-trips
+- **Coverage**: Scene composition, ContentDB access, save round-trips
 - **Runner**: GUT headless
 
 ### Smoke Tests
@@ -156,8 +160,8 @@ Godot 4.5-based prototype using Maaack template, ASCII grid rendering, and a fou
 ### Core Libraries
 - Maaack Game Template: structure and automation
 - GUT: testing framework
-- Godot-4-ASCII-Grid: ASCII rendering
-- SQLite Godot plugin: data access
+- ascii_grid: ASCII rendering (primary)
+- Resource Databases addon: data access
 
 ### Development Tools
 - VS Code tasks.json for running editor and tests

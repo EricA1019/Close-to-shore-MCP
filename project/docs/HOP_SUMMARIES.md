@@ -19,7 +19,7 @@ For each completed hop:
 ### Hop 3: MCP Context + Logging + Test Runner
 **Goal**: Ensure the agent always has up-to-date context, add dual-channel logging, and standardize test runs with persistent logs.
 **Changes**:
-- Context bundler (`MCP/TOOLS/context_bundler.py`) and VS Code task.
+- Context bundler via `cts bundle` and VS Code task “CTS: Build Context Bundle”.
 - Dual-channel `LogBus` (INFO+ console, DEBUG+ file at `user://logs/run-<RUN_ID>.log`).
 - Test runner wrapper (`MCP/TOOLS/test_runner.sh`) with RUN_ID + tee to repo `logs/`.
 - VS Code tasks for runner and utilities (log summary, scene lint, release helper).

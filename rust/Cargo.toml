@@ -1,0 +1,46 @@
+[workspace]
+members = ["cts", "cts-core", "cts-web", "gdext"]
+resolver = "2"
+
+[workspace.dependencies]
+# CLI and argument parsing
+clap = { version = "4.4", features = ["derive", "env"] }
+
+# Async runtime and utilities
+tokio = { version = "1.35", features = ["full"] }
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+toml = "0.8"
+
+# Logging and tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# File system and path utilities
+walkdir = "2.4"
+
+# Date and time
+chrono = { version = "0.4", features = ["serde"] }
+
+# HTTP client
+reqwest = { version = "0.11", features = ["json", "stream"] }
+
+# Progress bars
+indicatif = "0.17"
+
+# Parallel processing
+rayon = "1.8"
+
+# Regular expressions
+regex = "1.10"
+
+# Configuration management
+config = "0.14"
+

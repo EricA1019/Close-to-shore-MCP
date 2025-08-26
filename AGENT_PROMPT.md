@@ -17,6 +17,14 @@ Guardrails & style
 - Logging: bracketed tags; no silent failures.
 - Tests with GUT in scenes/tests/**; allow explicit known-failing tests (skipped) queued for future hops.
 
+Reference docs
+- Prefer local mirrors for quick lookup and offline work:
+	- Rust Book: docs/rust-book/index.html
+	- Godot Rust (GDext): godot_project/docs/GODOT_RUST_GDEXT/index.html
+	- GUT docs: godot_project/docs/GUT_DOCS/gut.readthedocs.io/index.html
+	- Resource Databases wiki: godot_project/docs/ResourceDatabases/ResourceDatabases.wiki/
+Use `cts docs search <query>` to scan these quickly during troubleshooting.
+
 What to do on invocation
 - If no plan exists for the current hop, create it (summarize scope, deliverables, test list).
 - Propose file scaffolding and tasks; confirm before creating files.

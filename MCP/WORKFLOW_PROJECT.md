@@ -48,23 +48,55 @@ Customize this template for your specific project's tools, CI/CD, and developmen
 ### Local Development:
 ```bash
 # Run all tests
-<test command>
+godot --headless --path godot_project -s addons/gut/gut_cmdln.gd
 
 # Run specific test suite
-<unit test command>
-<integration test command>
+godot --headless --path godot_project -s addons/gut/gut_cmdln.gd -gtest tests/unit/
+godot --headless --path godot_project -s addons/gut/gut_cmdln.gd -gtest tests/integration/
 
 # Build application
-<build command>
+godot --headless --export "Linux/X11" build/
 
 # Run application locally
-<run command>
+godot --path godot_project
+```
+
+### Debugging and Analysis Tools:
+```bash
+# Full project analysis (health check + linting + tests + docs)
+python3 MCP/TOOLS/godot_tool_suite.py . --full-analysis
+
+# Code quality analysis
+python3 MCP/TOOLS/gdscript_linter.py ./godot_project/scripts --format text
+
+# Automated testing with reporting
+python3 MCP/TOOLS/godot_test_runner.py .
+
+# Generate project documentation
+python3 MCP/TOOLS/godot_doc_generator.py . --format markdown --output docs
+
+# Tool health check
+python3 MCP/TOOLS/godot_tool_suite.py . --health
+
+# Continuous testing (watch mode)
+python3 MCP/TOOLS/godot_test_runner.py . --continuous
 ```
 
 ### VS Code Tasks:
 - Configure tasks.json for one-key testing
 - Set up launch configurations for debugging
 - Add file watchers for automatic test runs
+
+### Godot Runtime Debugging:
+```bash
+# Start debug HTTP server in Godot (add to AutoLoad)
+# Access debugging endpoints:
+curl http://localhost:8080/scene          # Export scene tree
+curl http://localhost:8080/global-state   # Export autoload states
+curl http://localhost:8080/health         # Server health check
+curl "http://localhost:8080/nodes/find?name=Player"  # Find nodes by name
+curl "http://localhost:8080/nodes/find?type=TermElement"  # Find nodes by type
+```
 
 ## CI/CD Pipeline
 
@@ -83,38 +115,71 @@ Customize this template for your specific project's tools, CI/CD, and developmen
 ## Quality Gates
 
 ### Before Merge:
-- All tests pass
+- All tests pass (verify with: `python3 MCP/TOOLS/godot_test_runner.py .`)
 - Code review completed
 - Documentation updated
-- No lint errors or warnings
+- No critical lint errors (`python3 MCP/TOOLS/gdscript_linter.py ./godot_project/scripts --format text`)
+- Scene inspection validates expected structure (use Scene Inspector or Debug HTTP Server)
 
 ### Before Release:
 - Full regression testing
 - Performance validation
 - Security review (if applicable)
-- Documentation up to date
+- Documentation up to date (`python3 MCP/TOOLS/godot_doc_generator.py . --format markdown`)
+- Full project analysis passes (`python3 MCP/TOOLS/godot_tool_suite.py . --full-analysis`)
 
 ## Project-Specific Tools
 
 ### Development Tools:
-- [ ] Debugger configuration
+- [x] GDScript Linter - Static code analysis for quality and best practices
+- [x] Scene Inspector - Runtime scene tree export for "Scene Vision" debugging  
+- [x] Debug HTTP Server - REST API for external debugging access
+- [x] Test Runner - Automated GUT test execution with comprehensive reporting
+- [x] Documentation Generator - Auto-generate docs from source code
+- [x] Tool Suite Runner - Orchestrates all tools with single commands
+- [x] Godot debugger configuration
 - [ ] Profiling tools setup
-- [ ] Database tools (if applicable)
-- [ ] API testing tools
+- [ ] Database tools (Resource Databases integration)
+- [x] API testing tools (HTTP endpoints for debugging)
+
+### AI Agent Integration:
+- [x] "Scene Vision" system - AI can inspect game state via JSON exports
+- [x] External debugging access via HTTP API (localhost:8080)
+- [x] Automated code quality analysis and reporting
+- [x] Continuous testing with file watching
+- [x] Documentation sync with codebase
 
 ### Monitoring and Logging:
-- [ ] Local logging configuration
-- [ ] Error tracking setup
-- [ ] Performance monitoring
-- [ ] Health check endpoints
+- [x] Local logging configuration (LogBus autoload)
+- [x] Error tracking setup (GDScript linter identifies issues)
+- [x] Performance monitoring (Test runner tracks execution times)
+- [x] Health check endpoints (Debug HTTP Server /health endpoint)
+- [x] Scene state monitoring (Scene Inspector real-time exports)
 
 ## Troubleshooting
 
 ### Common Issues:
-- [ ] Environment setup problems
-- [ ] Test failures and debugging
-- [ ] Build issues
-- [ ] Runtime problems
+- [x] Environment setup problems - Use `python3 MCP/TOOLS/godot_tool_suite.py . --health`
+- [x] Test failures and debugging - Use `python3 MCP/TOOLS/godot_test_runner.py .` for detailed reports
+- [x] Build issues - Check linting with `python3 MCP/TOOLS/gdscript_linter.py ./godot_project/scripts`
+- [x] Runtime problems - Use Debug HTTP Server for real-time scene inspection
+- [x] Input handling issues - Scene Inspector can show input event flow
+- [x] Node access errors - Linter identifies unvalidated node access patterns
+
+### Debugging Workflow:
+1. **Static Analysis**: Run linter to identify code quality issues
+2. **Test Validation**: Run test suite to catch regressions  
+3. **Runtime Inspection**: Use Scene Inspector or HTTP API for live debugging
+4. **Performance Analysis**: Check test execution times and bottlenecks
+5. **Documentation Sync**: Generate docs to ensure AI context is current
+
+### Real-time Debugging:
+```bash
+# Start Godot with Debug HTTP Server enabled
+# Then inspect game state externally:
+curl http://localhost:8080/scene | jq .          # Pretty-print scene tree
+curl http://localhost:8080/global-state | jq .   # Check autoload states
+```
 
 ### Getting Help:
 - Check project/docs/DEV_LOG.md for previous solutions

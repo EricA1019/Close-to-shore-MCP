@@ -33,16 +33,19 @@ overall_success=true
 
 case "$MODE" in
     all)
-        run_suite "GUT: All" godot_cmd -s res://addons/gut/gut_cmdln.gd -gdir=res://tests -gexit || overall_success=false
+    run_suite "GUT: All" godot_cmd -s res://addons/gut/gut_cmdln.gd -gdir=res://tests -ginclude_subdirs -gprefix test_ -gexit || overall_success=false
         ;;
     integration)
-        run_suite "GUT: Integration" godot_cmd -s res://addons/gut/gut_cmdln.gd -gdir=res://tests/integration -gexit || overall_success=false
+    run_suite "GUT: Integration" godot_cmd -s res://addons/gut/gut_cmdln.gd -gdir=res://tests/integration -ginclude_subdirs -gprefix test_ -gexit || overall_success=false
         ;;
     ui)
-        run_suite "GUT: UI" godot_cmd -s res://addons/gut/gut_cmdln.gd -gdir=res://tests/ui -gexit || overall_success=false
+    run_suite "GUT: UI" godot_cmd -s res://addons/gut/gut_cmdln.gd -gdir=res://tests/ui -ginclude_subdirs -gprefix test_ -gexit || overall_success=false
         ;;
     smoke)
         run_suite "Smoke: Scenes from Index" godot_cmd -s res://scripts/tools/scene_smoke_runner.gd -- --index res://scripts/tools/scene_index.json || overall_success=false
+        ;;
+    e2e)
+        run_suite "E2E: Scene Switch" godot_cmd -s res://scripts/tools/e2e_scene_switch_runner.gd || overall_success=false
         ;;
     *)
         echo "[TestRunner] Unknown MODE: $MODE" | tee -a "$OUT_FILE"
