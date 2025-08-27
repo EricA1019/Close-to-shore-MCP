@@ -13,6 +13,28 @@
       "title": "Lock Picking",
       "tags": ["skill", "dexterity"],
       "path": "res://tests/fixtures/resource_db/abilities/lockpicking.tres"
+    },
+    {
+      "collection": "entities",
+      "key": "E-001",
+      "title": "Detective",
+      "tags": ["actor"],
+      "path": "res://tests/fixtures/resource_db/entities/detective.tres",
+      "refs": ["abilities.lockpicking"]
+    },
+    {
+      "collection": "statuses",
+      "key": "S-001",
+      "title": "Hungover",
+      "tags": ["debuff"],
+      "path": "res://tests/fixtures/resource_db/statuses/hungover.tres"
+    },
+    {
+      "collection": "tiles",
+      "key": "T-001",
+      "title": "Wood Floor",
+      "tags": ["walkable"],
+      "path": "res://tests/fixtures/resource_db/tiles/wood_floor.tres"
     }
   ]
 }

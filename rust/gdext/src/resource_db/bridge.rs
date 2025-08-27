@@ -358,10 +358,12 @@ impl ResourceDbBridge {
             }
         }
 
-        // Build id map for ref checks
+        // Build id map for ref checks + by-collection map
         let mut id_set: std::collections::HashSet<String> = std::collections::HashSet::new();
+        let mut by_collection: HashMap<String, Vec<&Entry>> = HashMap::new();
         for e in &self.index {
             id_set.insert(format!("{}.{}", e.collection, e.key));
+            by_collection.entry(e.collection.clone()).or_default().push(e);
         }
 
         // DB002 Missing Reference
@@ -432,6 +434,116 @@ impl ResourceDbBridge {
             let mut stack = Vec::<String>::new();
             dfs(k, &adj, &mut visited, &mut stack, &mut issues, &mut (0i64));
         }
+
+        // DB006 Unique key per-collection (keys must be unique within a collection)
+        for (coll, entries) in &by_collection {
+            let mut seen: std::collections::HashSet<&str> = std::collections::HashSet::new();
+            for e in entries.iter() {
+                if !seen.insert(e.key.as_str()) {
+                    let mut d = Dictionary::new();
+                    d.set("level", "error");
+                    d.set("code", "DB006");
+                    d.set("message", format!("Duplicate key '{}' in collection '{}'", e.key, coll));
+                    d.set("id", format!("{}.{}", e.collection, e.key));
+                    d.set("path", e.path.clone());
+                    let v: Variant = d.to_variant();
+                    issues.push(&v);
+                    errors += 1;
+                }
+            }
+        }
+
+        // DB007 Cross-ref: entity.ability_ids -> abilities, entity.status_ids -> statuses, equipment -> items
+        // Our snapshot does not carry typed fields, so use refs[] convention:
+        // Expect refs like "abilities.X", "statuses.Y", "items.Z" from entity entries.
+        for e in &self.index {
+            if e.collection == "entities" {
+                for r in &e.refs {
+                    let parts: Vec<&str> = r.split('.').collect();
+                    if parts.len() == 2 {
+                        let (rcoll, _rkey) = (parts[0], parts[1]);
+                        if rcoll != "abilities" && rcoll != "statuses" && rcoll != "items" {
+                            let mut d = Dictionary::new();
+                            d.set("level", "error");
+                            d.set("code", "DB007");
+                            d.set("message", format!("Entity '{}' has invalid ref '{}' (expected abilities./statuses./items.)", e.key, r));
+                            d.set("id", format!("{}.{}", e.collection, e.key));
+                            d.set("ref_id", r.clone());
+                            d.set("path", e.path.clone());
+                            let v: Variant = d.to_variant();
+                            issues.push(&v);
+                            errors += 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        // DB008 Tile tags sanity: tiles entries must have at least one tag
+        if let Some(entries) = by_collection.get("tiles") {
+            for e in entries {
+                if e.tags.is_empty() {
+                    let mut d = Dictionary::new();
+                    d.set("level", "error");
+                    d.set("code", "DB008");
+                    d.set("message", "Tile entry must include at least one tag (e.g., walkable)");
+                    d.set("id", format!("{}.{}", e.collection, e.key));
+                    d.set("path", e.path.clone());
+                    let v: Variant = d.to_variant();
+                    issues.push(&v);
+                    errors += 1;
+                }
+            }
+        }
+
+        // DB009 Reserved ID format checks for new collections
+        // Entities: E-###, Statuses: S-###, Tiles: T-### (3+ digits allowed)
+        let re_entity = regex_lite::Regex::new(r"^E-\d{3,}$").ok();
+        let re_status = regex_lite::Regex::new(r"^S-\d{3,}$").ok();
+        let re_tile = regex_lite::Regex::new(r"^T-\d{3,}$").ok();
+        for e in &self.index {
+            match e.collection.as_str() {
+                "entities" => {
+                    if let Some(re) = &re_entity { if !re.is_match(&e.key) {
+                        let mut d = Dictionary::new();
+                        d.set("level", "warning");
+                        d.set("code", "DB009");
+                        d.set("message", format!("Entity key '{}' should follow E-### format", e.key));
+                        d.set("id", format!("{}.{}", e.collection, e.key));
+                        d.set("path", e.path.clone());
+                        let v: Variant = d.to_variant();
+                        issues.push(&v);
+                    }}
+                }
+                "statuses" => {
+                    if let Some(re) = &re_status { if !re.is_match(&e.key) {
+                        let mut d = Dictionary::new();
+                        d.set("level", "warning");
+                        d.set("code", "DB009");
+                        d.set("message", format!("Status key '{}' should follow S-### format", e.key));
+                        d.set("id", format!("{}.{}", e.collection, e.key));
+                        d.set("path", e.path.clone());
+                        let v: Variant = d.to_variant();
+                        issues.push(&v);
+                    }}
+                }
+                "tiles" => {
+                    if let Some(re) = &re_tile { if !re.is_match(&e.key) {
+                        let mut d = Dictionary::new();
+                        d.set("level", "warning");
+                        d.set("code", "DB009");
+                        d.set("message", format!("Tile key '{}' should follow T-### format", e.key));
+                        d.set("id", format!("{}.{}", e.collection, e.key));
+                        d.set("path", e.path.clone());
+                        let v: Variant = d.to_variant();
+                        issues.push(&v);
+                    }}
+                }
+                _ => {}
+            }
+        }
+
+        // DB010 Future placeholder: ensure ability/status references exist already covered by DB002; keep for expansion
 
     // Summary counts already tracked above; warnings reserved for future rules.
         let mut summary = Dictionary::new();

@@ -1,0 +1,5 @@
+[gd_resource type="Resource" format=3]
+
+[resource]
+script = ExtResource( 1 )
+name = "Detective"
