@@ -420,7 +420,7 @@ Goals
 - Keep the previous hardcoded layout path as a fallback with a clear warning.
 
 State
-- DB entry seeded at `layouts.apartment` → `res://data/layouts/apartment.json`.
+- DB entry seeded at `layouts.apartment` → `res://data/layouts/apartment.tres` (or transitional JSON grid at `res://data/layouts/apartment.tres`).
 - `InteractiveApartment` loads DB first; exposes `is_loaded_from_db()` for tests.
 - Integration tests for main UI boot, input, rendering, and DB-load assertion are passing.
  - Added fallback test to ensure built-in layout is used when DB index is missing.
@@ -482,7 +482,7 @@ Deliverables
 - Updated `.vscode/tasks.json` (new/adjusted CTS DB tasks; optional prompts).
 - `MCP/TOOLS/mcp_server.py` endpoints: db.collections/search/get/export/validate/stats.
 - UI scene fixes to silence anchor warnings in key UIs (MainUI, Apartment UI, Output/Action panels).
-- Docs refresh in `godot_project/docs/RESOURCE_DB.md` and, if needed, `INTERACTIVE_APARTMENT_PLAN.md`.
+- Docs refresh in `godot_project/docs/RESOURCE_DB.md` following checklist style (Requirements, Contracts, Tests, DoD) and DB-first storage; update any remaining references to JSON as canonical.
 
 Work plan (detailed)
 1) Logs hygiene

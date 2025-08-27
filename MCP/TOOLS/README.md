@@ -9,8 +9,8 @@ A rule-based Markdown updater to keep docs consistent with current terminology a
 - Dry-run by default; add `--write` to apply changes
 - Applies safe replacements outside code fences
 - Rules available:
-   - `std-http`: Replace "Flask" with "Python stdlib HTTP server"
-   - `resource-db`: Prefer Resource Database (.tres/.res) phrasing over JSON DB wording
+   - `std-http`: Replace "Python stdlib HTTP server" with "Python stdlib HTTP server"
+   - `resource-db`: Prefer Resource Database (.tres/.res) phrasing over Resource Database (.tres/.res) wording
    - `cts-checklists`: Ensure a `### Checklist` section exists under CTS doc sections
 
 Examples

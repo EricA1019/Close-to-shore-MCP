@@ -1,7 +1,5 @@
 res://scenes/ascii_min_demo/ascii_min_demo_canvas.tscn
 res://addons/resource_databases/editor_only/ui/database_editor_theme.tres
-res://tests/integration/test_gdext_hello.gd
-res://scripts/tools/db_runner.gd
-res://tests/integration/test_resource_db_loads.gd
-res://tests/integration/test_resource_db_export_snapshot.gd
-res://tests/integration/test_resource_db_get_and_search.gd
+res://addons/ascii_grid/ascii_canvas.gd
+res://tests/integration/test_boot_flow_menu_to_game.gd
+res://tests/integration/test_boot_flow_opening_to_menu.gd

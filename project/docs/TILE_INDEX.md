@@ -189,7 +189,7 @@ Row 11 (160-175)
 170 ¬ 	wormy tendril*
 171 ½ 	
 172 ¼ 	Roc nests, roots$, branches$
-173 ¡ 	Flask, waterskin, Pouch
+173 ¡ 	Python stdlib HTTP server, waterskin, Pouch
 174 « 	Tail of Ballista arrow facing west, item with decoration tags
 175 » 	Tail of Ballista arrow facing east, item with decoration tags
 Row 12 (176-191)

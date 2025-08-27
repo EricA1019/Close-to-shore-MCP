@@ -2,6 +2,8 @@
 
 A unified command-line tool replacing the MCP Python/shell tooling with fast, reliable Rust implementations.
 
+Note on docs style: Each command group includes a compact checklist with Requirements, Contracts, Tests, and Definition of Done (DoD).
+
 ## Quick Start
 
 ```bash
@@ -121,6 +123,46 @@ rust/
 Phase 2: `cts engine`, `cts plugin`, `cts scene`
 Phase 3: `cts lint`, `cts doc`, `cts logs`  
 Phase 4: `cts release`, `cts health`
+
+## CTS DB (Resource Database)
+
+CLI entry points for the Resource Database used by the game. Content lives in Godot Resource files (`.tres/.res`) and is indexed by collection and stable id.
+
+### Commands
+
+```bash
+# List collections
+cts db list [--roots res://data,res://addons/resource_databases]
+
+# Search entries (optionally scoped)
+cts db search --query "apartment" [--collection layouts] [--limit 20]
+
+# Index/export snapshot with cache and timings
+cts db index [--out user://resource_db_index.json] [--roots ...] [--verify-hash 0.1]
+cts db export --out user://resource_db_index.json
+
+# Validate with rules DB001–DB005 (+ future DB006–DB010)
+cts db validate [--strict] [--roots ...] [--out logs/db_validate.json]
+```
+
+### Checklist
+
+- Requirements
+	- Content stored as `.tres/.res` under roots like `res://data/` and typed subfolders (entities, items, abilities, statuses, tiles, layouts)
+	- Godot 4.x available (managed via CTS engine or system `godot4`)
+	- Headless runner `res://scripts/tools/db_runner.gd` present
+- Contracts (inputs/outputs)
+	- Inputs: `--roots` (comma-separated Godot paths), optional `--out`, `--strict`, `--verify-hash`
+	- Outputs: Single-line JSON per command; index/export include `{cache:{...}, timings:{...}}`
+	- Exit codes: 0 success; 1 validation errors (or warnings with `--strict`); ≥2 runtime/IO errors
+- Tests (happy + edge)
+	- Happy: `cts db list` returns known collections; `cts db search --collection layouts --query apartment` returns at least one hit
+	- Edge: Missing roots → empty/diagnostic output; `--strict` on known warnings → exit 1; index twice shows cache hits increase
+- DoD
+	- Commands return valid JSON suitable for `jq`
+	- Validation emits DB001–DB005 accurately; wires for future DB006–DB010
+	- Snapshot written to `user://resource_db_index.json` when requested
+	- Timings and cache stats surfaced in index/export
 
 ## Development
 

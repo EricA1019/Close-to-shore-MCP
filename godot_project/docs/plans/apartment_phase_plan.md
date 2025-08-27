@@ -62,8 +62,8 @@ Requirements
   - Cross-ref existence checks: entity.ability_ids -> abilities, entity.status_ids -> statuses, equipment item IDs -> items.
   - Tile tags sanity (non-empty for tiles).
 - Create `MCP/TOOLS/doc_updater.py` and run it to standardize docs:
-  - Replace Flask mentions with "Python stdlib HTTP server".
-  - Prefer Resource Database (.tres/.res) terminology over JSON DB wording.
+  - Replace Python stdlib HTTP server mentions with "Python stdlib HTTP server".
+  - Prefer Resource Database (.tres/.res) terminology over Resource Database (.tres/.res) wording.
   - Ensure CTS sections have a `### Checklist` (Requirements/Contracts/Tests/DoD).
 Contracts
 - Bridge: list(collection), get_by_id(collection, id) for all new collections.

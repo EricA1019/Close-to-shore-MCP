@@ -26,6 +26,7 @@ This document provides a roadmap to all project documentation.
   - Architecture and design decisions
   - Asset specifications and workflows
   - Integration and success documentation
+  - Resource DB: [RESOURCE_DB.md](../godot_project/docs/RESOURCE_DB.md)
 
 ## Process Documentation
 - **[AGENT_TEST_GUIDE.md](AGENT_TEST_GUIDE.md)** - Testing procedures for AI agents

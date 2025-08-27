@@ -106,11 +106,14 @@
 - **Hungover**: Starting condition, reduces accuracy/energy
 - **Steady Nerves**: Temporary buff from whiskey (+accuracy)
 - **Detective Style**: Bonus from wearing full detective outfit
+- **In the Zone**: Temporary buff from resting in the chair (+focus)
 
 ### Progressive Discovery
 1. **First Visit**: Player notices drawer is ajar, prompting investigation
 2. **After Interaction**: Drawer becomes "empty" or shows remaining items
 3. **Equipment Check**: Player can view equipped items in ActionPanel
+4. **Status Updates**: Player status reflects current buffs/debuffs
+5. **Revisit POIs**: Some POIs (like fridge) can be revisited for minor items
 
 ## Implementation Priorities
 
@@ -118,6 +121,8 @@
 - Service Pistol (combat functionality)
 - Whiskey Bottle (healing/status system) 
 - Leather Jacket (defense system)
+- Fridge (basic interaction)
+- Closet (basic interaction)
 
 ### Phase 2: Extended Interactions (Future)
 - Additional consumables in fridge

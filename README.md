@@ -32,6 +32,13 @@ Key CTS commands:
 - `cts health` — project health gate (PASS/WARN/FAIL)
 - `cts release` — release preparation
 
+### Resource Database
+
+Canonical content (entities, items, abilities, statuses, tiles, layouts) lives in Godot Resource files (`.tres/.res`) and is indexed via our Rust bridge and CLI.
+
+- How it works and how to query it: see `godot_project/docs/RESOURCE_DB.md`.
+- Quick CLI: `cts db list|search|index|export|validate` (JSON outputs, CI-friendly)
+
 ### Native Extension (Rust)
 
 - A minimal GDExtension (Rust) provides `HelloNode` with a `say_hello(name)` method.
