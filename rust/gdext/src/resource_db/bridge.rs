@@ -309,9 +309,9 @@ impl ResourceDbBridge {
     /// Shape: { issues: Issue[], summary: { errors: i64, warnings: i64, total: i64 } }
     #[func]
     pub fn validate(&self) -> Dictionary {
-        let mut issues = Array::<Variant>::new();
-        let mut errors: i64 = 0;
-    let warnings: i64 = 0;
+    let mut issues = Array::<Variant>::new();
+    let mut errors: i64 = 0;
+    let mut warnings: i64 = 0;
 
         // DB001 Duplicate ID check
         {
@@ -395,7 +395,7 @@ impl ResourceDbBridge {
                 d.set("path", e.path.clone());
                 let v: Variant = d.to_variant();
                 issues.push(&v);
-                // warnings += 1; // keep warnings as 0 unless strict is desired later
+                warnings += 1;
             }
         }
 
@@ -407,7 +407,7 @@ impl ResourceDbBridge {
             adj.insert(id.clone(), e.refs.clone());
         }
         // DFS with recursion stack
-        fn dfs(node: &String, adj: &HashMap<String, Vec<String>>, visited: &mut std::collections::HashSet<String>, stack: &mut Vec<String>, out: &mut Array<Variant>, err_count: &mut i64) {
+    fn dfs(node: &String, adj: &HashMap<String, Vec<String>>, visited: &mut std::collections::HashSet<String>, stack: &mut Vec<String>, out: &mut Array<Variant>, warn_count: &mut i64) {
             if visited.contains(node) { return; }
             visited.insert(node.clone());
             stack.push(node.clone());
@@ -422,9 +422,9 @@ impl ResourceDbBridge {
                         d.set("message", format!("Cyclic reference detected: {} -> {}", path_vec.join(" -> "), n));
                         let v: Variant = d.to_variant();
                         out.push(&v);
-                        // warnings would be +1 if tracked
+            *warn_count += 1;
                     }
-                    dfs(n, adj, visited, stack, out, err_count);
+            dfs(n, adj, visited, stack, out, warn_count);
                 }
             }
             stack.pop();
@@ -432,7 +432,7 @@ impl ResourceDbBridge {
         let mut visited = std::collections::HashSet::<String>::new();
         for k in adj.keys() {
             let mut stack = Vec::<String>::new();
-            dfs(k, &adj, &mut visited, &mut stack, &mut issues, &mut (0i64));
+        dfs(k, &adj, &mut visited, &mut stack, &mut issues, &mut warnings);
         }
 
         // DB006 Unique key per-collection (keys must be unique within a collection)
@@ -513,6 +513,7 @@ impl ResourceDbBridge {
                         d.set("path", e.path.clone());
                         let v: Variant = d.to_variant();
                         issues.push(&v);
+                        warnings += 1;
                     }}
                 }
                 "statuses" => {
@@ -525,6 +526,7 @@ impl ResourceDbBridge {
                         d.set("path", e.path.clone());
                         let v: Variant = d.to_variant();
                         issues.push(&v);
+                        warnings += 1;
                     }}
                 }
                 "tiles" => {
@@ -537,6 +539,7 @@ impl ResourceDbBridge {
                         d.set("path", e.path.clone());
                         let v: Variant = d.to_variant();
                         issues.push(&v);
+                        warnings += 1;
                     }}
                 }
                 _ => {}
