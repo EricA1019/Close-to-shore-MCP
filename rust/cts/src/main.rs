@@ -12,6 +12,7 @@ use commands::lint::LintCommand;
 use commands::logs::LogsCommand;
 use commands::health::HealthCommand;
 use commands::release::ReleaseCommand;
+use commands::db::DbCommand;
 
 #[derive(Parser)]
 #[command(name = "cts")]
@@ -50,6 +51,8 @@ enum Commands {
     Health(HealthCommand),
     /// Release prep (notes, changelog, bump)
     Release(ReleaseCommand),
+    /// Resource DB tools (validate)
+    Db(DbCommand),
 }
 
 #[tokio::main]
@@ -83,5 +86,6 @@ async fn main() -> Result<()> {
     Commands::Logs(cmd) => cmd.execute(cli.json).await,
     Commands::Health(cmd) => cmd.execute(cli.json).await,
     Commands::Release(cmd) => cmd.execute(cli.json).await,
+    Commands::Db(cmd) => cmd.execute(cli.json).await,
     }
 }

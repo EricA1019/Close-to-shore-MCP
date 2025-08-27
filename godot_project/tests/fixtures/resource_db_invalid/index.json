@@ -1,0 +1,10 @@
+{
+  "entries": [
+    { "collection": "items", "key": "dup", "title": "Duplicate One", "tags": [], "path": "res://data/items/dup1.tres", "refs": ["items.missing"] },
+    { "collection": "items", "key": "dup", "title": "Duplicate Two", "tags": [], "path": "res://data/items/dup2.tres", "refs": [] },
+    { "collection": "bad*name", "key": "x", "title": "Bad Collection", "tags": [], "path": "res://data/bad.tres", "refs": [] },
+    { "collection": "items", "key": "no_title", "title": "", "tags": [], "path": "res://data/items/no_title.tres", "refs": [] },
+    { "collection": "items", "key": "cycle_a", "title": "A", "tags": [], "path": "res://data/items/a.tres", "refs": ["items.cycle_b"] },
+    { "collection": "items", "key": "cycle_b", "title": "B", "tags": [], "path": "res://data/items/b.tres", "refs": ["items.cycle_a"] }
+  ]
+}

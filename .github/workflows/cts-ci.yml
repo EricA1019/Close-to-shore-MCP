@@ -106,3 +106,19 @@ jobs:
           name: mcp-context-bundle
           path: .mcp_context/context_bundle.md
           if-no-files-found: error
+
+      - name: DB Validate (strict)
+        run: |
+          ./rust/target/release/cts db validate \
+            --project-root . \
+            --roots res://data,res://addons/resource_databases \
+            --out logs/db_validate.json \
+            --strict
+
+      - name: Upload DB validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-validate-report
+          path: logs/db_validate.json
+          if-no-files-found: warn

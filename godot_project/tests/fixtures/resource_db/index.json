@@ -1,0 +1,18 @@
+{
+  "entries": [
+    {
+      "collection": "items",
+      "key": "screwdriver",
+      "title": "Screwdriver",
+      "tags": ["tool", "metal"],
+      "path": "res://tests/fixtures/resource_db/items/screwdriver.tres"
+    },
+    {
+      "collection": "abilities",
+      "key": "lockpicking",
+      "title": "Lock Picking",
+      "tags": ["skill", "dexterity"],
+      "path": "res://tests/fixtures/resource_db/abilities/lockpicking.tres"
+    }
+  ]
+}

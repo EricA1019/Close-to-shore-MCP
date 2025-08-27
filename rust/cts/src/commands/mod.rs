@@ -7,4 +7,5 @@ pub mod lint;
 pub mod logs;
 pub mod health;
 pub mod release;
+pub mod db;
 

@@ -448,6 +448,177 @@
 			"group": "test"
 		},
 		{
+			"label": "Test: GUT (Resource DB)",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://addons/gut/gut_cmdln.gd",
+				"-gdir=res://tests/integration",
+				"-gselect=test_resource_db_loads.gd",
+				"-gselect=test_resource_db_get_and_search.gd",
+				"-gselect=test_resource_db_export_snapshot.gd",
+				"-gexit"
+			],
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "CTS: DB Validate",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"db",
+				"validate",
+				"--project-root",
+				"${workspaceFolder}",
+				"--roots",
+				"${input:ctsDbValidateRoots}"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: DB List",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"db",
+				"list",
+				"--project-root",
+				"${workspaceFolder}",
+				"--roots",
+				"${input:ctsDbValidateRoots}"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: DB Search",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"db",
+				"search",
+				"--project-root",
+				"${workspaceFolder}",
+				"--roots",
+				"${input:ctsDbValidateRoots}",
+				"--query",
+				"${input:ctsDbSearchQuery}",
+				"--collection",
+				"${input:ctsDbSearchCollection}",
+				"--limit",
+				"${input:ctsDbSearchLimit}"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: DB Export Snapshot",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"db",
+				"export",
+				"--project-root",
+				"${workspaceFolder}",
+				"--roots",
+				"${input:ctsDbValidateRoots}",
+				"--out",
+				"user://resource_db_index.json"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: DB Index",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"db",
+				"index",
+				"--project-root",
+				"${workspaceFolder}",
+				"--roots",
+				"${input:ctsDbValidateRoots}"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "CTS: DB Validate (strict)",
+			"type": "shell",
+			"command": "./rust/target/release/cts",
+			"args": [
+				"db",
+				"validate",
+				"--project-root",
+				"${workspaceFolder}",
+				"--roots",
+				"${input:ctsDbValidateRoots}",
+				"--strict"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Release"
+			]
+		},
+		{
+			"label": "DB: Validate",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://scripts/tools/db_runner.gd",
+				"--",
+				"validate",
+				"--roots=${input:dbValidateRoots}"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "DB: Validate (strict)",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://scripts/tools/db_runner.gd",
+				"--",
+				"validate",
+				"--strict",
+				"--roots=${input:dbValidateRoots}"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
 			"label": "Test: ASCII Canvas Demo",
 			"type": "shell",
 			"command": "godot4",
@@ -872,6 +1043,24 @@
 				"CTS: Build Release (gdscript-ast)"
 			]
 		}
+		,
+		{
+			"label": "DB: Build Index (headless)",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://scripts/tools/db_runner.gd",
+				"--",
+				"build_index",
+				"--roots=${input:dbRoots}"
+			],
+			"group": "test",
+			"problemMatcher": []
+		}
 	],
 	"inputs": [
 		{
@@ -899,6 +1088,45 @@
 			"type": "promptString",
 			"description": "Release version (e.g., v0.2.0 or 'auto')",
 			"default": "auto"
+		},
+		{
+			"id": "dbRoots",
+			"type": "promptString",
+			"description": "Comma-separated roots for DB indexing (e.g., res://data,res://addons/resource_databases)",
+			"default": "res://data,res://addons/resource_databases"
+		}
+		,
+		{
+			"id": "dbValidateRoots",
+			"type": "promptString",
+			"description": "Comma-separated roots for DB validate (e.g., res://tests/fixtures/resource_db)",
+			"default": "res://tests/fixtures/resource_db"
+		}
+		,
+		{
+			"id": "ctsDbValidateRoots",
+			"type": "promptString",
+			"description": "Comma-separated roots for CTS db validate (e.g., res://tests/fixtures/resource_db)",
+			"default": "res://tests/fixtures/resource_db"
+		}
+		,
+		{
+			"id": "ctsDbSearchQuery",
+			"type": "promptString",
+			"description": "Search query for CTS DB Search",
+			"default": "screw"
+		},
+		{
+			"id": "ctsDbSearchCollection",
+			"type": "promptString",
+			"description": "Collection filter (blank for all)",
+			"default": "items"
+		},
+		{
+			"id": "ctsDbSearchLimit",
+			"type": "promptString",
+			"description": "Result limit",
+			"default": "10"
 		}
 	]
 }
