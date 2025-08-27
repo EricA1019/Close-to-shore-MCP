@@ -2,6 +2,30 @@
 
 A comprehensive set of debugging and development tools designed to improve AI agent workflow with Godot projects.
 
+## Doc Updater (doc_updater.py)
+
+A rule-based Markdown updater to keep docs consistent with current terminology and our checklist format.
+
+- Dry-run by default; add `--write` to apply changes
+- Applies safe replacements outside code fences
+- Rules available:
+   - `std-http`: Replace "Flask" with "Python stdlib HTTP server"
+   - `resource-db`: Prefer Resource Database (.tres/.res) phrasing over JSON DB wording
+   - `cts-checklists`: Ensure a `### Checklist` section exists under CTS doc sections
+
+Examples
+
+```bash
+# Preview changes across Markdown files (dry-run)
+python3 MCP/TOOLS/doc_updater.py --include "**/*.md" --exclude "godot_project/addons/**"
+
+# Apply specific rules repo-wide
+python3 MCP/TOOLS/doc_updater.py --rules std-http resource-db --write
+
+# Update specific files
+python3 MCP/TOOLS/doc_updater.py --files rust/README.md godot_project/docs/RESOURCE_DB.md --write --verbose
+```
+
 ## Overview
 
 This tool suite provides "Scene Vision" capabilities for AI agents working with Godot, allowing them to inspect, analyze, and debug game state in real-time.

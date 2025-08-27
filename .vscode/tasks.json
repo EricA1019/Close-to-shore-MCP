@@ -2,6 +2,39 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "Docs: Updater (dry-run)",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/TOOLS/doc_updater.py",
+				"--include",
+				"**/*.md",
+				"--exclude",
+				"godot_project/addons/**",
+				"--exclude",
+				"**/ResourceDatabases/**"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "Docs: Updater (apply)",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/TOOLS/doc_updater.py",
+				"--include",
+				"**/*.md",
+				"--exclude",
+				"godot_project/addons/**",
+				"--exclude",
+				"**/ResourceDatabases/**",
+				"--write"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
 			"label": "MCP: Start stdlib server",
 			"type": "shell",
 			"command": "/bin/python3.11",

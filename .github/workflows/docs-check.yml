@@ -1,0 +1,19 @@
+name: Docs Consistency Check
+
+on:
+  pull_request:
+  push:
+    branches: [ Rust-demo ]
+
+jobs:
+  docs-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Run doc updater (dry-run)
+        run: |
+          python3 MCP/TOOLS/doc_updater.py --include "**/*.md" --exclude "godot_project/addons/**" --exclude "**/ResourceDatabases/**" --dry-run --fail-on-changes
