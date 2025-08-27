@@ -57,9 +57,9 @@ Each entry should include:
 1. **Scene Inspector** (`scripts/tools/scene_inspector.gd`) - Runtime scene tree export to JSON
 2. **Debug HTTP Server** (`scripts/tools/debug_http_server.gd`) - REST API for external debugging access  
 3. **GDScript Linter** (`MCP/TOOLS/gdscript_linter.py`) - Static code analysis with 198 issues found
-4. **Test Runner** (`MCP/TOOLS/godot_test_runner.py`) - Automated GUT test execution and reporting
+4. **Test Runner** (`MCP/TOOLS/test_runner.sh`) - Automated GUT test execution and reporting
 5. **Documentation Generator** (`MCP/TOOLS/godot_doc_generator.py`) - Auto-generate docs from source code
-6. **Tool Suite Runner** (`MCP/TOOLS/godot_tool_suite.py`) - Orchestrates all tools with comprehensive reporting
+6. **Analysis Runner** (`MCP/TOOLS/run_analysis.sh`) - Orchestrates lint + test with comprehensive reporting
 **Rationale**: 
 - "Scene Vision" system gives AI agents unprecedented visibility into game state via JSON exports
 - External HTTP API allows debugging without modifying game code  

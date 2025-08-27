@@ -35,7 +35,7 @@
 - **Full Name**: "Old Model 10 Service Pistol (.38 Special)"
 - **Description**: "Your trusty old Model 10 revolver in .38 Special. The blued steel shows wear from years of service, but it's been meticulously maintained. Six shots, double-action, and reliable as the day you graduated from the academy. The wooden grips are worn smooth from your hands."
 - **Type**: Weapon (equippable)
-- **Stats**: `{"damage": 15, "accuracy": 85, "ammo": 6, "range": "medium"}`
+- **Stats**: `{"damage": 10, "accuracy": 95, "ammo": 6, "range": "medium"}`
 - **Action Text**: "You holster the familiar weight of your service weapon."
 
 #### 🥃 **Whiskey Bottle** (Healing Item)
@@ -81,6 +81,19 @@
 - **Name**: "Kitchen Cupboard"
 - **Description**: "Upper kitchen cabinet with mismatched dishes, a few canned goods, and the remnants of better-stocked days."
 - **Actions**: ["Search shelves", "Check supplies", "Look for coffee"]
+
+### 8. Living Room Chair (Living Room)
+- **Character**: ╥ (210) - Chair/Table
+- **Name**: "Living Room Chair"
+- **Description**: "A comfortable armchair with a few stains and a well-worn cushion. Perfect for sinking into with a good book or a drink."
+- **Actions**: ["Sit down", "Search cushions", "Adjust position"]  
+
+### 9. Apartment Door (Entryway)
+- **Character**: ▓ (178) - Door
+- **Name**: "Apartment Door"
+- **Description**: "A sturdy wooden door with a brass doorknob. It looks like it could use a fresh coat of paint."
+- **Actions**: ["Open door", "Knock", "Check peephole"] 
+
 
 ## Item Integration Notes
 

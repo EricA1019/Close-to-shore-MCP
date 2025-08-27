@@ -330,28 +330,129 @@ Success criteria
 
 ---
 
-## Phase 5 — Performance and caching
+## Phase 5 — Performance, caching, and indexing ergonomics
 
 Goals
-- Improve big DB load/search performance and incremental dev loops.
+- Reduce cold index build time and make hot (incremental) builds fast and predictable.
+- Provide structured timing/size metrics for local feedback and CI artifacts.
+- Keep search fast for typical queries without over-complex data structures.
 
-Changes
-- Rust GDExt:
-  - Batch resource loads; avoid keeping heavy Godot objects in memory (store POD only).
-  - Add `render_into_images` style reuse for any image/textures if later used by UI.
-  - Optional persisted cache: `user://resource_db_cache.bin` for faster re-index when unchanged (hash-based).
-- CLI:
-  - Skip re-index if cache valid; `--force` to rebuild.
+Motivation and targets
+- Baseline measurement: capture current timings for `db_runner build_index` (fixtures and full project roots) on CI and locally.
+- Targets (soft):
+  - Hot re-index (no content/mtime changes): < 250ms headless on CI runner, < 100ms locally.
+  - Cold build: unchanged (observability first), stretch goal 20–40% faster.
+  - Search: O(tokens) via token lists; return first 50 quickly.
 
-Success criteria
-- Measurable speedups on CI and local runs (log timings in `cts db index`).
+Design
+- Cache manifest (JSON) persisted at `user://resource_db_cache.json`:
+  - Shape: `{ "version": 1, "roots": [..], "entries": { "res://path": { "hash": <xxh3>, "mtime": <i64>, "id": "collection.key" } }, "built_at": <unix>, "count": <int> }`.
+  - On build_index:
+    - Discover candidate files under roots.
+    - For each file, read `mtime` first; when `mtime` equals and `path` present in cache, assume unchanged; optional `--verify-hash` to re-hash occasionally.
+    - On change/new files, compute content hash (xxhash/xxh3) using Rust (no Godot dependency) with FileAccess to read; rebuild the corresponding entry; update manifest.
+    - Remove deleted paths from manifest and in-memory index.
+  - Save both: snapshot (entries JSON) and cache manifest in one pass.
+
+- Token index (in-memory only):
+  - Build a simple inverted map `token -> Vec<id>` for `title`, `key`, and `tags` tokens (lowercased).
+  - `search(query)` splits into tokens; intersect posting lists; cap results to `limit`. Keep `get` path via map.
+  - Do not persist token index (small rebuild cost); recompute after cache-driven update.
+
+- Parallel scanning (optional, feature-gated):
+  - Use a limited thread pool for file hashing and JSON parse when large roots; default off.
+  - Ensure Godot APIs only on main thread; use Rust std/fs for hashing; keep GDExt boundary clean.
+
+CLI changes (cts)
+- `cts db index`:
+  - Flags: `--use-cache` (default true), `--force` (ignore cache), `--verify-hash` (spot-check N files), `--stats`, `--stats-out <path>`.
+  - Output JSON includes `{ ok, count, collections, cache: { hit_files, changed_files, deleted_files, verify_rate }, timings: { discover_ms, hash_ms, parse_ms, total_ms } }`.
+- `cts db validate` (no logic change): include `--use-cache` passthrough in build step inside runner if needed.
+
+GDExt changes
+- Extend ResourceDbBridge:
+  - `build_index` accepts `use_cache: bool = true`, `verify_hash: float = 0.0` (0–1 sample rate), and returns enriched stats (or a `stats()` that exposes last timings and cache deltas).
+  - Add `load_cache(path) -> bool` and `save_cache(path) -> bool` internally; default path `user://resource_db_cache.json`.
+  - Keep only POD data in memory; no heavy Godot Resources.
+
+Observability
+- Add structured timings with a lightweight timer utility around: discovery, hashing, parse+build, token-index, save.
+- Log summary to stdout in runner; include in CLI JSON.
+
+Tests
+- Functional: unchanged roots → subsequent `build_index` reports `cache.hit_files == total` and `changed_files == 0` and count stable.
+- Mutation: touch one file → `changed_files == 1`; id present and updated; count stable.
+- Deletion: remove one file (in a temp copy of fixtures) → `deleted_files == 1`; count decremented.
+- Token index: search results identical to Phase 2 behavior.
+- Non-flaky CI: assert flags in JSON (cache_hit) instead of absolute timings; include timings in artifact for visibility.
+
+CI workflow
+- Extend the CTS CI job to run `cts db index --stats --stats-out logs/db_index_stats.json` after build, upload stats.
+- Keep gate on validate; do not fail on performance yet. Optionally compare against previous run in a later phase.
+
+Risks and mitigations
+- MTime resolution differences (CI vs local): prefer content-hash on first run; allow `--verify-hash` sample checks.
+- Cache corruption: version the manifest; fall back to full rebuild and report `cache.reset=true`.
+- Parallelism: default off; expose `--threads N` later if needed.
+
+Deliverables
+- Updated GDExt bridge with cache-aware `build_index` and timing stats.
+- CLI: `cts db index` flags (`--use-cache`, `--force`, `--verify-hash`, `--stats`, `--stats-out`).
+
+Status (2025-08-27)
+- Done: Cache manifest and timing metrics wired through bridge → runner → CLI; `--stats-out` writes to `logs/db_index_stats.json`.
+- Done: Integration tests cover cache hits/mutation/deletion and NDJSON output contract.
+- Done: VS Code tasks added for quick stats and console summary.
+- Done: Main UI now loads apartment layout from the Resource DB with safe fallback and a warning when falling back.
+- Added: Focused test `test_interactive_apartment_db_load.gd` asserts DB-backed load is active.
+
+Next (optional):
+- CI nicety to upload and print a short timing summary from `logs/db_index_stats.json`.
+
+Ready to proceed to Final Phase.
 
 ---
 
-## Phase 6 — Developer experience and docs
+## Phase 6 — Bootable main UI (DB-driven) and polish
+
+Goals
+- Ensure the Godot project boots to the main UI and renders the apartment using the DB-backed layout.
+- Keep the previous hardcoded layout path as a fallback with a clear warning.
+
+State
+- DB entry seeded at `layouts.apartment` → `res://data/layouts/apartment.json`.
+- `InteractiveApartment` loads DB first; exposes `is_loaded_from_db()` for tests.
+- Integration tests for main UI boot, input, rendering, and DB-load assertion are passing.
+ - Added fallback test to ensure built-in layout is used when DB index is missing.
+
+Polish (tracked elsewhere)
+- Silence remaining menu animation warnings and Control anchor warnings.
+- Optional CI summary for DB index stats.
+- Runner: pass through `--use-cache` and `--verify-hash`; print enriched JSON.
+- Tests: functional cache hit/change/delete + search parity.
+- Docs: RESOURCE_DB.md section on cache and the new flags.
+- CI: artifact `logs/db_index_stats.json`.
+
+Acceptance criteria
+- Hot build on unchanged roots returns JSON with `cache.hit_files == count` and `changed_files == 0`.
+- Search results remain correct and within previous limits.
+- Stats JSON present as CI artifact; manual inspection shows non-zero timings and reasonable totals.
+
+Status (2025-08-27)
+- Done: DB-driven main UI boots; `is_loaded_from_db()` asserted by focused test.
+- Done: Added `--use-cache` alias in runner; docs updated.
+- Done: CI prints a short DB Stats Summary and uploads `logs/db_index_stats.json`.
+- Done: Added fallback behavior test (`test_interactive_apartment_fallback.gd`).
+- Deferred (non-blocking): Control anchor warnings and any menu animation track cleanup (move to Phase 7 polish).
+
+---
+
+## Phase 7 — Developer experience, UX polish, and docs
 
 Goals
 - Make DB operations easy for humans and the agent.
+ - Tidy runtime logs (anchors/animations) and remove minor papercuts.
+ - Document end-to-end flows with clear contracts and examples.
 
 Changes
 - VS Code tasks (`.vscode/tasks.json`):
@@ -364,6 +465,43 @@ Changes
   - How to run: tasks and CLI examples.
 - MCP Server (`MCP/TOOLS/mcp_server.py`):
   - Add endpoints: db.collections, db.search, db.get, db.export, db.validate, db.stats (shell out to `cts`).
+
+Polish and cleanup
+- UI anchor warnings: audit scenes emitting "non-equal opposite anchors"; set matching anchors or replace immediate size changes with `set_deferred()`.
+- Animation warnings (if any): remove invalid tracks or correct node paths in `AnimationPlayer` resources.
+- Optional: add a scene-lint rule/check to flag non-equal opposite anchors in CI (soft warning).
+
+Acceptance criteria
+- All integration tests remain green; focused DB-load and fallback tests pass.
+- No recurring UI anchor warnings in headless runs for main startup path (MainUI and Apartment flows).
+- MCP server exposes the listed db.* endpoints; returns JSON matching CLI outputs with appropriate exit/error handling.
+- VS Code tasks exist and are documented; developers can run common DB actions without typing commands.
+- Docs updated with cache flags, DB-first layout behavior, fallback note, and MCP endpoint examples.
+
+Deliverables
+- Updated `.vscode/tasks.json` (new/adjusted CTS DB tasks; optional prompts).
+- `MCP/TOOLS/mcp_server.py` endpoints: db.collections/search/get/export/validate/stats.
+- UI scene fixes to silence anchor warnings in key UIs (MainUI, Apartment UI, Output/Action panels).
+- Docs refresh in `godot_project/docs/RESOURCE_DB.md` and, if needed, `INTERACTIVE_APARTMENT_PLAN.md`.
+
+Work plan (detailed)
+1) Logs hygiene
+  - Reproduce anchor warnings in a targeted headless run (MainUI startup test).
+  - Fix anchors in implicated scenes (ensure left/right anchors equal or use full-rect anchors; defer size changes).
+  - Verify warnings are gone via the existing "Integration quick" task.
+2) Developer tasks
+  - Add a prompt-driven "CTS: DB Search (prompt)" task if missing; ensure index stats task remains.
+3) MCP endpoints
+  - Implement thin wrappers that call `cts` with timeouts (30s), returning parsed JSON and HTTP codes (4xx/5xx on failure).
+  - Endpoints: GET /db/collections, GET /db/get?id=, GET /db/search?q=&collection=&limit=, POST /db/export, POST /db/validate?strict=1, GET /db/index/stats.
+4) Docs
+  - Expand usage examples; add troubleshooting for cache, fallback, and CI artifacts.
+5) Optional guardrails
+  - Add a lightweight CI check that greps logs for anchor warnings and reports a soft warning comment.
+
+Timeline
+- Day 1: Anchor warning audit + fixes for MainUI/Apartment paths; verify clean logs in tests.
+- Day 2: MCP endpoints + tasks + docs; PR with screenshots/log snippets; optional CI soft check.
 
 Success criteria
 - One-pagers for devs; agent endpoints documented and discoverable.

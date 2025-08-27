@@ -25,7 +25,7 @@ func test_new_game_flow_loads_basic_room():
 	var location_state = get_node("/root/LocationState")
 	await get_tree().process_frame
 	var current_location = location_state.get_location()
-	assert_eq(current_location, "Your Apartment", "Location should be set to apartment")
+	assert_eq(current_location, "Apartment", "Location should be set to apartment by Apartment scene")
 	
 	print("[Test] New Game flow: BasicRoom found and location set correctly")
 

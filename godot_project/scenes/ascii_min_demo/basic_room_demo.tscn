@@ -1,33 +1,32 @@
-[gd_scene load_steps=5 forma[node name="BasicRoom" type="Node" parent="TermRoot"]
-script = ExtResource("4_room")uid="uid://basic_room_demo"]
+[gd_scene load_steps=5]
 
-[ext_resource type="Script" path="res://scenes/ascii_min_demo/basic_room_demo.gd" id="1_room"]
-[ext_resource type="Script" path="res://addons/ascii_grid/ascii_canvas.gd" id="2_canvas"]
-[ext_resource type="Script" path="res://addons/ascii_grid/term_container_vbox.gd" id="3_container"]
-[ext_resource type="Script" path="res://scripts/ui/ascii_basic_room.gd" id="4_room"]
+[ext_resource type="Script" path="res://scenes/ascii_min_demo/basic_room_demo.gd" id="1"]
+[ext_resource type="Script" path="res://addons/ascii_grid/ascii_canvas.gd" id="2"]
+[ext_resource type="Script" path="res://addons/ascii_grid/term_container_vbox.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/ui/ascii_basic_room.gd" id="4"]
 
 [node name="BasicRoomDemo" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource("1_room")
+script = ExtResource("1")
 
 [node name="AsciiCanvas" type="Control" parent="." node_paths=PackedStringArray("term_root")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource("2_canvas")
+script = ExtResource("2")
 cell_size = Vector2i(16, 16)
 grid_size = Vector2i(25, 15)
 term_root = NodePath("../TermRoot")
 debug_logging = true
 
 [node name="TermRoot" type="Node" parent="."]
-script = ExtResource("3_container")
+script = ExtResource("3")
 
 [node name="BasicRoom" type="Node" parent="TermRoot"]
-script = ExtResource("4_room")
+script = ExtResource("4")
 
-[connection signal="ready" from="." to "." method="_ready"]
+[connection signal="ready" from="." to="." method="_ready"]

@@ -15,6 +15,7 @@ var last_interaction: Dictionary = {}
 var _apartment_cells: Dictionary = {}
 var pois: Array = []
 var nearby_poi = null
+var _loaded_from_db: bool = false
 
 # UI references (will be set by main UI)
 var output_panel = null
@@ -167,8 +168,12 @@ func _update_ui_panels() -> void:
 
 func _generate_apartment_layout() -> void:
 	_apartment_cells.clear()
-	
-	# Define the 28x16 apartment layout
+	if _try_load_layout_from_db():
+		_redraw_required = true
+		return
+    
+	# Fallback: built-in 28x16 layout (kept for stability)
+	push_warning("[InteractiveApartment] Falling back to built-in layout; DB entry layouts.apartment not found.")
 	var layout_strings = [
 		"████████████████████████████",  # 0
 		"█.....π.......+..........+.█",  # 1
@@ -187,19 +192,17 @@ func _generate_apartment_layout() -> void:
 		"█..........................█",  # 14
 		"████████████████████████████"   # 15
 	]
-	
-	# Convert strings to TermCells
-	for y in range(APARTMENT_HEIGHT):
-		for x in range(APARTMENT_WIDTH):
-			var character = layout_strings[y][x]
-			
-			# Debug specific position
+	_populate_cells_from_rows(layout_strings)
+	_redraw_required = true
+
+func _populate_cells_from_rows(rows: Array) -> void:
+	for y in range(min(APARTMENT_HEIGHT, rows.size())):
+		var row: String = rows[y]
+		for x in range(min(APARTMENT_WIDTH, row.length())):
+			var character = row[x]
 			if x == 19 and y == 8:
 				print("[Debug] Setting position (19,8) to character: '", character, "'")
-			
 			var color = Color.WHITE
-			
-			# Color coding for different elements
 			if character == "█":
 				color = Color.GRAY
 			elif character == ".":
@@ -207,11 +210,50 @@ func _generate_apartment_layout() -> void:
 			elif character == "+":
 				color = Color.BROWN
 			else:
-				color = Color.CYAN  # Furniture and POIs
-			
+				color = Color.CYAN
 			_apartment_cells[Vector2i(x, y)] = TermCell.new(character, color, Color.BLACK)
-	
-	_redraw_required = true
+
+func _try_load_layout_from_db() -> bool:
+	# Attempt to load apartment layout from Resource DB (layouts.apartment)
+	var bridge = ClassDB.instantiate("ResourceDbBridge")
+	if bridge == null:
+		return false
+	var roots := PackedStringArray(["res://data"])  # Primary root for runtime
+	if ResourceLoader.exists("res://tests/fixtures/resource_db/index.json"):
+		roots.append("res://tests/fixtures/resource_db")  # Allow tests/fixtures in dev
+	bridge.set_cache_options(true, 0.0)
+	bridge.build_index(roots)
+	var entry_v = bridge.get("layouts.apartment")
+	if entry_v == null or typeof(entry_v) == TYPE_NIL:
+		return false
+	var entry: Dictionary = entry_v
+	var path: String = entry.get("path", "")
+	if path.is_empty():
+		return false
+	if not ResourceLoader.exists(path):
+		push_warning("[InteractiveApartment] DB entry layouts.apartment path not found: %s" % path)
+		return false
+	var json_text := FileAccess.get_file_as_string(path)
+	if json_text.is_empty():
+		return false
+	var parsed = JSON.parse_string(json_text)
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return false
+	var rows: Array = parsed.get("rows", [])
+	if rows.is_empty():
+		return false
+	# Optional: width/height validation
+	var w := int(parsed.get("width", APARTMENT_WIDTH))
+	var h := int(parsed.get("height", APARTMENT_HEIGHT))
+	if w != APARTMENT_WIDTH or h != APARTMENT_HEIGHT:
+		push_warning("[InteractiveApartment] Layout dimensions %dx%d differ from expected %dx%d; truncating to fit." % [w, h, APARTMENT_WIDTH, APARTMENT_HEIGHT])
+	_populate_cells_from_rows(rows)
+	_loaded_from_db = true
+	print("[InteractiveApartment] Loaded apartment layout from DB: ", path)
+	return true
+
+func is_loaded_from_db() -> bool:
+	return _loaded_from_db
 
 func _setup_pois() -> void:
 	pois.clear()

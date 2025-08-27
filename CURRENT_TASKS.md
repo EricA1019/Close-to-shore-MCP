@@ -89,13 +89,13 @@ python3 MCP/TOOLS/gdscript_linter.py ./godot_project/scripts/ui/interactive_apar
 ### Quick Commands for Current Issues:
 ```bash
 # Full health check
-python3 MCP/TOOLS/godot_tool_suite.py . --health
+MCP/TOOLS/run_analysis.sh
 
 # Focus on our script issues  
 python3 MCP/TOOLS/gdscript_linter.py ./godot_project/scripts --format text
 
 # Monitor test progress
-python3 MCP/TOOLS/godot_test_runner.py .
+MCP/TOOLS/test_runner.sh integration
 
 # Generate current documentation
 python3 MCP/TOOLS/godot_doc_generator.py . --format markdown --output docs

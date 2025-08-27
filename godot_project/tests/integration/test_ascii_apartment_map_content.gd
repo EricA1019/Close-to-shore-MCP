@@ -8,6 +8,10 @@ func test_apartment_map_populates_term_cell_map():
 	var inst: Control = scene.instantiate()
 	add_child_autofree(inst)
 	await get_tree().process_frame
+	# Force AsciiCanvas to render once so ApartmentMap builds its internal grid
+	var canvas := inst.get_node("%MainPanel/AsciiCanvas")
+	if canvas and canvas.has_method("render"):
+		canvas.render()
 	await get_tree().process_frame
 	var term_root := inst.get_node("%MainPanel/TermRoot")
 	assert_not_null(term_root, "TermRoot exists")

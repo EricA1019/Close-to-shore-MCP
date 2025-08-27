@@ -11,43 +11,20 @@ func test_termrect_renders_non_clear_cells():
     await get_tree().process_frame
     await get_tree().process_frame
 
-    var term_rect: Node = inst.get_node("%MainPanel/TermRect")
-    assert_not_null(term_rect, "TermRect exists")
-    # Force a render to update internal textures
-    if term_rect.has_method("render"):
-        term_rect.render()
+    var ascii_canvas: Node = inst.get_node("%MainPanel/AsciiCanvas")
+    assert_not_null(ascii_canvas, "AsciiCanvas exists")
+    # Force a render to update internal buffer
+    if ascii_canvas.has_method("render"):
+        ascii_canvas.render()
     await get_tree().process_frame
-
-    var mat = term_rect.material
-    assert_not_null(mat, "TermRect has material")
-    var char_tex: ImageTexture = mat.get_shader_parameter("character_grid")
-    var fg_tex: ImageTexture = mat.get_shader_parameter("fg_color")
-    var bg_tex: ImageTexture = mat.get_shader_parameter("bg_color")
-    assert_not_null(char_tex, "character_grid texture present")
-    assert_not_null(fg_tex, "fg_color texture present")
-    assert_not_null(bg_tex, "bg_color texture present")
-
-    var img_chars: Image = char_tex.get_image()
-    var img_fg: Image = fg_tex.get_image()
-    var img_bg: Image = bg_tex.get_image()
-
-    # Use global TermCell from ascii_grid addon
-    var empty_id: float = float(TermCell.new(" ", Color.BLACK, Color.BLACK).get_character_id()) / 256.0
-    var found_non_clear := false
-
-    var w := img_chars.get_width()
-    var h := img_chars.get_height()
-    for y in h:
-        for x in w:
-            var c: Color = img_chars.get_pixel(x, y)
-            var fg: Color = img_fg.get_pixel(x, y)
-            var bg: Color = img_bg.get_pixel(x, y)
-            if abs(c.r - empty_id) > 0.0001 or fg != Color.BLACK or bg != Color.BLACK:
-                found_non_clear = true
-                break
-        if found_non_clear:
-            break
-
-    # In Godot 4, Image get_pixel does not require lock/unlock
-
-    assert_true(found_non_clear, "TermRect buffer contains drawn content (non-clear cells)")
+    # Inspect the canvas buffer
+    var buffer = ascii_canvas.buffer if ascii_canvas.has_method("get") or ascii_canvas.has("buffer") == false else null
+    if buffer == null:
+        buffer = ascii_canvas.get("buffer")
+    assert_not_null(buffer, "AsciiCanvas exposes buffer")
+    var non_clear := 0
+    for pos in buffer.get_all_cells():
+        var cell = buffer.get_cell(pos)
+        if cell and (cell.character != " " or cell.fg_color != cell.bg_color):
+            non_clear += 1
+    assert_gt(non_clear, 0, "AsciiCanvas buffer contains drawn content (non-clear cells)")

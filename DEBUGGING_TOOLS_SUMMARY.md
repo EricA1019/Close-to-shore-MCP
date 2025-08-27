@@ -51,7 +51,7 @@ We've successfully created a comprehensive debugging and development tool suite 
 - Identifies potential runtime issues
 - Ensures code maintainability
 
-### 4. **Test Runner** (`MCP/TOOLS/godot_test_runner.py`)
+### 4. **Test Runner** (`MCP/TOOLS/test_runner.sh`)
 **Purpose**: Automated GUT test execution and comprehensive reporting
 
 **Features**:
@@ -81,7 +81,7 @@ We've successfully created a comprehensive debugging and development tool suite 
 - API reference for code generation
 - Project structure understanding
 
-### 6. **Tool Suite Runner** (`MCP/TOOLS/godot_tool_suite.py`)
+### 6. **Analysis Runner** (`MCP/TOOLS/run_analysis.sh`)
 **Purpose**: Main orchestrator and comprehensive project analysis
 
 **Capabilities**:

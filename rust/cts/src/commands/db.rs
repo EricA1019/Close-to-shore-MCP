@@ -1,10 +1,12 @@
 use std::path::PathBuf;
 use std::process::Command;
 
-use anyhow::{Context, Result};
+use anyhow::{anyhow, Context, Result};
 use clap::{Args, Subcommand};
 use serde_json::Value;
 use tokio::fs;
+use tokio::process::Command as TokioCommand;
+use tokio::time::{timeout, Duration};
 use tracing::{error, info, warn};
 
 #[derive(Args)]
@@ -45,6 +47,14 @@ pub struct ValidateArgs {
     #[arg(long, default_value_t = false)]
     pub strict: bool,
 
+    /// Disable cache for this run
+    #[arg(long, default_value_t = false)]
+    pub no_cache: bool,
+
+    /// Verify-hash sampling probability (0.0-1.0)
+    #[arg(long, default_value_t = 0.0)]
+    pub verify_hash: f64,
+
     /// Write the JSON report to this file
     #[arg(long)]
     pub out: Option<PathBuf>,
@@ -70,15 +80,24 @@ impl DbCommand {
             args.strict, args.roots
         );
 
-        let mut cmd = Command::new(&godot_cmd);
+        let mut cmd = TokioCommand::new(&godot_cmd);
         cmd.args(["--headless", "--path"]).arg(&godot_project);
-    cmd.args(["-s", "res://scripts/tools/db_runner.gd", "validate"]);
+        cmd.args(["-s", "res://scripts/tools/db_runner.gd", "validate"]);
         if args.strict {
             cmd.arg("--strict");
         }
         cmd.arg(format!("--roots={}", args.roots));
+        if args.no_cache { cmd.arg("--no-cache"); }
+        if args.verify_hash > 0.0 { cmd.arg(format!("--verify-hash={}", args.verify_hash)); }
 
-        let output = cmd.output().context("Failed to execute Godot db_runner")?;
+        let output = match timeout(Duration::from_secs(30), cmd.output()).await {
+            Ok(res) => res.context("Failed to execute Godot db_runner")?,
+            Err(_) => {
+                return Err(anyhow!(
+                    "Timeout waiting for Godot validate to complete (30s). Try --godot to pin a binary or run with --no-cache."
+                ));
+            }
+        };
         let stdout = String::from_utf8_lossy(&output.stdout).to_string();
         let stderr = String::from_utf8_lossy(&output.stderr).to_string();
 
@@ -157,7 +176,7 @@ impl DbCommand {
     }
 
     async fn list(&self, args: ListArgs, json_output: bool) -> Result<()> {
-        let (stdout, stderr) = self.run_runner(&["list"], Some(&args.roots))?;
+        let (stdout, stderr) = self.run_runner_async(&["list"], Some(&args.roots)).await?;
         self.print_or_forward(stdout, stderr, json_output)?;
         Ok(())
     }
@@ -169,7 +188,7 @@ impl DbCommand {
         if let Some(coll) = args.collection { extra.push(format!("--collection={}", coll)); }
         if let Some(limit) = args.limit { extra.push(format!("--limit={}", limit)); }
 
-        let (stdout, stderr) = self.run_runner(&extra.iter().map(|s| s.as_str()).collect::<Vec<_>>(), Some(&args.roots))?;
+    let (stdout, stderr) = self.run_runner_async(&extra.iter().map(|s| s.as_str()).collect::<Vec<_>>(), Some(&args.roots)).await?;
         self.print_or_forward(stdout, stderr, json_output)?;
         Ok(())
     }
@@ -177,7 +196,7 @@ impl DbCommand {
     async fn export(&self, args: ExportArgs, json_output: bool) -> Result<()> {
         let mut extra: Vec<String> = vec!["export".into()];
         if let Some(out) = args.out { extra.push(format!("--out={}", out.display())); }
-        let (stdout, stderr) = self.run_runner(&extra.iter().map(|s| s.as_str()).collect::<Vec<_>>(), Some(&args.roots))?;
+    let (stdout, stderr) = self.run_runner_async(&extra.iter().map(|s| s.as_str()).collect::<Vec<_>>(), Some(&args.roots)).await?;
         self.print_or_forward(stdout, stderr, json_output)?;
         Ok(())
     }
@@ -189,15 +208,36 @@ impl DbCommand {
         } else {
             vec!["build_index".into()]
         };
-        let (stdout, stderr) = self.run_runner(&extra.iter().map(|s| s.as_str()).collect::<Vec<_>>(), Some(&args.roots))?;
+    // Build list of additional flags
+    let mut flags: Vec<String> = Vec::new();
+    if args.no_cache { flags.push("--no-cache".into()); }
+    if args.verify_hash > 0.0 { flags.push(format!("--verify-hash={}", args.verify_hash)); }
+    let extra_refs: Vec<&str> = extra.iter().map(|s| s.as_str()).collect();
+    let flag_refs: Vec<&str> = flags.iter().map(|s| s.as_str()).collect();
+    let (stdout, stderr) = self.run_runner_with_flags_async(&extra_refs, Some(&args.roots), &flag_refs).await?;
+        if let Some(stats_out) = &args.stats_out {
+            // Extract last JSON line
+            let mut json_value: Option<serde_json::Value> = None;
+            for line in stdout.lines().rev() {
+                let t = line.trim();
+                if t.starts_with('{') && t.ends_with('}') {
+                    if let Ok(v) = serde_json::from_str::<serde_json::Value>(t) { json_value = Some(v); break; }
+                }
+            }
+            if let Some(v) = json_value {
+                if let Some(parent) = stats_out.parent() { if !parent.as_os_str().is_empty() { let _ = fs::create_dir_all(parent).await; } }
+                let s = serde_json::to_string_pretty(&v)?;
+                fs::write(stats_out, s).await?;
+            }
+        }
         self.print_or_forward(stdout, stderr, json_output)?;
         Ok(())
     }
 
-    fn run_runner(&self, sub_and_flags: &[&str], roots: Option<&String>) -> Result<(String, String)> {
+    async fn run_runner_async(&self, sub_and_flags: &[&str], roots: Option<&String>) -> Result<(String, String)> {
         let godot_cmd = self.find_godot_binary()?;
         let godot_project = self.project_root.join("godot_project");
-        let mut cmd = Command::new(&godot_cmd);
+        let mut cmd = TokioCommand::new(&godot_cmd);
         cmd.args(["--headless", "--path"]).arg(&godot_project);
         cmd.args(["-s", "res://scripts/tools/db_runner.gd"]);
         // Subcommand first
@@ -205,7 +245,30 @@ impl DbCommand {
         // Roots
         if let Some(r) = roots { cmd.arg(format!("--roots={}", r)); }
 
-        let output = cmd.output().context("Failed to execute Godot db_runner")?;
+        let output = match timeout(Duration::from_secs(30), cmd.output()).await {
+            Ok(res) => res.context("Failed to execute Godot db_runner")?,
+            Err(_) => return Err(anyhow!("Timeout waiting for db_runner (30s).")),
+        };
+        let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+        let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+        Ok((stdout, stderr))
+    }
+
+    async fn run_runner_with_flags_async(&self, sub_and_flags: &[&str], roots: Option<&String>, extra_flags: &[&str]) -> Result<(String, String)> {
+        let godot_cmd = self.find_godot_binary()?;
+        let godot_project = self.project_root.join("godot_project");
+        let mut cmd = TokioCommand::new(&godot_cmd);
+        cmd.args(["--headless", "--path"]).arg(&godot_project);
+        cmd.args(["-s", "res://scripts/tools/db_runner.gd"]);
+        // Subcommand and its flags
+        for s in sub_and_flags { cmd.arg(s); }
+        if let Some(r) = roots { cmd.arg(format!("--roots={}", r)); }
+        for f in extra_flags { cmd.arg(f); }
+
+        let output = match timeout(Duration::from_secs(30), cmd.output()).await {
+            Ok(res) => res.context("Failed to execute Godot db_runner")?,
+            Err(_) => return Err(anyhow!("Timeout waiting for db_runner (30s).")),
+        };
         let stdout = String::from_utf8_lossy(&output.stdout).to_string();
         let stderr = String::from_utf8_lossy(&output.stderr).to_string();
         Ok((stdout, stderr))
@@ -312,4 +375,16 @@ pub struct IndexArgs {
     /// Optional output file; if set, export snapshot after building
     #[arg(long)]
     pub out: Option<PathBuf>,
+
+    /// Disable cache for this run
+    #[arg(long, default_value_t = false)]
+    pub no_cache: bool,
+
+    /// Verify-hash sampling probability (0.0-1.0)
+    #[arg(long, default_value_t = 0.0)]
+    pub verify_hash: f64,
+
+    /// Write the resulting JSON (from runner) to this file as well
+    #[arg(long)]
+    pub stats_out: Option<PathBuf>,
 }

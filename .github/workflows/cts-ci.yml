@@ -115,10 +115,35 @@ jobs:
             --out logs/db_validate.json \
             --strict
 
+      - name: DB Index (cache stats)
+        run: |
+          ./rust/target/release/cts db index \
+            --project-root . \
+            --roots res://data,res://addons/resource_databases \
+            --stats-out logs/db_index_stats.json \
+            --verify-hash 0.0
+
+      - name: DB Stats Summary
+        if: always()
+        run: |
+          if [ -f logs/db_index_stats.json ]; then
+            jq -r '(.cache // {}) as $c | (.timings // {}) as $t | "DB Stats: hits=\($c.hits|tostring) changed=\($c.changed|tostring) deleted=\($c.deleted|tostring) verify=\($c.verify_rate|tostring) | discover=\($t.discover_ms|tostring)ms hash=\($t.hash_ms|tostring)ms parse=\($t.parse_ms|tostring)ms total=\($t.total_ms|tostring)ms"' logs/db_index_stats.json || echo "Failed to summarize DB stats with jq."
+          else
+            echo "No logs/db_index_stats.json to summarize."
+          fi
+
       - name: Upload DB validation report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: db-validate-report
           path: logs/db_validate.json
+          if-no-files-found: warn
+
+      - name: Upload DB index stats
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-index-stats
+          path: logs/db_index_stats.json
           if-no-files-found: warn

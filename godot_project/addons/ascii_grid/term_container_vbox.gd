@@ -13,6 +13,9 @@ func _arrange_children() -> void:
 	var total_content_rect: Rect2i = get_content_rect()
 	var available_height: int = total_content_rect.size.y - _children.reduce(func(accum: int, child: TermElement) -> int: return accum + child.fixed_size.y, 0)
 	var children_to_distribute: int = _children.filter(func(child: TermElement) -> bool: return child.fixed_size.y == 0).size()
+	# Guard against negative available height during early layout; clamp to zero to avoid negative child sizes.
+	if available_height < 0:
+		available_height = 0
 	var height_per_child: int = available_height / children_to_distribute if children_to_distribute > 0 else 0
 	var remainder: int = available_height % children_to_distribute if children_to_distribute > 0 else 0 # Add this to the first child
 	

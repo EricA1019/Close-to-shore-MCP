@@ -1,0 +1,11 @@
+{
+  "entries": [
+    {
+      "collection": "layouts",
+      "key": "apartment",
+      "title": "Interactive Apartment Layout",
+      "tags": ["map", "apartment", "ascii"],
+      "path": "res://data/layouts/apartment.json"
+    }
+  ]
+}

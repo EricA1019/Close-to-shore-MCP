@@ -14,7 +14,7 @@ func _find_main_ui(root: Node) -> Node:
             return inner
     return null
 
-func _get_termrect_from(main_ui: Node) -> Node:
+func _get_ascii_canvas_from(main_ui: Node) -> Node:
     if main_ui == null:
         return null
     var main_panel := main_ui.get_node_or_null("%MainPanel")
@@ -22,7 +22,7 @@ func _get_termrect_from(main_ui: Node) -> Node:
         main_panel = main_ui.get_node_or_null("Body/LeftColumn/MainPanel")
     if main_panel == null:
         return null
-    return main_panel.get_node_or_null("TermRect")
+    return main_panel.get_node_or_null("AsciiCanvas")
 
 func test_testroom_ascii_renders_non_clear_cells() -> void:
     assert_true(ResourceLoader.exists(GAME_ROOT), "GameRoot_Test should exist")
@@ -35,40 +35,16 @@ func test_testroom_ascii_renders_non_clear_cells() -> void:
 
     var main_ui := _find_main_ui(inst)
     assert_not_null(main_ui, "MainUI should be present")
-    var term_rect: Node = _get_termrect_from(main_ui)
-    assert_not_null(term_rect, "TermRect should exist in MainPanel")
-    if term_rect.has_method("render"):
-        term_rect.render()
+    var ascii_canvas: Node = _get_ascii_canvas_from(main_ui)
+    assert_not_null(ascii_canvas, "AsciiCanvas should exist in MainPanel")
+    if ascii_canvas.has_method("render"):
+        ascii_canvas.render()
     await get_tree().process_frame
-
-    var mat: ShaderMaterial = term_rect.material
-    assert_not_null(mat, "TermRect has material")
-    var char_tex: ImageTexture = mat.get_shader_parameter("character_grid")
-    var fg_tex: ImageTexture = mat.get_shader_parameter("fg_color")
-    var bg_tex: ImageTexture = mat.get_shader_parameter("bg_color")
-    assert_not_null(char_tex, "character_grid texture present")
-    assert_not_null(fg_tex, "fg_color texture present")
-    assert_not_null(bg_tex, "bg_color texture present")
-
-    var img_chars: Image = char_tex.get_image()
-    var img_fg: Image = fg_tex.get_image()
-    var img_bg: Image = bg_tex.get_image()
-
-    # Use global TermCell from ascii_grid addon
-    var empty_id: float = float(TermCell.new(" ", Color.BLACK, Color.BLACK).get_character_id()) / 256.0
-    var found_non_clear := false
-
-    var w := img_chars.get_width()
-    var h := img_chars.get_height()
-    for y in h:
-        for x in w:
-            var c: Color = img_chars.get_pixel(x, y)
-            var fg: Color = img_fg.get_pixel(x, y)
-            var bg: Color = img_bg.get_pixel(x, y)
-            if abs(c.r - empty_id) > 0.0001 or fg != Color.BLACK or bg != Color.BLACK:
-                found_non_clear = true
-                break
-        if found_non_clear:
-            break
-
-    assert_true(found_non_clear, "TestRoom ASCII grid contains drawn content (non-clear cells)")
+    var buffer = ascii_canvas.get("buffer")
+    assert_not_null(buffer, "AsciiCanvas exposes buffer")
+    var non_clear := 0
+    for pos in buffer.get_all_cells():
+        var cell = buffer.get_cell(pos)
+        if cell and (cell.character != " " or cell.fg_color != cell.bg_color):
+            non_clear += 1
+    assert_gt(non_clear, 0, "TestRoom ASCII grid contains drawn content (non-clear cells)")

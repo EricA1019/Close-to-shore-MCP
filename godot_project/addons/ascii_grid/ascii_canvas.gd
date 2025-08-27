@@ -23,10 +23,14 @@ const AsciiCanvasCell = preload("res://addons/ascii_grid/ascii_canvas_cell.gd")
 		grid_size = value
 		_buffer = AsciiCanvasBuffer.new(grid_size)
 		_update_size()
+		_sync_term_root_rect()
 		queue_redraw()
 
 ## Root node of the rendered terminal nodes.
-@export var term_root: TermElement
+@export var term_root: TermElement:
+	set(value):
+		term_root = value
+		_sync_term_root_rect()
 
 ## The color to draw for empty terminal cells.
 @export_color_no_alpha var clear_color: Color = Color.BLACK
@@ -41,10 +45,22 @@ var _buffer: AsciiCanvasBuffer
 var _font_fallback: SystemFont
 var _char_advance: Vector2
 
+func _should_set_size() -> bool:
+	# Only set size when opposite anchors are equal (fixed anchors). For stretch anchors, skip.
+	if not is_inside_tree():
+		return false
+	return anchor_left == anchor_right and anchor_top == anchor_bottom
+
+# Read-only accessor for tests and tooling
+var buffer: AsciiCanvasBuffer:
+	get:
+		return _buffer
+
 func _ready() -> void:
 	_buffer = AsciiCanvasBuffer.new(grid_size)
 	_setup_font()
 	_update_size()
+	_sync_term_root_rect()
 	
 	if debug_logging:
 		print("[AsciiCanvas] _ready grid:", grid_size, " cell:", cell_size, " font:", font)
@@ -66,7 +82,14 @@ func _setup_font() -> void:
 func _update_size() -> void:
 	var new_size := Vector2i(grid_size.x * cell_size.x, grid_size.y * cell_size.y)
 	custom_minimum_size = new_size
-	size = new_size
+	# Only set size when anchors are fixed; avoid warnings with stretch anchors.
+	if _should_set_size():
+		set_deferred("size", new_size)
+
+func _sync_term_root_rect() -> void:
+	if term_root:
+		term_root.set_rect(Rect2i(Vector2i.ZERO, grid_size))
+		term_root.update_sizing()
 
 func _process(_delta: float) -> void:
 	if automatic_redraw and term_root and term_root.is_redraw_required():
@@ -96,6 +119,8 @@ func render() -> void:
 	
 	var buffer := create_buffer()
 	buffer.clear(clear_color)
+	# Ensure sizing is up to date before blitting
+	_sync_term_root_rect()
 	term_root.blit_to_buffer(buffer)
 	render_buffer(buffer)
 

@@ -1,297 +1,169 @@
-from flask import Flask, send_from_directory, jsonify, request
 import os
 import sys
+import json
+import subprocess
+import urllib.parse
+from typing import Tuple, Optional
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # Add the current directory to Python path for imports
 sys.path.append(os.path.dirname(__file__))
 
-app = Flask(__name__)
+# -------------------------
+# Shared config and helpers
+# -------------------------
 
-# Test registry for MCP agents
-TEST_REGISTRY = {
-    "interactive_apartment": {
-        "file_path": "tests/integration/test_interactive_apartment.gd",
-        "description": "Interactive apartment system tests for WASD movement, POI interaction, and item management",
-        "test_count": 9,
-        "tests": [
-            {
-                "name": "test_apartment_layout_creation",
-                "description": "Test basic apartment layout generation with correct dimensions and wall placement",
-                "category": "unit",
-                "dependencies": [],
-                "expected_duration": "fast"
-            },
-            {
-                "name": "test_player_starting_position", 
-                "description": "Test player starts at correct position (5,2) with @ symbol",
-                "category": "unit",
-                "dependencies": [],
-                "expected_duration": "fast"
-            },
-            {
-                "name": "test_player_movement_wasd",
-                "description": "Test WASD keyboard controls for player movement in all directions",
-                "category": "integration", 
-                "dependencies": ["test_apartment_layout_creation", "test_player_starting_position"],
-                "expected_duration": "fast"
-            },
-            {
-                "name": "test_collision_detection",
-                "description": "Test player cannot move through walls, furniture, or other solid objects",
-                "category": "integration",
-                "dependencies": ["test_player_movement_wasd"],
-                "expected_duration": "medium"
-            },
-            {
-                "name": "test_poi_detection", 
-                "description": "Test POI (Point of Interest) detection when player is adjacent to interactive objects",
-                "category": "integration",
-                "dependencies": ["test_collision_detection"],
-                "expected_duration": "medium"
-            },
-            {
-                "name": "test_desk_drawer_items",
-                "description": "Test desk drawer contains three key detective items: service pistol, whiskey bottle, leather jacket",
-                "category": "game_flow",
-                "dependencies": ["test_poi_detection"],
-                "expected_duration": "medium"
-            },
-            {
-                "name": "test_item_interaction",
-                "description": "Test taking items from desk drawer using E key interaction",
-                "category": "game_flow", 
-                "dependencies": ["test_desk_drawer_items"],
-                "expected_duration": "medium"
-            },
-            {
-                "name": "test_canvas_rendering",
-                "description": "Test apartment renders properly with Canvas ASCII system integration",
-                "category": "integration",
-                "dependencies": ["test_apartment_layout_creation"],
-                "expected_duration": "medium"
-            },
-            {
-                "name": "test_ui_panel_integration",
-                "description": "Test integration with OutputPanel and ActionPanel UI components",
-                "category": "integration",
-                "dependencies": ["test_canvas_rendering"],
-                "expected_duration": "fast"
-            }
-        ],
-        "run_command": "godot4 -d -s --headless addons/gut/gut_cmdln.gd -gtest=test_interactive_apartment.gd",
-        "current_status": "6/9 passing",
-        "failing_tests": ["test_collision_detection", "test_poi_detection", "test_desk_drawer_items"],
-        "last_updated": "2025-08-25"
-    }
-}
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+GODOT_PROJECT = os.path.join(PROJECT_ROOT, 'godot_project')
 
-# Serve MCP docs
-@app.route('/docs/<path:filename>')
-def serve_docs(filename):
-    docs_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
-    return send_from_directory(docs_dir, filename)
+def _cts_path() -> str:
+    # Prefer local build, fallback to cts in PATH
+    local = os.path.join(PROJECT_ROOT, 'rust', 'target', 'release', 'cts')
+    return local if os.path.exists(local) else 'cts'
 
-# Status endpoint
-@app.route('/status')
-def status():
-    return jsonify({'status': 'MCP server running', 'project': 'Godot MCP Template'})
-
-@app.route('/tests/summary')
-def get_test_summary():
-    """Get a comprehensive summary of all tests in the project"""
+def _run_cts(args: list[str], timeout_sec: int = 30) -> Tuple[int, str, str]:
+    cmd = [_cts_path()] + args
     try:
-        from test_registry_updater import TestRegistryUpdater
-        
-        project_root = '/home/eric/BrokenDivinityDemo/godot_project'
-        updater = TestRegistryUpdater(project_root)
-        discovered_registry = updater.scan_project_tests()
-        
-        # Calculate summary statistics
-        total_suites = len(discovered_registry)
-        total_tests = sum(suite['test_count'] for suite in discovered_registry.values())
-        
-        # Categorize tests
-        categories = {'unit': 0, 'integration': 0, 'game_flow': 0, 'smoke': 0}
-        durations = {'fast': 0, 'medium': 0, 'slow': 0}
-        
-        suite_breakdown = []
-        for suite_name, suite_info in discovered_registry.items():
-            suite_categories = {'unit': 0, 'integration': 0, 'game_flow': 0, 'smoke': 0}
-            suite_durations = {'fast': 0, 'medium': 0, 'slow': 0}
-            
-            for test in suite_info['tests']:
-                categories[test['category']] += 1
-                durations[test['expected_duration']] += 1
-                suite_categories[test['category']] += 1
-                suite_durations[test['expected_duration']] += 1
-            
-            suite_breakdown.append({
-                'name': suite_name,
-                'test_count': suite_info['test_count'],
-                'file_path': suite_info['file_path'],
-                'categories': suite_categories,
-                'durations': suite_durations,
-                'run_command': suite_info['run_command']
-            })
-        
-        return jsonify({
-            'project_summary': {
-                'total_suites': total_suites,
-                'total_tests': total_tests,
-                'categories': categories,
-                'durations': durations
-            },
-            'suite_breakdown': suite_breakdown,
-            'registry_status': {
-                'tracked_suites': len(TEST_REGISTRY),
-                'discovered_suites': total_suites,
-                'needs_update': total_suites > len(TEST_REGISTRY)
-            }
-        })
-        
-    except Exception as e:
-        return jsonify({'error': f'Failed to generate summary: {str(e)}'}), 500
+        p = subprocess.run(
+            cmd,
+            cwd=PROJECT_ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout_sec,
+            check=False,
+            text=True
+        )
+        return p.returncode, p.stdout, p.stderr
+    except subprocess.TimeoutExpired:
+        return 124, '', 'Timeout executing cts command'
+    except FileNotFoundError as e:
+        return 127, '', f'Executable not found: {e}'
 
-@app.route('/tests/discover')
-def discover_tests():
-    """Dynamically discover and update test registry"""
+def _parse_json_line(s: str) -> Optional[dict]:
+    # Try last JSON-looking line
+    for line in reversed(s.splitlines()):
+        t = line.strip()
+        if t.startswith('{') and t.endswith('}'):
+            try:
+                return json.loads(t)
+            except Exception:
+                continue
+    # Fallback: whole string as JSON
     try:
-        from test_registry_updater import TestRegistryUpdater
-        
-        project_root = '/home/eric/BrokenDivinityDemo/godot_project'
-        updater = TestRegistryUpdater(project_root)
-        discovered_registry = updater.scan_project_tests()
-        
-        # Merge with existing registry, preserving status information
-        global TEST_REGISTRY
-        for suite_name, suite_info in discovered_registry.items():
-            if suite_name in TEST_REGISTRY:
-                # Preserve existing status and update metadata
-                existing = TEST_REGISTRY[suite_name]
-                suite_info['current_status'] = existing.get('current_status', 'unknown')
-                suite_info['failing_tests'] = existing.get('failing_tests', [])
-                suite_info['last_updated'] = existing.get('last_updated', 'discovered')
-            
-            TEST_REGISTRY[suite_name] = suite_info
-        
-        return jsonify({
-            'status': 'success',
-            'discovered_suites': len(discovered_registry),
-            'total_suites': len(TEST_REGISTRY),
-            'new_suites': list(set(discovered_registry.keys()) - set(TEST_REGISTRY.keys()))
-        })
-        
-    except Exception as e:
-        return jsonify({'error': f'Failed to discover tests: {str(e)}'}), 500
+        return json.loads(s)
+    except Exception:
+        return None
 
-@app.route('/tests/<suite_name>/update-status', methods=['POST'])
-def update_test_status(suite_name):
-    """Update the status of a test suite"""
-    if suite_name not in TEST_REGISTRY:
-        return jsonify({'error': 'Test suite not found'}), 404
-    
-    data = request.json
-    if not data:
-        return jsonify({'error': 'No data provided'}), 400
-    
-    suite = TEST_REGISTRY[suite_name]
-    
-    # Update fields if provided
-    if 'current_status' in data:
-        suite['current_status'] = data['current_status']
-    if 'failing_tests' in data:
-        suite['failing_tests'] = data['failing_tests']
-    if 'last_updated' in data:
-        suite['last_updated'] = data['last_updated']
-    
-    return jsonify({
-        'status': 'updated',
-        'suite_name': suite_name,
-        'new_status': suite['current_status']
-    })
+class MCPHandler(BaseHTTPRequestHandler):
+    def _send_json(self, obj, code: int = 200):
+        data = json.dumps(obj).encode('utf-8')
+        self.send_response(code)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
 
-# Test registry endpoints
-@app.route('/tests')
-def list_test_suites():
-    """Get all available test suites"""
-    return jsonify({
-        'test_suites': list(TEST_REGISTRY.keys()),
-        'total_suites': len(TEST_REGISTRY),
-        'total_tests': sum(suite['test_count'] for suite in TEST_REGISTRY.values())
-    })
+    def do_GET(self):
+        parsed = urllib.parse.urlparse(self.path)
+        path = parsed.path
+        qs = urllib.parse.parse_qs(parsed.query)
+        if path == '/status':
+            self._send_json({'status': 'MCP server running', 'project': 'Godot MCP Template', 'mode': 'stdlib'})
+            return
+        if path == '/db/collections':
+            roots = qs.get('roots', ['res://data,res://addons/resource_databases'])[0]
+            code, out, err = _run_cts(['db', 'list', '--project-root', PROJECT_ROOT, '--roots', roots])
+            data = _parse_json_line(out) or {}
+            if code != 0:
+                self._send_json({'error': 'cts failed', 'stderr': err, 'stdout': out}, 500)
+            else:
+                self._send_json(data)
+            return
+        if path == '/db/search':
+            q = qs.get('q', [''])[0]
+            if not q:
+                self._send_json({'error': 'missing q'}, 400)
+                return
+            roots = qs.get('roots', ['res://data,res://addons/resource_databases'])[0]
+            collection = qs.get('collection', [None])[0]
+            limit = qs.get('limit', [None])[0]
+            args = ['db', 'search', '--project-root', PROJECT_ROOT, '--query', q, '--roots', roots]
+            if collection is not None:
+                args += ['--collection', collection]
+            if limit is not None:
+                args += ['--limit', limit]
+            code, out, err = _run_cts(args)
+            data = _parse_json_line(out) or {}
+            if code != 0:
+                self._send_json({'error': 'cts failed', 'stderr': err, 'stdout': out}, 500)
+            else:
+                self._send_json(data)
+            return
+        if path == '/db/index/stats':
+            roots = qs.get('roots', ['res://data,res://addons/resource_databases'])[0]
+            stats_out = os.path.join(PROJECT_ROOT, 'logs', 'db_index_stats.json')
+            args = ['db', 'index', '--project-root', PROJECT_ROOT, '--roots', roots, '--stats-out', stats_out]
+            code, out, err = _run_cts(args)
+            if os.path.exists(stats_out):
+                try:
+                    with open(stats_out, 'r', encoding='utf-8') as f:
+                        self._send_json(json.load(f))
+                        return
+                except Exception as e:
+                    self._send_json({'error': f'failed to read stats: {e}'}, 500)
+                    return
+            data = _parse_json_line(out) or {}
+            if code != 0:
+                self._send_json({'error': 'cts failed', 'stderr': err, 'stdout': out}, 500)
+            else:
+                self._send_json(data)
+            return
+        # 404 for anything else
+        self._send_json({'error': 'not found', 'path': path}, 404)
 
-@app.route('/tests/<suite_name>')
-def get_test_suite(suite_name):
-    """Get detailed information about a specific test suite"""
-    if suite_name not in TEST_REGISTRY:
-        return jsonify({'error': 'Test suite not found'}), 404
-    return jsonify(TEST_REGISTRY[suite_name])
-
-@app.route('/tests/<suite_name>/run')
-def get_run_command(suite_name):
-    """Get the command to run a specific test suite"""
-    if suite_name not in TEST_REGISTRY:
-        return jsonify({'error': 'Test suite not found'}), 404
-    
-    suite = TEST_REGISTRY[suite_name]
-    return jsonify({
-        'suite_name': suite_name,
-        'run_command': suite['run_command'],
-        'working_directory': '/home/eric/BrokenDivinityDemo/godot_project',
-        'expected_test_count': suite['test_count'],
-        'current_status': suite['current_status']
-    })
-
-@app.route('/tests/<suite_name>/status')
-def get_test_status(suite_name):
-    """Get current status of a test suite"""
-    if suite_name not in TEST_REGISTRY:
-        return jsonify({'error': 'Test suite not found'}), 404
-        
-    suite = TEST_REGISTRY[suite_name]
-    return jsonify({
-        'suite_name': suite_name,
-        'status': suite['current_status'],
-        'failing_tests': suite.get('failing_tests', []),
-        'last_updated': suite.get('last_updated'),
-        'total_tests': suite['test_count']
-    })
-
-@app.route('/tests/failing')
-def get_failing_tests():
-    """Get all currently failing tests across all suites"""
-    failing = {}
-    for suite_name, suite in TEST_REGISTRY.items():
-        if 'failing_tests' in suite and suite['failing_tests']:
-            failing[suite_name] = {
-                'failing_tests': suite['failing_tests'],
-                'status': suite['current_status']
-            }
-    return jsonify(failing)
-
-@app.route('/tests/commands')
-def get_all_run_commands():
-    """Get run commands for all test suites"""
-    commands = {}
-    for suite_name, suite in TEST_REGISTRY.items():
-        commands[suite_name] = {
-            'command': suite['run_command'],
-            'working_directory': '/home/eric/BrokenDivinityDemo/godot_project',
-            'description': suite['description']
-        }
-    return jsonify(commands)
-
-# Feedback endpoint (stub)
-@app.route('/feedback', methods=['POST'])
-def feedback():
-    data = request.json
-    # Save feedback to file or process as needed
-    return jsonify({'received': data}), 201
-
-# Workflow endpoint (stub)
-@app.route('/workflow')
-def workflow():
-    return jsonify({'steps': ['plan', 'test', 'implement', 'validate', 'feedback', 'document']})
+    def do_POST(self):
+        parsed = urllib.parse.urlparse(self.path)
+        path = parsed.path
+        length = int(self.headers.get('Content-Length', '0') or '0')
+        body_raw = self.rfile.read(length) if length > 0 else b''
+        try:
+            body = json.loads(body_raw.decode('utf-8') or '{}')
+        except Exception:
+            body = {}
+        if path == '/db/export':
+            roots = body.get('roots', 'res://data,res://addons/resource_databases')
+            out_path = body.get('out')
+            args = ['db', 'export', '--project-root', PROJECT_ROOT, '--roots', roots]
+            if out_path:
+                args += ['--out', out_path]
+            code, out, err = _run_cts(args)
+            data = _parse_json_line(out) or {}
+            if code != 0:
+                self._send_json({'error': 'cts failed', 'stderr': err, 'stdout': out}, 500)
+            else:
+                self._send_json(data)
+            return
+        if path == '/db/validate':
+            roots = body.get('roots', 'res://data,res://addons/resource_databases')
+            strict = body.get('strict', False)
+            args = ['db', 'validate', '--project-root', PROJECT_ROOT, '--roots', roots]
+            if strict:
+                args.append('--strict')
+            code, out, err = _run_cts(args)
+            data = _parse_json_line(out) or {}
+            status = 200 if code == 0 else 422
+            if code != 0:
+                data = {'error': 'validation failed', 'report': data, 'stderr': err}
+            self._send_json(data, status)
+            return
+        self._send_json({'error': 'not found', 'path': path}, 404)
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    port = int(os.environ.get('PORT', '5000'))
+    server = HTTPServer(('0.0.0.0', port), MCPHandler)
+    print(f"[MCP] stdlib server running on http://localhost:{port}")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    server.server_close()

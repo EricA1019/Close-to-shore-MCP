@@ -2,6 +2,7 @@ extends GutTest
 
 const OPENING_SCENE := "res://addons/maaacks_game_template/examples/scenes/opening/opening_with_logo.tscn"
 const OPENING_SCENE_ALT := "res://scenes/maaack_scenes/opening/opening_with_logo.tscn"
+const MENU_EXAMPLE := "res://addons/maaacks_game_template/examples/scenes/menus/main_menu/main_menu_with_animations.tscn"
 
 static func _get_opening_scene_path() -> String:
     if ResourceLoader.exists(OPENING_SCENE):
@@ -16,6 +17,9 @@ func test_opening_next_scene_is_valid_and_preloads():
     var ps := load(opening_path) as PackedScene
     assert_not_null(ps, "Opening PackedScene should load")
     var inst := ps.instantiate()
+    # Force next_scene to the example main menu if available to avoid noisy animation track warnings.
+    if ResourceLoader.exists(MENU_EXAMPLE) and inst and inst.has_variable("next_scene"):
+        inst.next_scene = MENU_EXAMPLE
     add_child_autofree(inst)
     await get_tree().process_frame
 

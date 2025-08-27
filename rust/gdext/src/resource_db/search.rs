@@ -1,4 +1,3 @@
-use godot::prelude::*;
 
 pub fn tokenize(query: &str) -> Vec<String> {
     query

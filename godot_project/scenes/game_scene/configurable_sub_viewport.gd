@@ -13,7 +13,8 @@ func setup() -> void:
 	if update_root_size and not root_node.is_empty():
 		var root := get_node(root_node)
 		if root and root is Control:
-			root.size = get_rect().size
+			# Avoid anchor warnings: defer size change until after ready
+			root.set_deferred("size", get_rect().size)
 
 func _ready() -> void:
 	setup()

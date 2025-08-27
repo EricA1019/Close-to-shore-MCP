@@ -6,7 +6,7 @@ use serde::{Serialize, Deserialize};
 use godot::classes::{FileAccess};
 use godot::classes::file_access::ModeFlags;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 struct SnapshotEntry {
     collection: String,
     key: String,
@@ -23,6 +23,17 @@ struct Snapshot {
     entries: Vec<SnapshotEntry>,
 }
 
+#[derive(Serialize, Deserialize, Default, Clone)]
+struct RootCache {
+    hash: u64,
+    entries: Vec<SnapshotEntry>,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct CacheManifest {
+    roots: HashMap<String, RootCache>,
+}
+
 #[derive(GodotClass)]
 #[class(base=RefCounted)]
 pub struct ResourceDbBridge {
@@ -33,6 +44,18 @@ pub struct ResourceDbBridge {
     updated_at: i64,
     index: Vec<Entry>,
     by_id: HashMap<String, usize>,
+    // Phase 5 cache/state
+    use_cache: bool,
+    verify_hash: f64,
+    cache_manifest: CacheManifest,
+    cache_hits: i64,
+    cache_changed: i64,
+    cache_deleted: i64,
+    // Timing breakdown (ms)
+    timing_discover_ms: f64,
+    timing_hash_ms: f64,
+    timing_parse_ms: f64,
+    timing_total_ms: f64,
 }
 
 #[godot_api]
@@ -41,40 +64,118 @@ impl ResourceDbBridge {
     /// For Phase 1, this is a stub that verifies headless invocation.
     #[func]
     pub fn build_index(&mut self, root_dirs: PackedStringArray) -> i64 {
-        // Phase 2: load entries from each root's index.json (fixtures format)
+    let total_start = std::time::Instant::now();
+    self.timing_discover_ms = 0.0;
+    self.timing_hash_ms = 0.0;
+    self.timing_parse_ms = 0.0;
+    self.timing_total_ms = 0.0;
+        // Phase 2+5: load entries from each root's index.json (fixtures format) with cache by file hash
         self.collections.clear();
         self.index.clear();
         self.by_id.clear();
+        self.cache_hits = 0;
+        self.cache_changed = 0;
+        self.cache_deleted = 0;
+
+        // Load previous manifest if present
+        let cache_path = "user://resource_db_cache.json".to_string();
+        if let Some(f) = FileAccess::open(cache_path.as_str(), ModeFlags::READ) {
+            let s = f.get_as_text().to_string();
+            if let Ok(m) = serde_json::from_str::<CacheManifest>(&s) {
+                self.cache_manifest = m;
+            }
+        }
+
+        let mut new_manifest = CacheManifest { roots: HashMap::new() };
         let len = root_dirs.len();
+        // Track roots seen this run
+        let mut seen_roots: std::collections::HashSet<String> = std::collections::HashSet::new();
         for i in 0..len {
             if let Some(root) = root_dirs.get(i) {
-                let p = format!("{}/index.json", root.to_string());
+                let r = root.to_string();
+                seen_roots.insert(r.clone());
+                let p = format!("{}/index.json", r);
+                // Discover + read
+                let t_disc_start = std::time::Instant::now();
                 if let Some(fa) = FileAccess::open(p.as_str(), ModeFlags::READ) {
                     let s: String = fa.get_as_text().to_string();
-                    if let Ok(snapshot) = serde_json::from_str::<Snapshot>(&s) {
-                        for se in snapshot.entries.into_iter() {
-                            let id = format!("{}.{}", se.collection, se.key);
-                            let entry = Entry{
-                                collection: se.collection.clone(),
-                                key: se.key.clone(),
-                                title: se.title,
-                                tags: se.tags,
-                                path: se.path,
-                                refs: se.refs,
-                                meta: Dictionary::new(),
-                            };
-                            self.by_id.insert(id, self.index.len());
-                            self.index.push(entry);
+                    self.timing_discover_ms += t_disc_start.elapsed().as_secs_f64() * 1000.0;
+                    // Hashing
+                    let t_hash_start = std::time::Instant::now();
+                    let h = hash_str(&s);
+                    self.timing_hash_ms += t_hash_start.elapsed().as_secs_f64() * 1000.0;
+                    let mut reused = false;
+                    if self.use_cache {
+                        if let Some(rc) = self.cache_manifest.roots.get(&r) {
+                            if rc.hash == h {
+                                // reuse cached entries
+                                for se in rc.entries.iter() {
+                                    let id = format!("{}.{}", se.collection, se.key);
+                                    let entry = Entry{
+                                        collection: se.collection.clone(),
+                                        key: se.key.clone(),
+                                        title: se.title.clone(),
+                                        tags: se.tags.clone(),
+                                        path: se.path.clone(),
+                                        refs: se.refs.clone(),
+                                        meta: Dictionary::new(),
+                                    };
+                                    self.by_id.insert(id, self.index.len());
+                                    self.index.push(entry);
+                                }
+                                new_manifest.roots.insert(r.clone(), rc.clone());
+                                self.cache_hits += 1;
+                                reused = true;
+                            }
+                        }
+                    }
+                    if !reused {
+                        // Parse + build entries
+                        let t_parse_start = std::time::Instant::now();
+                        if let Ok(snapshot) = serde_json::from_str::<Snapshot>(&s) {
+                            let mut entries_copy: Vec<SnapshotEntry> = Vec::new();
+                            for se in snapshot.entries.into_iter() {
+                                let id = format!("{}.{}", se.collection, se.key);
+                                let entry = Entry{
+                                    collection: se.collection.clone(),
+                                    key: se.key.clone(),
+                                    title: se.title.clone(),
+                                    tags: se.tags.clone(),
+                                    path: se.path.clone(),
+                                    refs: se.refs.clone(),
+                                    meta: Dictionary::new(),
+                                };
+                                self.by_id.insert(id, self.index.len());
+                                self.index.push(entry);
+                                entries_copy.push(se);
+                            }
+                            new_manifest.roots.insert(r.clone(), RootCache { hash: h, entries: entries_copy });
+                            self.cache_changed += 1;
+                            self.timing_parse_ms += t_parse_start.elapsed().as_secs_f64() * 1000.0;
                         }
                     }
                 }
             }
         }
+        // Count deleted roots (present previously but not now)
+        for old_root in self.cache_manifest.roots.keys() {
+            if !seen_roots.contains(old_root) {
+                self.cache_deleted += 1;
+            }
+        }
+        // Save manifest
+        if let Ok(json) = serde_json::to_string(&new_manifest) {
+            if let Some(mut fa) = FileAccess::open(cache_path.as_str(), ModeFlags::WRITE) {
+                let _ = fa.store_string(json.as_str());
+            }
+        }
+        self.cache_manifest = new_manifest;
         // Rebuild collections from entries
         let mut set = std::collections::BTreeSet::<String>::new();
         for e in &self.index { set.insert(e.collection.clone()); }
         for c in set { self.collections.push(c.into()); }
-        self.entry_count = self.index.len() as i64;
+    self.entry_count = self.index.len() as i64;
+    self.timing_total_ms = total_start.elapsed().as_secs_f64() * 1000.0;
         self.updated_at = 0;
         self.entry_count
     }
@@ -82,6 +183,34 @@ impl ResourceDbBridge {
     #[func]
     pub fn stats(&self) -> Dictionary {
         stats_dict(self.entry_count, self.collections.clone(), self.updated_at)
+    }
+
+    /// Configure cache usage and verification sampling rate.
+    #[func]
+    pub fn set_cache_options(&mut self, use_cache: bool, verify_hash: f64) {
+        self.use_cache = use_cache;
+        self.verify_hash = verify_hash;
+    }
+
+    /// Returns last cache stats as a Dictionary.
+    #[func]
+    pub fn cache_stats(&self) -> Dictionary {
+        let mut d = Dictionary::new();
+        d.set("hits", self.cache_hits);
+        d.set("changed", self.cache_changed);
+        d.set("deleted", self.cache_deleted);
+        d
+    }
+
+    /// Returns timing stats from the last build_index run.
+    #[func]
+    pub fn timings(&self) -> Dictionary {
+        let mut d = Dictionary::new();
+        d.set("discover_ms", self.timing_discover_ms);
+        d.set("hash_ms", self.timing_hash_ms);
+        d.set("parse_ms", self.timing_parse_ms);
+        d.set("total_ms", self.timing_total_ms);
+        d
     }
 
     #[func]
@@ -320,6 +449,13 @@ impl ResourceDbBridge {
 #[godot_api]
 impl IRefCounted for ResourceDbBridge {
     fn init(base: Base<RefCounted>) -> Self {
-    Self { base, entry_count: 0, collections: Vec::new(), updated_at: 0, index: Vec::new(), by_id: HashMap::new() }
+    Self { base, entry_count: 0, collections: Vec::new(), updated_at: 0, index: Vec::new(), by_id: HashMap::new(), use_cache: true, verify_hash: 0.0, cache_manifest: CacheManifest::default(), cache_hits: 0, cache_changed: 0, cache_deleted: 0, timing_discover_ms: 0.0, timing_hash_ms: 0.0, timing_parse_ms: 0.0, timing_total_ms: 0.0 }
     }
+}
+
+fn hash_str(s: &str) -> u64 {
+    use std::hash::{Hash, Hasher};
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    s.hash(&mut hasher);
+    hasher.finish()
 }

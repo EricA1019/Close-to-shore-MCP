@@ -1,7 +1,8 @@
 extends GutTest
 
-const MENU_WITH_ANIMATIONS := "res://scenes/maaack_scenes/menus/main_menu/main_menu_with_animations.tscn"
-const MENU_FALLBACK_EXAMPLE := "res://addons/maaacks_game_template/examples/scenes/menus/main_menu/main_menu_with_animations.tscn"
+# Prefer the example fallback that has valid animation tracks to reduce noisy warnings in tests.
+const MENU_WITH_ANIMATIONS := "res://addons/maaacks_game_template/examples/scenes/menus/main_menu/main_menu_with_animations.tscn"
+const MENU_FALLBACK_EXAMPLE := MENU_WITH_ANIMATIONS
 
 static func _get_menu_scene_path() -> String:
     if ResourceLoader.exists(MENU_WITH_ANIMATIONS):
@@ -48,6 +49,9 @@ func test_menu_game_scene_path_and_scene_loader():
 
     # Expect our MainUI with the ASCII panel present. Game scenes may wrap MainUI (e.g., GameRoot/MainUI)
     var main_ui := loaded_inst.get_node_or_null("MainUI")
+    # If the root is MainUI itself
+    if main_ui == null and (loaded_inst is Control) and (String(loaded_inst.name).to_lower() == "mainui" or loaded_inst.get_node_or_null("Body/LeftColumn/MainPanel") != null):
+        main_ui = loaded_inst
     if main_ui == null:
         for c in loaded_inst.get_children():
             if c is Control and (String(c.name).to_lower() == "mainui" or c.get_node_or_null("Body/LeftColumn/MainPanel") != null):
@@ -59,5 +63,5 @@ func test_menu_game_scene_path_and_scene_loader():
     if main_panel == null:
         main_panel = main_ui.get_node_or_null("Body/LeftColumn/MainPanel")
     assert_not_null(main_panel, "MainUI should expose MainPanel")
-    var termrect := main_panel.get_node_or_null("TermRect") if main_panel else null
-    assert_not_null(termrect, "MainPanel should contain TermRect for ASCII")
+    var ascii_canvas := main_panel.get_node_or_null("AsciiCanvas") if main_panel else null
+    assert_not_null(ascii_canvas, "MainPanel should contain AsciiCanvas for ASCII")

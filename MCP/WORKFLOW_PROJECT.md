@@ -64,22 +64,22 @@ godot --path godot_project
 ### Debugging and Analysis Tools:
 ```bash
 # Full project analysis (health check + linting + tests + docs)
-python3 MCP/TOOLS/godot_tool_suite.py . --full-analysis
+MCP/TOOLS/run_analysis.sh
 
 # Code quality analysis
 python3 MCP/TOOLS/gdscript_linter.py ./godot_project/scripts --format text
 
 # Automated testing with reporting
-python3 MCP/TOOLS/godot_test_runner.py .
+MCP/TOOLS/test_runner.sh all
 
 # Generate project documentation
 python3 MCP/TOOLS/godot_doc_generator.py . --format markdown --output docs
 
 # Tool health check
-python3 MCP/TOOLS/godot_tool_suite.py . --health
+MCP/TOOLS/run_analysis.sh
 
 # Continuous testing (watch mode)
-python3 MCP/TOOLS/godot_test_runner.py . --continuous
+Use the VS Code tasks: Test: All (Runner) or Test: Integration (Runner)
 ```
 
 ### VS Code Tasks:
@@ -115,7 +115,7 @@ curl "http://localhost:8080/nodes/find?type=TermElement"  # Find nodes by type
 ## Quality Gates
 
 ### Before Merge:
-- All tests pass (verify with: `python3 MCP/TOOLS/godot_test_runner.py .`)
+- All tests pass (verify with: `MCP/TOOLS/test_runner.sh all`)
 - Code review completed
 - Documentation updated
 - No critical lint errors (`python3 MCP/TOOLS/gdscript_linter.py ./godot_project/scripts --format text`)
@@ -126,7 +126,7 @@ curl "http://localhost:8080/nodes/find?type=TermElement"  # Find nodes by type
 - Performance validation
 - Security review (if applicable)
 - Documentation up to date (`python3 MCP/TOOLS/godot_doc_generator.py . --format markdown`)
-- Full project analysis passes (`python3 MCP/TOOLS/godot_tool_suite.py . --full-analysis`)
+- Full project analysis passes (`MCP/TOOLS/run_analysis.sh`)
 
 ## Project-Specific Tools
 

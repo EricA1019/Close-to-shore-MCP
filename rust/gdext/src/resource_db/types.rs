@@ -34,6 +34,7 @@ impl Entry {
 }
 
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 pub struct Issue {
     pub level: String,  // "error" | "warning"
     pub code: String,

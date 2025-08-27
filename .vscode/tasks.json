@@ -2,6 +2,34 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "MCP: Start stdlib server",
+			"type": "shell",
+			"command": "/bin/python3.11",
+			"args": [
+				"MCP/TOOLS/mcp_server.py"
+			],
+			"group": "test",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "CTS: DB Search (prompt)",
+			"type": "shell",
+			"command": "${workspaceFolder}/rust/target/release/cts",
+			"args": [
+				"db",
+				"search",
+				"--project-root",
+				"${workspaceFolder}",
+				"--query",
+				"${input:dbSearchQuery}",
+				"--roots",
+				"res://data,res://addons/resource_databases"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
 			"label": "CTS: Engine Ensure (4.5b6)",
 			"type": "shell",
 			"command": "./rust/target/release/cts",
@@ -13,6 +41,76 @@
 			],
 			"group": "build",
 			"problemMatcher": []
+		},
+		{
+			"label": "CTS: DB Index (cache stats)",
+			"type": "shell",
+			"command": "${workspaceFolder}/rust/target/release/cts",
+			"args": [
+				"db",
+				"index",
+				"--project-root",
+				"${workspaceFolder}",
+				"--roots",
+				"res://data",
+				"--verify-hash",
+				"1.0",
+				"--stats-out",
+				"${workspaceFolder}/logs/db_index_stats.json"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "CTS: DB Stats → Console",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-lc",
+				"test -f logs/db_index_stats.json && jq -r \"Cache: hits=\\(.cache.hits) changed=\\(.cache.changed) deleted=\\(.cache.deleted) verify=\\(.cache.verify_rate) | Timings: discover=\\(.timings.discover_ms)ms hash=\\(.timings.hash_ms)ms parse=\\(.timings.parse_ms)ms total=\\(.timings.total_ms)ms\" logs/db_index_stats.json || echo 'No stats found. Run: CTS: DB Index (cache stats)'"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": ["CTS: DB Index (cache stats)"]
+		},
+		{
+			"label": "CTS: DB Validate (report)",
+			"type": "shell",
+			"command": "${workspaceFolder}/rust/target/release/cts",
+			"args": [
+				"db",
+				"validate",
+				"--project-root",
+				"${workspaceFolder}",
+				"--roots",
+				"res://tests/fixtures/resource_db",
+				"--out",
+				"${workspaceFolder}/godot_project/user/validate_report.json",
+				"--verify-hash",
+				"1.0"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "Test: Apartment DB-load",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://addons/gut/gut_cmdln.gd",
+				"-gdir=res://tests/integration",
+				"-gselect=test_interactive_apartment_db_load.gd",
+				"-gexit"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"dependsOn": [
+				"CTS: Build Context Bundle"
+			]
 		},
 		{
 			"label": "CTS: Engine Link (Desktop 4.5b6)",
