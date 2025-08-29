@@ -19,3 +19,13 @@ func set_status(text: String) -> void:
 		return
 	_status = text
 	emit_signal("status_changed", text)
+
+# Getters to allow UI to pull initial values
+func get_current_health() -> int:
+	return _hp_current
+
+func get_max_health() -> int:
+	return _hp_max
+
+func get_status() -> String:
+	return _status

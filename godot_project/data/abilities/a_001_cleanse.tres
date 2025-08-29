@@ -1,0 +1,14 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/ability_resource.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "A-001"
+name = "Cleanse"
+target = "self"
+description = "Clear your head and shake off mental effects through force of will."
+requires_status = ""
+removes_status = "S-001"
+adds_status = ""
+cooldown_turns = 3

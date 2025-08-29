@@ -1,0 +1,14 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/status_resource.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "S-002"
+name = "Steady Nerves"
+description = "A shot of bourbon has steadied your hands and cleared your head. Temporary boost to accuracy."
+mods = {
+"accuracy": 10
+}
+tags = Array[String](["buff", "temporary"])
+duration_turns = 5

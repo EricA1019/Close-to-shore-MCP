@@ -163,7 +163,6 @@
     "res://scenes/overlaid_menus/overlaid_menu.tscn",
     "res://scenes/overlaid_menus/overlaid_menu_container.tscn",
     "res://scenes/overlaid_menus/pause_menu.tscn",
-    "res://scenes/ui/apartment_main_ui.tscn",
     "res://scenes/ui/interactive_apartment.tscn",
     "res://scenes/ui/main_ui.tscn"
   ]

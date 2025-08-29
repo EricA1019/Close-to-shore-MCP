@@ -1,0 +1,13 @@
+{
+  "id": "I-003",
+  "name": "Leather Jacket",
+  "type": "armor",
+  "description": "Well-worn detective's jacket. The leather is supple from years of use. Offers some protection and looks the part.",
+  "defense": 8,
+  "durability": 75,
+  "max_durability": 100,
+  "slot": "chest",
+  "value": 150,
+  "weight": 3.2,
+  "tags": ["detective_gear", "armor", "style"]
+}

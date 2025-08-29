@@ -1,0 +1,15 @@
+{
+  "id": "I-004",
+  "name": "Detective Badge",
+  "type": "accessory",
+  "description": "Your detective badge. A symbol of authority that opens doors and commands respect. Slightly tarnished but still carries weight.",
+  "slot": "accessory",
+  "effects": {
+    "charisma_bonus": 2,
+    "investigation_bonus": 1
+  },
+  "value": 0,
+  "weight": 0.1,
+  "tags": ["detective_gear", "official", "unique"],
+  "unique": true
+}

@@ -49,12 +49,13 @@ func test_poi_selection_updates_panels() -> void:
 				break
 	assert_not_null(label, "Output label exists")
 	assert_true(label.text.findn("A cluttered wooden desk") != -1, "Description contains desk text")
-	# Check ActionPanel has expected buttons
+	# Check ActionPanel shows expected action hints (no buttons in new UI)
 	var action_panel: Node = ui.get_node("%ActionPanel")
-	var buttons := _get_action_buttons(action_panel)
-	var names := buttons.map(func(b): return (b as Button).text)
-	assert_true(names.has("Inspect drawers"))
-	assert_true(names.has("Examine documents"))
+	var hints: Label = action_panel.find_child("Hints", true, false)
+	assert_not_null(hints, "Action hints label exists")
+	var hints_text := hints.text
+	assert_true(hints_text.findn("Inspect drawers") != -1, "Hints contain 'Inspect drawers'")
+	assert_true(hints_text.findn("Examine documents") != -1, "Hints contain 'Examine documents'")
 
 func test_action_emission() -> void:
 	var ui := await _spawn_ui()
@@ -71,14 +72,10 @@ func test_action_emission() -> void:
 	var captured := {"id": null}
 	if action_panel.has_signal("action_chosen"):
 		action_panel.connect("action_chosen", func(id): captured.id = id)
-	# Press the "Inspect drawers" button
-	var buttons := _get_action_buttons(action_panel)
-	var target: Button = null
-	for b in buttons:
-		if (b as Button).text == "Inspect drawers":
-			target = b
-			break
-	assert_not_null(target, "Found Inspect drawers button")
-	target.emit_signal("pressed")
+	# Trigger the first action via numeric key input (1), since UI uses hints instead of buttons
+	var key := InputEventKey.new()
+	key.pressed = true
+	key.keycode = KEY_1
+	action_panel._input(key)
 	await get_tree().process_frame
 	assert_eq(captured.id, "desk.inspect_drawers")

@@ -52,16 +52,8 @@ func test_keyboard_cycles_pois() -> void:
 	# Simulate user input via _input (engine callback)
 	apt._input(e2)
 	await get_tree().process_frame
-	# No strict assert on side-effects, but ensure no error and ActionPanel populated
+	# Ensure ActionPanel populated: assert on hints text presence (UI uses hints, not buttons)
 	var action_panel: Node = ui.get_node("%ActionPanel")
-	var has_buttons := false
-	for c in action_panel.get_children():
-		if c is Button:
-			has_buttons = true
-			break
-		elif c is Container:
-			for c2 in c.get_children():
-				if c2 is Button:
-					has_buttons = true
-					break
-	assert_true(has_buttons, "ActionPanel has actions after selection and accept")
+	var hints: Label = action_panel.find_child("Hints", true, false)
+	assert_not_null(hints, "Action hints label exists after selection and accept")
+	assert_true(hints.text.length() > 0, "ActionPanel shows some action hints")

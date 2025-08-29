@@ -19,12 +19,15 @@ func test_main_menu_new_game_shows_basic_room():
 	if main_menu.has_method("get"):
 		var game_scene_path = main_menu.get("game_scene_path") if main_menu.has_method("get") else ""
 		if typeof(game_scene_path) == TYPE_STRING and game_scene_path != "":
-			var ok: bool = game_scene_path == "res://scenes/ui/main_ui.tscn" or game_scene_path == "res://scenes/ui/apartment_main_ui.tscn"
+			var ok: bool = game_scene_path == "res://scenes/ui/main_ui.tscn"
 			assert_true(ok, "New Game should load main UI (main_ui or apartment_main_ui), got: %s" % game_scene_path)
 	
 	print("[Test] Main menu configured to load main_ui.tscn with BasicRoom")
 
 func test_main_ui_standalone_shows_basic_room():
+	# Ensure we start from the BasicRoom location
+	if has_node("/root/LocationState"):
+		get_node("/root/LocationState").set_location("Your Apartment")
 	# Test loading main_ui.tscn directly (what happens after New Game)
 	var main_ui_scene = preload("res://scenes/ui/main_ui.tscn")
 	var main_ui = main_ui_scene.instantiate()
@@ -42,7 +45,7 @@ func test_main_ui_standalone_shows_basic_room():
 	
 	# Verify BasicRoom exists and Canvas is rendering
 	var term_root = main_ui.get_node("%MainPanel/TermRoot")
-	var basic_room = term_root.get_node("BasicRoom")
+	var basic_room = term_root.get_node_or_null("BasicRoom")
 	assert_not_null(basic_room, "BasicRoom should exist in standalone main UI")
 	
 	var ascii_canvas = main_ui.get_node("%MainPanel/AsciiCanvas")

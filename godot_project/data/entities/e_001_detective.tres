@@ -1,0 +1,15 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Resource" path="res://data/entities/detective_stats.tres" id="1_stats"]
+[ext_resource type="Script" path="res://scripts/resources/entity_resource.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+id = "E-001"
+name = "Detective"
+char = "@"
+stat_block = ExtResource("1_stats")
+ability_ids = Array[String](["A-001"])
+status_ids = Array[String](["S-001"])
+equipment_slots = {}
+affixes = Array[String]([])

@@ -12,7 +12,7 @@ func test_log_output_newest_first():
 	add_child_autofree(inst)
 	await get_tree().process_frame
 	# Force connect and refresh
-	var out: ColorRect = inst.get_node("%OutputPanel")
+	var out: Node = inst.get_node("%OutputPanel")
 	if out.has_method("refresh_now"):
 		out.call("refresh_now")
 	# Explicit connection to ensure deterministic updates in test

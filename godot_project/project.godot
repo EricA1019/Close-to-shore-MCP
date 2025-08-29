@@ -18,12 +18,15 @@ config/features=PackedStringArray("4.5")
 [autoload]
 
 GameClock="*res://scripts/autoload/game_clock.gd"
+StatusSystem="*res://scripts/systems/status_system.gd"
 PlayerState="*res://scripts/autoload/player_state.gd"
 LocationState="*res://scripts/autoload/location_state.gd"
 LogBus="*res://scripts/autoload/log_bus.gd"
 InputHints="*res://scripts/autoload/input_hints.gd"
 InputHelper="*res://addons/maaacks_game_template/base/scripts/input_helper.gd"
 ContentDB="*res://scripts/autoload/content_db.gd"
+InputBus="*res://scripts/autoload/input_bus.gd"
+Inventory="*res://scripts/inventory/inventory.gd"
 ImGuiRoot="*res://addons/imgui-godot/data/ImGuiRoot.tscn"
 AppConfig="*res://addons/maaacks_game_template/base/scenes/autoloads/app_config.tscn"
 SceneLoader="*res://addons/maaacks_game_template/base/scenes/autoloads/scene_loader.tscn"
@@ -36,7 +39,7 @@ main_scene="res://scenes/maaack_scenes/game_scene.tscn"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/cp437_tools/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/imgui-godot/plugin.cfg", "res://addons/maaacks_game_template/plugin.cfg", "res://addons/resource_databases/editor_only/plugin.cfg")
+enabled=PackedStringArray("res://addons/cp437_tools/plugin.cfg", "res://addons/gdLinter/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/imgui-godot/plugin.cfg", "res://addons/maaacks_game_template/plugin.cfg", "res://addons/resource_databases/editor_only/plugin.cfg")
 
 [file_customization]
 
@@ -78,3 +81,12 @@ disable_install_wizard=true
 [rendering]
 
 quality/driver/driver_name="Vulkan"
+
+[resource_databases]
+
+content_db_path="res://data/content_database.tres"
+ImGuiRoot="*res://addons/imgui-godot/data/ImGuiRoot.tscn"
+AppConfig="*res://addons/maaacks_game_template/base/scenes/autoloads/app_config.tscn"
+SceneLoader="*res://addons/maaacks_game_template/base/scenes/autoloads/scene_loader.tscn"
+ProjectMusicController="*res://addons/maaacks_game_template/base/scenes/autoloads/project_music_controller.tscn"
+ProjectUISoundController="*res://addons/maaacks_game_template/base/scenes/autoloads/project_ui_sound_controller.tscn"

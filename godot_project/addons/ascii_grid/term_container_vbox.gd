@@ -11,8 +11,18 @@ extends TermContainer
 
 func _arrange_children() -> void:
 	var total_content_rect: Rect2i = get_content_rect()
-	var available_height: int = total_content_rect.size.y - _children.reduce(func(accum: int, child: TermElement) -> int: return accum + child.fixed_size.y, 0)
-	var children_to_distribute: int = _children.filter(func(child: TermElement) -> bool: return child.fixed_size.y == 0).size()
+	# Calculate consumed height using each child's effective fixed height (get_fixed_height),
+	# not just the exported fixed_size.y. This keeps layout consistent for elements
+	# that override get_fixed_height() without modifying fixed_size directly.
+	var fixed_consumed: int = 0
+	var children_to_distribute: int = 0
+	for child: TermElement in _children:
+		var ch: int = child.get_fixed_height()
+		if ch > 0:
+			fixed_consumed += ch
+		else:
+			children_to_distribute += 1
+	var available_height: int = total_content_rect.size.y - fixed_consumed
 	# Guard against negative available height during early layout; clamp to zero to avoid negative child sizes.
 	if available_height < 0:
 		available_height = 0

@@ -1,3 +1,58 @@
-[gd_resource type="Theme" format=3]
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://dlnijjjjix5l0"]
+
+[ext_resource type="FontFile" uid="uid://cjyqlw5hkfr4o" path="res://docs/GODOT_ENGINE_DOCS/_static/fonts/RobotoSlab/roboto-slab-v7-regular.ttf" id="1_4r6fm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_loqvk"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(1, 1, 1, 0.75)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vrrbn"]
+
+[sub_resource type="StyleBoxFlat" id="1"]
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+bg_color = Color(0.06, 0.06, 0.09, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.5, 0.8, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [resource]
+Label/colors/font_color = Color(0.48705012, 0, 0.023824217, 1)
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/colors/font_shadow_color = Color(0, 0, 0, 0)
+Label/constants/line_spacing = 3
+Label/constants/outline_size = 0
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+Label/constants/shadow_outline_size = 1
+Label/font_sizes/font_size = 16
+Label/fonts/font = ExtResource("1_4r6fm")
+Label/styles/focus = SubResource("StyleBoxFlat_loqvk")
+Label/styles/normal = SubResource("StyleBoxEmpty_vrrbn")
+Panel/styles/panel = SubResource("1")
+VBoxContainer/constants/separation = 8

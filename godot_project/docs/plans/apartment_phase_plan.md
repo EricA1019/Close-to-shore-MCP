@@ -53,52 +53,56 @@ Indexing: The Resource DB bridge indexes `.tres` by collection and `id` field; v
 
 ## Hops (Cts convention)
 
-### Hop 1: Docs and Index Prep (Resource DB)
+### Hop 1: Docs and Index Prep (Resource DB) ✅ COMPLETED
 Requirements
-- Add this plan under `docs/plans/` (done).
-- Extend Resource DB index to include new collections: entities, items, abilities, statuses, tiles.
-- Add validations DB006–DB010:
-  - Unique IDs per collection.
-  - Cross-ref existence checks: entity.ability_ids -> abilities, entity.status_ids -> statuses, equipment item IDs -> items.
-  - Tile tags sanity (non-empty for tiles).
-- Create `MCP/TOOLS/doc_updater.py` and run it to standardize docs:
-  - Replace Python stdlib HTTP server mentions with "Python stdlib HTTP server".
-  - Prefer Resource Database (.tres/.res) terminology over Resource Database (.tres/.res) wording.
-  - Ensure CTS sections have a `### Checklist` (Requirements/Contracts/Tests/DoD).
+- ✅ Add this plan under `docs/plans/` (done).
+- ✅ Extend Resource DB index to include new collections: entities, items, abilities, statuses, tiles.
+- ✅ Add validations DB006–DB010:
+  - ✅ Unique IDs per collection (DB006).
+  - ✅ Cross-ref existence checks: entity.ability_ids -> abilities, entity.status_ids -> statuses, equipment item IDs -> items (DB007).
+  - ✅ Tile tags sanity (non-empty for tiles) (DB008).
+  - ✅ ID format warnings for E-###, S-###, T-### (DB009).
+- ✅ Create `MCP/TOOLS/doc_updater.py` and run it to standardize docs:
+  - ✅ Replace Flask mentions with "Python stdlib HTTP server".
+  - ✅ Prefer Resource Database (.tres/.res) terminology over JSON DB wording.
+  - ✅ Ensure CTS sections have a `### Checklist` (Requirements/Contracts/Tests/DoD).
 Contracts
-- Bridge: list(collection), get_by_id(collection, id) for all new collections.
-- CLI: cts db list/get for these collections; validate surfaces DB006–DB010.
+- ✅ Bridge: list(collection), get_by_id(collection, id) for all new collections.
+- ✅ CLI: cts db list/get for these collections; validate surfaces DB006–DB010.
 Tests
-- Validate shows counts per collection; bad refs are reported with ID and collection.
+- ✅ Validate shows counts per collection; bad refs are reported with ID and collection.
+- ✅ Strict mode exits non-zero on warnings.
 DoD
-- New collections appear in index; `validate` passes with green output locally and in CI.
-- Docs updated: CTS and Resource DB docs reflect checklist style and Resource Database-first approach.
-- VS Code tasks exist to run the doc updater (dry-run and apply).
+- ✅ New collections appear in index; `validate` passes with green output locally and in CI.
+- ✅ Docs updated: CTS and Resource DB docs reflect checklist style and Resource Database-first approach.
+- ✅ VS Code tasks exist to run the doc updater (dry-run and apply).
+- ✅ Warnings counted and surfaced for strict validation.
 
-### Hop 2: Core Status + Clock
+### Hop 2: Core Status + Clock ✅ COMPLETED
 Requirements
-- `StatusSystem` (autoload): add/remove/has/get_mods; compute effective stat deltas from active statuses.
-- `GameClock` (autoload): `advance(1)` on player step; signal `time_changed`.
-- `TopStatus` displays time and active statuses.
+- ✅ `StatusSystem` (autoload): add/remove/has/get_mods; compute effective stat deltas from active statuses.
+- ✅ `GameClock` (autoload): `advance(1)` on player step; signal `time_changed`.
+- ✅ `TopStatus` displays time and active statuses.
 Contracts
-- StatusSystem: signals `status_changed(entity_id)`.
-- GameClock: signal `time_changed(seconds_total)`.
+- ✅ StatusSystem: signals `status_changed(entity_id)`.
+- ✅ GameClock: signal `time_changed(seconds_total)`.
 Tests
-- Moving one step -> time +1s; adding/removing statuses updates UI; accuracy mod reflected.
+- ✅ Moving one step -> time +1s; adding/removing statuses updates UI; accuracy mod reflected.
 DoD
-- No new warnings; tests pass; time visibly updates in UI during movement.
+- ✅ No new warnings; tests pass; time visibly updates in UI during movement.
 
-### Hop 3: Entities (Resource-driven)
+### Hop 3: Entities (Resource-driven) ✅ COMPLETED
 Requirements
-- Define `EntityResource`, `StatBlockResource`, `AbilityResource`, `StatusResource` classes.
-- Create `E-001` Detective resource with base stats and links to abilities/statuses.
-- Loader resolves Entity by ID via Resource DB.
+- ✅ Define `EntityResource`, `StatBlockResource`, `AbilityResource`, `StatusResource` classes.
+- ✅ Create `E-001` Detective resource with base stats and links to abilities/statuses.
+- ✅ Loader resolves Entity by ID via Resource DB.
 Contracts
-- EntityLoader: `get_entity("E-001") -> EntityResource` with resolved stat_block.
+- ✅ EntityLoader: `get_entity("E-001") -> EntityResource` with resolved `stat_block` and helper accessors for abilities/statuses.
 Tests
-- Detective loads; `char` is '@'; stats present; no affixes.
+- ✅ Detective loads; `char` is '@'; stats present; no affixes.
+- ✅ Abilities and statuses resolve via IDs (`A-001` Cleanse, `S-001` Hungover).
 DoD
-- Entity resources discoverable via index; inspector loads `.tres` without errors.
+- ✅ Entity resources discoverable via index; inspector loads `.tres` without errors.
 
 ### Hop 4: Inventory System + Panels
 Requirements

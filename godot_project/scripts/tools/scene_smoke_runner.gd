@@ -8,6 +8,38 @@ var _index_path: String = "res://scripts/tools/scene_index.json"
 var _filter: String = ""
 var _out_path: String = ""
 
+# Skip lists to avoid loading plugin/editor scenes that are unsafe headless
+const SKIP_PREFIXES := [
+	"res://addons/gut/gui/",                        # GUT editor UI scenes
+	"res://addons/gut/gut_loader_the_scene.tscn",   # references missing script in headless
+	"res://addons/imgui-godot/",                   # ImGui registers singletons; unsafe to load repeatedly in smoke
+	"res://addons/resource_databases/editor_only/", # Editor-only plugin UI
+	"res://addons/maaacks_game_template/installer/", # Template installer dialogs
+	"res://addons/maaacks_game_template/utilities/", # Network/util scenes
+	# Project template/example groups that aren't part of core gameplay and often fail in headless
+	"res://scenes/maaack_scenes/",
+	"res://scenes/overlaid_menus/",
+	"res://scenes/opening/",
+	"res://scenes/loading_screen/",
+	"res://scenes/main_menu/",
+	# Incomplete or editor-import-dependent subtrees under game_scene
+	"res://scenes/game_scene/levels/",
+	"res://scenes/game_scene/tutorials/",
+	"res://scenes/game_scene/game_ui.tscn",
+	# Some addon examples reference missing demo scripts outside our repo
+	"res://addons/ascii_grid/examples/UI_Mockup/"
+]
+
+# Allowed roots; when non-empty, paths must start with at least one of these
+const ALLOWED_ROOTS := [
+	"res://scenes/ui/",                         # Core UI
+	"res://scenes/locations/",                  # Locations / rooms
+	"res://scenes/ascii_min_demo/",             # Minimal ASCII demos we include
+	"res://scenes/game_scene/",                 # The main game scene(s)
+	"res://scenes/credits/",                    # Credits screens
+	"res://addons/ascii_grid/examples/"          # Selected ASCII examples (further trimmed by SKIP_PREFIXES)
+]
+
 func _initialize() -> void:
 	# Parse CLI after "--"
 	var args := OS.get_cmdline_user_args()
@@ -43,8 +75,25 @@ func _load_index(path: String) -> Array:
 		return []
 	var dict: Dictionary = parsed
 	var arr: Array = dict.get("scenes", [])
+	# Apply CLI filter first if provided
 	if _filter != "":
 		arr = arr.filter(func(p): return str(p).findn(_filter) != -1)
+	# Skip known-unsafe plugin/editor scenes
+	arr = arr.filter(func(p):
+		var _p := str(p)
+		for skip in SKIP_PREFIXES:
+			if _p.begins_with(skip):
+				print("[SMOKE] Skipping (prefix): ", _p)
+				return false
+		# If allowed roots are defined, require at least one match
+		if ALLOWED_ROOTS.size() > 0:
+			for allowed_root in ALLOWED_ROOTS:
+				if _p.begins_with(allowed_root):
+					return true
+			# Not in allowed roots, skip silently to reduce noise
+			return false
+		return true
+	)
 	return arr
 
 func _run_scene(path: String) -> bool:

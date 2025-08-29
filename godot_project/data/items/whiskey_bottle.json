@@ -1,0 +1,18 @@
+{
+  "id": "I-002",
+  "name": "Whiskey Bottle",
+  "type": "consumable",
+  "description": "Half-empty bottle of bourbon. The amber liquid catches the light. Helps steady the nerves and dull the pain.",
+  "consumable": true,
+  "max_uses": 5,
+  "uses_remaining": 3,
+  "effects": {
+    "heal": 10,
+    "remove_status": ["S-001"],
+    "add_status": ["S-002"],
+    "duration": 300
+  },
+  "value": 25,
+  "weight": 0.8,
+  "tags": ["alcohol", "healing"]
+}

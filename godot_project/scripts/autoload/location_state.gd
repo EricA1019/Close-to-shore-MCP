@@ -17,3 +17,7 @@ func set_location(loc_name: String) -> void:
 
 func get_location() -> String:
 	return current_location
+
+# Backwards-compatible alias used by older tests
+func change_location(loc_name: String) -> void:
+	set_location(loc_name)

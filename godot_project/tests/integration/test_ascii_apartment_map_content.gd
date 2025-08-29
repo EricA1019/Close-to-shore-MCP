@@ -3,6 +3,11 @@ extends GutTest
 const UI_SCENE := "res://scenes/ui/main_ui.tscn"
 
 func test_apartment_map_populates_term_cell_map():
+	# Ensure we are not in the interactive Apartment mode which hides ApartmentMap
+	var location_state = get_node("/root/LocationState") if has_node("/root/LocationState") else null
+	if location_state and location_state.has_method("set_location"):
+		location_state.set_location("Your Apartment")
+    
 	assert_true(ResourceLoader.exists(UI_SCENE), "UI scene file should exist")
 	var scene: PackedScene = load(UI_SCENE)
 	var inst: Control = scene.instantiate()

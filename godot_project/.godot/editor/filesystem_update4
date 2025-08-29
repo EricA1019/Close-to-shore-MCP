@@ -1,6 +1,3 @@
-res://scenes/ascii_min_demo/ascii_min_demo_canvas.tscn
+res://scenes/ui/apartment_main_ui.tscn
+res://themes/broken_divinity_theme.tres
 res://addons/resource_databases/editor_only/ui/database_editor_theme.tres
-res://addons/ascii_grid/ascii_canvas.gd
-res://tests/integration/test_boot_flow_menu_to_game.gd
-res://tests/integration/test_boot_flow_opening_to_menu.gd
-res://scripts/autoload/game_clock.gd

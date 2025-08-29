@@ -41,6 +41,9 @@ func _on_child_entered_tree(child: Node) -> void:
 func _on_child_exiting_tree(child:Node) -> void:
 	# Only attempt to erase if the child is tracked as TermElement; avoids TypedArray type validation errors
 	if child is TermElement:
+		# Safely disconnect the signal to prevent duplicate connections when re-added later
+		if child.visual_representation_changed.is_connected(_on_child_visual_representation_changed):
+			child.visual_representation_changed.disconnect(_on_child_visual_representation_changed)
 		_children.erase(child)
 	update_sizing()
 

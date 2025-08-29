@@ -29,6 +29,14 @@ func _ready() -> void:
 	# Check for POIs near starting position
 	_check_nearby_pois()
 	
+	# Subscribe to InputBus so tests and tools can drive input centrally
+	var bus = get_tree().get_root().get_node_or_null("/root/InputBus")
+	if bus:
+		bus.action.connect(_on_inputbus_action)
+		bus.key_event.connect(_on_inputbus_key)
+		bus.raw_event.connect(_on_inputbus_raw)
+		bus.command.connect(_on_inputbus_command)
+    
 	print("[InteractiveApartment] Ready - ", APARTMENT_WIDTH, "x", APARTMENT_HEIGHT)
 
 func get_apartment_size() -> Vector2i:
@@ -52,6 +60,25 @@ func handle_input(event) -> void:
 	elif event is InputEventAction:
 		action = event.action
 		is_pressed = event.pressed
+	elif event is InputEventKey:
+		# Allow raw keyboard events for live runs without full InputMap wiring
+		var kev: InputEventKey = event
+		is_pressed = kev.pressed
+		if not is_pressed:
+			return
+		match kev.keycode:
+			KEY_W, KEY_UP:
+				action = "ui_up"
+			KEY_S, KEY_DOWN:
+				action = "ui_down"
+			KEY_A, KEY_LEFT:
+				action = "ui_left"
+			KEY_D, KEY_RIGHT:
+				action = "ui_right"
+			KEY_E, KEY_ENTER, KEY_KP_ENTER:
+				action = "ui_accept"
+			_:
+				action = ""
 	else:
 		return
 	
@@ -67,7 +94,7 @@ func handle_input(event) -> void:
 		elif action == "ui_right":   # D key
 			direction = Vector2i(1, 0)
 		elif action == "ui_accept":  # E key - interact with nearby POI
-			_interact_with_nearby_poi()
+			_interact_with_nearby_poi(true)
 			return
 		
 		if direction != Vector2i.ZERO:
@@ -75,6 +102,44 @@ func handle_input(event) -> void:
 				_check_nearby_pois()
 				_update_ui_panels()
 				_redraw_required = true
+
+func _exit_tree() -> void:
+	# Clean up InputBus connections
+	var bus = get_tree().get_root().get_node_or_null("/root/InputBus")
+	if bus:
+		if bus.action.is_connected(_on_inputbus_action):
+			bus.action.disconnect(_on_inputbus_action)
+		if bus.key_event.is_connected(_on_inputbus_key):
+			bus.key_event.disconnect(_on_inputbus_key)
+		if bus.raw_event.is_connected(_on_inputbus_raw):
+			bus.raw_event.disconnect(_on_inputbus_raw)
+		if bus.command.is_connected(_on_inputbus_command):
+			bus.command.disconnect(_on_inputbus_command)
+
+func _on_inputbus_action(action: String, pressed: bool) -> void:
+	if pressed:
+		handle_input(action)
+
+func _on_inputbus_key(kev: InputEventKey) -> void:
+	handle_input(kev)
+
+func _on_inputbus_raw(event: InputEvent) -> void:
+	handle_input(event)
+
+func _on_inputbus_command(cmd: String, payload) -> void:
+	# Small set of high-level command shorthands to aid testing
+	match cmd:
+		"move":
+			if typeof(payload) == TYPE_STRING:
+				var dir: String = payload
+				if dir == "up": handle_input("ui_up")
+				elif dir == "down": handle_input("ui_down")
+				elif dir == "left": handle_input("ui_left")
+				elif dir == "right": handle_input("ui_right")
+		"interact":
+			handle_input("ui_accept")
+		_:
+			pass
 
 func _try_move(direction: Vector2i) -> bool:
 	var new_pos = player_pos + direction
@@ -93,6 +158,9 @@ func _try_move(direction: Vector2i) -> bool:
 	# Move is valid
 	player_pos = new_pos
 	print("[Debug] Move successful to ", player_pos)
+	
+	# Advance time by 1 second on successful movement
+	GameClock.advance(1)
 	
 	# Check for nearby POIs after movement
 	_check_nearby_pois()
@@ -122,7 +190,7 @@ func _check_nearby_pois() -> void:
 			nearby_poi = poi
 			closest_distance = distance
 
-func _interact_with_nearby_poi() -> void:
+func _interact_with_nearby_poi(trigger_primary: bool = false) -> void:
 	if nearby_poi:
 		var poi_name = nearby_poi.name.to_lower()
 		var action_key = poi_name + ".interact"
@@ -146,6 +214,22 @@ func _interact_with_nearby_poi() -> void:
 		
 		if action_panel:
 			action_panel.set_actions(nearby_poi.actions)
+
+		# Optionally trigger the first available action immediately
+		if trigger_primary and action_panel:
+			var actions: Array = nearby_poi.actions if typeof(nearby_poi.actions) == TYPE_ARRAY else []
+			if actions.size() > 0:
+				var first = actions[0]
+				var id := ""
+				if typeof(first) == TYPE_STRING:
+					id = String(first)
+				elif typeof(first) == TYPE_DICTIONARY:
+					id = String(first.get("id", String(first)))
+				if id != "":
+					if action_panel.has_signal("action_chosen"):
+						action_panel.emit_signal("action_chosen", id)
+					elif has_method("on_action_selected"):
+						on_action_selected(id)
 		
 		# Store this interaction
 		last_interaction = {
@@ -166,6 +250,46 @@ func _update_ui_panels() -> void:
 		if action_panel:
 			action_panel.clear_actions()
 
+# Called by MainUI when a numbered action is chosen in the ActionPanel
+func on_action_selected(id: String) -> void:
+	if nearby_poi == null:
+		return
+	var feedback := ""
+	match id:
+		"Examine papers":
+			feedback = "You sift through the papers. Most are old case notes and unpaid bills."
+		"Open drawer":
+			feedback = "The drawer sticks for a moment, then slides open with a clatter."
+		"Search drawer":
+			feedback = "You rummage through the drawer and find a few useful items."
+		"Close drawer":
+			feedback = "You push the drawer shut. It doesn’t quite sit flush."
+		"Sleep":
+			feedback = "You lie down for a moment, but rest doesn’t come easy."
+		"Search under bed":
+			feedback = "Dust bunnies and a missing sock. Nothing else."
+		"Check cabinets":
+			feedback = "Mostly empty. A few cans of beans and stale crackers."
+		"Wash dishes":
+			feedback = "You scrub the dishes. It’s not glamorous, but it’s something."
+		"Open fridge":
+			feedback = "A lukewarm bottle of soda and a questionable takeout box."
+		"Check freezer":
+			feedback = "Frostbitten peas and a cracked ice tray."
+		"Use bathroom":
+			feedback = "You splash water on your face. It helps a little."
+		"Check medicine cabinet":
+			feedback = "Bandages, expired painkillers, and a dull razor."
+		"Search clothes":
+			feedback = "You find a crumpled receipt and a few loose coins."
+		"Check boxes":
+			feedback = "Old case files and memorabilia. Nothing urgent."
+		_:
+			feedback = "You chose: %s" % id
+	if output_panel and output_panel.has_method("show_description"):
+		output_panel.call("show_description", feedback)
+	# Optionally refresh actions if POI state changes in the future
+
 func _generate_apartment_layout() -> void:
 	_apartment_cells.clear()
 	if _try_load_layout_from_db():
@@ -183,7 +307,7 @@ func _generate_apartment_layout() -> void:
 		"█+...........+.......β.....█",  # 5
 		"█............+.............█",  # 6
 		"█..........................█",  # 7
-		"█..π......+...╤.............█",  # 8
+		"█..π......+...╤............█",  # 8
 		"█.............Æ.......α....█",  # 9
 		"█..........................█",  # 10
 		"█..........................█",  # 11
@@ -226,8 +350,17 @@ func _try_load_layout_from_db() -> bool:
 	var entry_v = bridge.get("layouts.apartment")
 	if entry_v == null or typeof(entry_v) == TYPE_NIL:
 		return false
-	var entry: Dictionary = entry_v
-	var path: String = entry.get("path", "")
+	var path: String = ""
+	match typeof(entry_v):
+		TYPE_DICTIONARY:
+			var entry: Dictionary = entry_v
+			path = String(entry.get("path", ""))
+		TYPE_STRING:
+			# Some indexes may return the JSON path directly
+			path = String(entry_v)
+		_:
+			push_warning("[InteractiveApartment] Unexpected DB entry type for layouts.apartment: %s" % [typeof(entry_v)])
+			return false
 	if path.is_empty():
 		return false
 	if not ResourceLoader.exists(path):

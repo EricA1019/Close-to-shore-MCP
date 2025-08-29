@@ -1,13 +1,12 @@
-[gd_scene load_steps=12 format=3 uid="uid://apartment_main_ui"]
+[gd_scene load_steps=10 format=3 uid="uid://drfumf8hvmqpk"]
 
 [ext_resource type="Script" uid="uid://ckqvrrxdo475v" path="res://scripts/ui/top_status.gd" id="1"]
 [ext_resource type="Script" uid="uid://bxnyqkdue43s" path="res://scripts/ui/main_ui.gd" id="2"]
 [ext_resource type="Script" uid="uid://1h2wgaffjtog" path="res://scripts/ui/action_panel.gd" id="3"]
 [ext_resource type="Script" uid="uid://cdbhub5ih72ac" path="res://scripts/ui/output_panel.gd" id="4"]
-[ext_resource type="Script" path="res://addons/ascii_grid/ascii_canvas.gd" id="5_po8y3"]
-[ext_resource type="Texture2D" uid="uid://bwf1emvvwlhkr" path="res://assets/fonts/cp437_16x16.png" id="6_9b8yu"]
-[ext_resource type="Script" path="res://addons/ascii_grid/term_container_vbox.gd" id="7_8t6w5"]
-[ext_resource type="Script" path="res://addons/ascii_grid/term_label.gd" id="8_c0d0y"]
+[ext_resource type="Script" uid="uid://4o68chmbkynk" path="res://addons/ascii_grid/ascii_canvas.gd" id="5_po8y3"]
+[ext_resource type="Script" uid="uid://cpv01ldjfjap7" path="res://addons/ascii_grid/term_container_vbox.gd" id="7_8t6w5"]
+[ext_resource type="Script" uid="uid://d23m22j53hcnl" path="res://addons/ascii_grid/term_label.gd" id="8_c0d0y"]
 [ext_resource type="Script" uid="uid://dhktx2wtbsoee" path="res://scripts/ui/ascii_location_title.gd" id="9_casu0"]
 [ext_resource type="PackedScene" path="res://scenes/ui/interactive_apartment.tscn" id="10_apartment"]
 
@@ -62,7 +61,7 @@ size_flags_vertical = 3
 color = Color(0, 0, 0, 0)
 
 [node name="AsciiCanvas" type="Control" parent="Body/LeftColumn/MainPanel" node_paths=PackedStringArray("term_root")]
-layout_mode = 0
+anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -83,24 +82,22 @@ fixed_size = Vector2i(0, 1)
 [node name="AsciiLocationBinder" type="Node" parent="Body/LeftColumn/MainPanel/TermRoot"]
 script = ExtResource("9_casu0")
 
-[node name="InteractiveApartment" instance=ExtResource("10_apartment") parent="Body/LeftColumn/MainPanel/TermRoot"]
+[node name="InteractiveApartment" parent="Body/LeftColumn/MainPanel/TermRoot" instance=ExtResource("10_apartment")]
 
-[node name="ActionPanel" type="ColorRect" parent="Body/LeftColumn"]
+[node name="ActionPanel" type="Panel" parent="Body/LeftColumn"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 140)
 layout_mode = 2
-color = Color(0, 0, 0, 0)
 script = ExtResource("3")
 
 [node name="RightColumn" type="VBoxContainer" parent="Body"]
 custom_minimum_size = Vector2(360, 0)
 layout_mode = 2
 
-[node name="OutputPanel" type="ColorRect" parent="Body/RightColumn"]
+[node name="OutputPanel" type="Panel" parent="Body/RightColumn"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-color = Color(0, 0, 0, 0)
 script = ExtResource("4")
 
 [node name="DebugPanel" type="ColorRect" parent="Body/RightColumn"]

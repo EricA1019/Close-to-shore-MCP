@@ -1,0 +1,12 @@
+{
+  "id": "I-001",
+  "name": "Service Pistol",
+  "type": "weapon",
+  "description": "A standard-issue detective's sidearm. Well-maintained and reliable. Provides confidence in dangerous situations.",
+  "damage": 15,
+  "accuracy": 85,
+  "slot": "weapon",
+  "value": 500,
+  "weight": 2.5,
+  "tags": ["firearm", "detective_gear"]
+}
