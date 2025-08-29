@@ -173,8 +173,9 @@ func _is_passable(pos: Vector2i) -> bool:
 		print("[Debug] No cell at ", pos, " - allowing movement")
 		return true  # Empty space is passable
 	
-	# Only floor tiles are passable, everything else blocks movement
-	var passable = cell.character == "."
+	# Passable tiles: floor-like symbols
+	var ch := String(cell.character)
+	var passable = ch == "." or ch == " " or ch == "+" or ch == "■"
 	# Debug output for testing
 	print("[Debug] Cell at ", pos, " has character: '", cell.character, "' - passable: ", passable)
 	return passable
@@ -296,27 +297,28 @@ func _generate_apartment_layout() -> void:
 		_redraw_required = true
 		return
     
-	# Fallback: built-in 28x16 layout (kept for stability)
-	push_warning("[InteractiveApartment] Falling back to built-in layout; DB entry layouts.apartment not found.")
-	var layout_strings = [
-		"████████████████████████████",  # 0
-		"█.....π.......+..........+.█",  # 1
-		"█.......................+..█",  # 2  
-		"█..........................█",  # 3
-		"█..........................█",  # 4
-		"█+...........+.......β.....█",  # 5
-		"█............+.............█",  # 6
-		"█..........................█",  # 7
-		"█..π......+...╤............█",  # 8
-		"█.............Æ.......α....█",  # 9
-		"█..........................█",  # 10
-		"█..........................█",  # 11
-		"█+............+......ε.....█",  # 12
-		"█.............+.......δ....█",  # 13
-		"█..........................█",  # 14
-		"████████████████████████████"   # 15
+	# Fallback: align with provided text art and semantics
+	push_warning("[InteractiveApartment] Falling back to ASCII-art layout; DB entry layouts.apartment not found.")
+	var art_rows := [
+		"█████████████████████████",
+		"            █■■■■%#■■■■█■■#■■#■■#■■■█",
+		"            █■■■■■■■■■■█■■■■■■■■■■■■█",
+		"            █■■■■■■■■■■█■■■■■■■■■■■■█",
+		"            █■■■■■■■■■#█■■■■■■■■■■■■█",
+		"            █■■■■■■■■■■█■■■■■■■■■■■■█",
+		"            █████+█████████████+█████",
+		"            █■■■■■■■■■■■■■■■■■■■■■■■█",
+		"            █■■■■■■■■■■■■■■■■■■■■■■%+",
+		"            █■■■■■■■■■■■■■■■■■■■■■■■█",
+		"            █■■■■■■■■■■■■■■■■■■■■■■%█",
+		"            ███+███████████████+█████",
+		"            █#■■■■■■■■■█■■■■■■■■■■■#█",
+		"            █■■■■■■■■■■█■■■■■■■■■■■■█",
+		"            █■■■■■■■■%■█■%■■■■■■■■■■█",
+		"            █■■■■■■■■■■█■■■■■#■■■■■■█"
 	]
-	_populate_cells_from_rows(layout_strings)
+	var normalized := _normalize_art_rows(art_rows)
+	_populate_cells_from_rows(normalized)
 	_redraw_required = true
 
 func _populate_cells_from_rows(rows: Array) -> void:
@@ -330,12 +332,38 @@ func _populate_cells_from_rows(rows: Array) -> void:
 			if character == "█":
 				color = Color.GRAY
 			elif character == ".":
-				color = Color.YELLOW
+				color = Color(0.9, 0.9, 0.6) # sandy floor
 			elif character == "+":
-				color = Color.BROWN
+				color = Color(0.6, 0.4, 0.2) # doorway/threshold
+			elif character == "■":
+				color = Color(0.35, 0.35, 0.35) # shaded floor
+			elif character == "#":
+				color = Color(0.85, 0.75, 0.55) # container
+			elif character == "%":
+				color = Color(0.7, 1.0, 0.3) # interactable
 			else:
 				color = Color.CYAN
 			_apartment_cells[Vector2i(x, y)] = TermCell.new(character, color, Color.BLACK)
+
+func _normalize_art_rows(rows: Array) -> Array:
+	var out: Array = []
+	for y in range(APARTMENT_HEIGHT):
+		var line := ""
+		if y < rows.size():
+			line = String(rows[y])
+		# Drop leading spaces for alignment within viewport
+		while line.begins_with(" "):
+			line = line.substr(1)
+		# Pad or truncate to width
+		if line.length() < APARTMENT_WIDTH:
+			line += " ".repeat(APARTMENT_WIDTH - line.length())
+		elif line.length() > APARTMENT_WIDTH:
+			line = line.substr(0, APARTMENT_WIDTH)
+		# Ensure hard borders
+		if APARTMENT_WIDTH >= 2:
+			line = "█" + line.substr(1, APARTMENT_WIDTH - 2) + "█"
+		out.append(line)
+	return out
 
 func _try_load_layout_from_db() -> bool:
 	# Attempt to load apartment layout from Resource DB (layouts.apartment)
@@ -390,6 +418,8 @@ func is_loaded_from_db() -> bool:
 
 func _setup_pois() -> void:
 	pois.clear()
+	# First, generate POIs from markers in the layout: '%' = interactable, '#' = container
+	_setup_marker_pois()
 	
 	# Desk POI at position (14, 8) - character ╤
 	var desk_poi = ApartmentPOI.new()
@@ -475,6 +505,30 @@ func _setup_pois() -> void:
 	closet_poi.description = "A walk-in closet with some clothes hanging and boxes on the floor."
 	closet_poi.actions = ["Search clothes", "Check boxes"]
 	pois.append(closet_poi)
+
+func _setup_marker_pois() -> void:
+	var seen: = {}
+	for pos in _apartment_cells.keys():
+		var cell: TermCell = _apartment_cells[pos]
+		var ch := String(cell.character)
+		if ch == "%":
+			var poi = ApartmentPOI.new()
+			poi.name = "Interactable"
+			poi.position = pos
+			poi.description = "Something catches your eye here."
+			poi.actions = ["Inspect"]
+			if not seen.has(pos):
+				pois.append(poi)
+				seen[pos] = true
+		elif ch == "#":
+			var cpoi = ApartmentPOI.new()
+			cpoi.name = "Container"
+			cpoi.position = pos
+			cpoi.description = "A container or stash. Might hold something useful."
+			cpoi.actions = ["Open", "Search", "Close"]
+			if not seen.has(pos):
+				pois.append(cpoi)
+				seen[pos] = true
 
 # TermElement rendering methods
 func _blit_self_under(buffer) -> void:
