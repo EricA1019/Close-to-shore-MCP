@@ -1200,7 +1200,10 @@
 				"MCP/TOOLS/purge_empty_files.py",
 				"--exclude", ".git/**",
 				"--exclude", "godot_project/.godot/**",
-				"--exclude", "rust/target/**"
+				"--exclude", "rust/target/**",
+				"--ignore-names", ".gdignore",
+				"--ignore-names", ".gitkeep",
+				"--ignore-names", ".keep"
 			],
 			"group": "test",
 			"problemMatcher": []
@@ -1214,6 +1217,9 @@
 				"--exclude", ".git/**",
 				"--exclude", "godot_project/.godot/**",
 				"--exclude", "rust/target/**",
+				"--ignore-names", ".gdignore",
+				"--ignore-names", ".gitkeep",
+				"--ignore-names", ".keep",
 				"--delete"
 			],
 			"group": "build",
