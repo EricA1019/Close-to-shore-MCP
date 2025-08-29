@@ -1191,6 +1191,33 @@
 			],
 			"group": "test",
 			"problemMatcher": []
+		},
+		{
+			"label": "Repo: Purge Empty Files (dry-run)",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/TOOLS/purge_empty_files.py",
+				"--exclude", ".git/**",
+				"--exclude", "godot_project/.godot/**",
+				"--exclude", "rust/target/**"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "Repo: Purge Empty Files (delete)",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/TOOLS/purge_empty_files.py",
+				"--exclude", ".git/**",
+				"--exclude", "godot_project/.godot/**",
+				"--exclude", "rust/target/**",
+				"--delete"
+			],
+			"group": "build",
+			"problemMatcher": []
 		}
 	],
 	"inputs": [
