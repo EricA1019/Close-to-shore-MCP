@@ -1,0 +1,130 @@
+{
+  "description": "Deep Cleaner Configuration",
+  "project_settings": {
+    "name": "BrokenDivinityDemo",
+    "languages": ["gdscript", "rust", "python", "markdown"]
+  },
+  "cleanup_rules": {
+    "comments": {
+      "enabled": true,
+      "severity": "low",
+      "patterns": {
+        "todo_markers": {
+          "pattern": "\\b(TODO|FIXME|HACK|BUG|TBD)\\b",
+          "action": "flag_for_review",
+          "description": "Development markers that should be addressed"
+        },
+        "debug_comments": {
+          "pattern": "#.*debug.*",
+          "action": "remove",
+          "description": "Debug comments left in code"
+        }
+      }
+    },
+    "debug_statements": {
+      "enabled": true,
+      "severity": "medium",
+      "patterns": {
+        "gdscript_prints": {
+          "pattern": "^\\s*print\\s*\\(.*[Dd]ebug.*\\)",
+          "action": "remove",
+          "description": "Debug print statements in GDScript"
+        },
+        "rust_debug": {
+          "pattern": "^\\s*(println!|eprintln!|dbg!)\\s*\\(.*debug.*\\);",
+          "action": "remove",
+          "description": "Debug print statements in Rust"
+        },
+        "python_debug": {
+          "pattern": "^\\s*print\\s*\\(.*[Dd]ebug.*\\)",
+          "action": "remove",
+          "description": "Debug print statements in Python"
+        }
+      }
+    },
+    "legacy_code": {
+      "enabled": true,
+      "severity": "high",
+      "patterns": {
+        "legacy_comments": {
+          "pattern": "\\b(legacy|deprecated|obsolete)\\b",
+          "action": "flag_for_manual_review",
+          "description": "Legacy or deprecated code sections"
+        },
+        "compatibility_layers": {
+          "pattern": ".*compatibility.*",
+          "action": "flag_for_manual_review",
+          "description": "Backward compatibility code"
+        }
+      }
+    },
+    "unused_code": {
+      "enabled": false,
+      "severity": "medium",
+      "description": "Disabled by default - requires careful analysis"
+    },
+    "formatting": {
+      "enabled": true,
+      "severity": "low",
+      "patterns": {
+        "excessive_empty_lines": {
+          "pattern": "\\n\\s*\\n\\s*\\n",
+          "action": "replace",
+          "replacement": "\\n\\n",
+          "description": "Reduce multiple consecutive empty lines"
+        },
+        "trailing_whitespace": {
+          "pattern": "[ \\t]+$",
+          "action": "remove",
+          "description": "Remove trailing whitespace"
+        }
+      }
+    }
+  },
+  "exclusions": {
+    "directories": [
+      ".git/",
+      ".vscode/",
+      "__pycache__/",
+      ".tools/",
+      "target/",
+      "docs/GODOT_ENGINE_DOCS/",
+      "godot_project/addons/gut/",
+      "godot_project/addons/gdLinter/",
+      ".cleanup_backups/"
+    ],
+    "file_patterns": [
+      "\\.(png|jpg|jpeg|gif|svg|ico|pdf|zip|tar|gz)$",
+      "\\.import$",
+      "Cargo\\.lock$",
+      "\\.godot/"
+    ],
+    "specific_files": [
+      "README.md",
+      "LICENSE",
+      "CHANGELOG.md"
+    ]
+  },
+  "safety": {
+    "create_backups": true,
+    "backup_directory": ".cleanup_backups",
+    "dry_run_default": true,
+    "require_confirmation": true
+  },
+  "reporting": {
+    "generate_report": true,
+    "report_format": "json",
+    "include_context_lines": 3,
+    "show_file_stats": true
+  },
+  "integrations": {
+    "git": {
+      "check_git_status": true,
+      "warn_uncommitted_changes": true
+    },
+    "vscode": {
+      "create_tasks": true,
+      "add_problem_matchers": true
+    }
+  }
+}

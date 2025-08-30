@@ -2,6 +2,44 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "Validate: Layout (Python)",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/TOOLS/layout_validator.py"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate: Layout & Menu",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://scripts/tools/layout_validator.gd"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "Validator: Layout & Menu",
+			"type": "shell",
+			"command": "godot4",
+			"args": [
+				"--headless",
+				"--path",
+				"${workspaceFolder}/godot_project",
+				"-s",
+				"res://scripts/tools/layout_validator.gd"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
 			"label": "Docs: Updater (dry-run)",
 			"type": "shell",
 			"command": "python3",
@@ -1221,6 +1259,185 @@
 				"--ignore-names", ".gitkeep",
 				"--ignore-names", ".keep",
 				"--delete"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "Clean: Deep Clean (dry-run)",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/TOOLS/deep_cleaner.py",
+				"--project-root",
+				"${workspaceFolder}",
+				"--dry-run",
+				"--report",
+				"logs/deep_clean_report.json"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "Clean: Deep Clean (apply)",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/TOOLS/deep_cleaner.py",
+				"--project-root",
+				"${workspaceFolder}",
+				"--apply",
+				"--report",
+				"logs/deep_clean_report.json"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "Clean: Deep Clean (interactive)",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/TOOLS/deep_cleaner.py",
+				"--project-root",
+				"${workspaceFolder}",
+				"--apply",
+				"--interactive",
+				"--report",
+				"logs/deep_clean_report.json"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "Clean: Remove TODOs/FIXMEs",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/TOOLS/deep_cleaner.py",
+				"--project-root",
+				"${workspaceFolder}",
+				"--apply",
+				"--categories",
+				"comments",
+				"--report",
+				"logs/todo_cleanup_report.json"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "Clean: Remove Debug Statements",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/TOOLS/deep_cleaner.py",
+				"--project-root",
+				"${workspaceFolder}",
+				"--apply",
+				"--categories",
+				"debug",
+				"--report",
+				"logs/debug_cleanup_report.json"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "Clean: Flag Legacy Code",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/TOOLS/deep_cleaner.py",
+				"--project-root",
+				"${workspaceFolder}",
+				"--dry-run",
+				"--categories",
+				"legacy",
+				"--report",
+				"logs/legacy_code_report.json"
+			],
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "Clean: Empty Files and Directories",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"MCP/TOOLS/deep_cleaner.py",
+				"--project-root",
+				"${workspaceFolder}",
+				"--apply",
+				"--clean-empty",
+				"--report",
+				"logs/empty_cleanup_report.json"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "Clean: Scan Project (Shell)",
+			"type": "shell",
+			"command": "${workspaceFolder}/MCP/TOOLS/deep_clean.sh",
+			"args": [
+				"scan"
+			],
+			"group": "test",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Clean: Interactive (Shell)",
+			"type": "shell",
+			"command": "${workspaceFolder}/MCP/TOOLS/deep_clean.sh",
+			"args": [
+				"clean-interactive"
+			],
+			"group": "build",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Clean: TODOs Only (Shell)",
+			"type": "shell",
+			"command": "${workspaceFolder}/MCP/TOOLS/deep_clean.sh",
+			"args": [
+				"clean-todos"
 			],
 			"group": "build",
 			"problemMatcher": []
